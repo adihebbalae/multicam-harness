@@ -14,3 +14,20 @@ figures/
 data/videos/
 *.part
 *.tmp
+
+# video/weights: never committable anywhere in the tree
+*.mp4
+*.avi
+*.mkv
+*.webm
+*.mov
+*.pt
+*.pth
+*.safetensors
+*.ckpt
+
+# secrets & local envs
+.env
+*.key
+.venv/
+venv/

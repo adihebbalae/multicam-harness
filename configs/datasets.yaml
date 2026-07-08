@@ -1,6 +1,12 @@
-# Question categories evaluated per dataset. Edit here (not in code) to narrow a run.
-categories:
-  meva:      [counting, spatial, temporal, event_ordering, best_camera, summarization]
-  nuscenes:  [counting, spatial, temporal, event_ordering, summarization]
-  ego-exo4d: [temporal, event_ordering, best_camera, summarization]
-  agibot:    [temporal, event_ordering, summarization]
+video_roots:
+  crossview: crossview-release-annotations/crossview-release   # placeholder; set for your cluster
+  cvbench: /path/to/CVBench/videos                             # placeholder; set for your cluster
+subsets:
+  cvbench_full: data/subsets/cvbench_full_runnable_subset.json
+  cvbench_temporal: data/subsets/cvbench_temporal_subset.json
+  cvbench_k34: data/subsets/cvbench_full_k34_subset.json
+  cvbench_k4: data/subsets/cvbench_full_k4_subset.json
+  crossview_meva1033: data/subsets/crossview_meva1033_subset.json
+  crossview_combined: data/subsets/crossview_combined_subset.json
+defaults: {nframes: 8, budget: 64, floor: 2, cell_px: 448, summary_nframes: 16, sel_thumbs: 8}
+summaries_cache: results/clip_summaries_internvl3.jsonl

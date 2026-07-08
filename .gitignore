@@ -1,35 +1,16 @@
-# Run outputs — stay on the machine / NAS, never in git
-results/
-outputs/
-logs/
-runs/
-
-# Raw data / video / weights
-data/
-*.avi
-*.mp4
-*.pt
-*.bin
-*.safetensors
-*.tar
-*.tar.gz
-*.zip
-
-# Figures are regenerable; commit only deliberately under figures/
-*.png
-*.jpg
-*.jpeg
-!figures/*.png
-!figures/*.jpg
-
-# Python
 __pycache__/
-*.pyc
-.venv/
-venv/
-.python-version
+*.py[cod]
+*.egg-info/
 .ipynb_checkpoints/
 
-# Secrets
-.env
-*.key
+# outputs never go in git
+results/*
+!results/.gitkeep
+logs/*
+!logs/.gitkeep
+figures/
+
+# data: subset JSONs are committed (data/subsets/); videos never
+data/videos/
+*.part
+*.tmp

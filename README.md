@@ -1,90 +1,116 @@
 # multicam-harness
 
-Shared eval code for the multi-camera harness experiments: how does the *packaging* of
-multi-camera video for a frozen VLM (the "harness") change QA accuracy, at equal frame budget?
+Shared eval code for the multi-camera harness experiments: how does the **packaging** of
+multi-camera video for a frozen VLM (the *harness*) change QA accuracy, at an equal frame
+budget? This is the in-process HF-transformers sibling of the vLLM-serving variant of the
+harness (no `serve_vllm.sh` here; models load in-process).
 
-Three harnesses, everything else held fixed (questions, model call, scoring):
+## Strategies
 
-| Strategy | What the model sees |
-|---|---|
-| `uniform` | per-camera uniformly-sampled frames, shown sequentially (CVBench-native) |
-| `stitched` | time-synchronized frames stitched into labeled grid montages (centralized) |
-| `decentralized` | per-camera query-conditioned **text** summaries → text-only LLM aggregation |
+| Harness | What the model sees | Calls/question |
+|---|---|---|
+| `uniform` | All clips' frames in one sequential prompt; the frame budget is split across clips by duration (`temporal_weighted`) or evenly (`temporal_even`); `cvbench_native` = the original CVBench packaging | 1 |
+| `stitched` | Time-synchronized frames stitched into labeled grid montages (centralized) | 1 |
+| `decentralized` | Per-stream query-conditioned text descriptions → a text-only aggregation call; `--stream-kind camera\|video` | k+1 |
+| `clip_select` | The budget is spent on question-relevant clips: cached summaries → an LLM router (`summary_select_*`), or CLIP/SigLIP thumbnail scoring (`clip_select[_<scorer>]_top<m>`) | 1–2 |
 
 ## Layout
 
 ```
-run_vqa.py        CLI entry point (same flags as the old monolithic vqa.py)
-runner.py         experiment loop: iterate questions → harness → score → write results
-dataloaders/      qa_json.py (CrossView-style qa_<category>.json), video.py (ffmpeg frames)
-harnesses/        uniform.py, stitched.py, decentralized.py — the independent variable
-models/           clients.py (VLLMClient / TextLLM), cost.py (token+USD metering, budget cap)
-evaluation/       scoring.py (MC / counting partial credit / ROUGE), llm_judge.py (LLM-as-judge)
-plotting/         plot_results.py — grouped per-category bars across harnesses
-configs/          datasets.yaml (categories per dataset), model_prices.yaml (USD per 1M tokens)
-scripts/          serve_vllm.sh
+run_vqa.py        # CLI entry: subset × methods × backends × passes → results JSONL
+runner.py         # run loop: sharding, resume keys, per-pass seeding
+dataloaders/      # qa_json.py (record → messages, vendored), video.py (frame sampling)
+harnesses/        # base.py + uniform.py / stitched.py / decentralized.py / clip_select.py
+models/           # clients.py — Qwen3-VL and InternVL3 backends (InternVL import stays lazy)
+evaluation/       # scoring.py (parse_choice / gt_choice) + run metrics & summaries
+plotting/         # plot_results.py — Table 1 + Plots 1–4 from results JSONL
+configs/          # datasets.yaml — video roots, subset paths, summary-cache path
+scripts/          # run_bench.sbatch, gen_clip_summaries.sbatch (SLURM)
+scripts/data/     # download_videos.py, fetch_meva_videos.py, fetch_egoexo_videos.py, fetch_agibot_videos.py
+data/subsets/     # committed question-subset JSONs (they define the benchmark)
+docs/             # ported spec + analysis writeups (provenance: docs/PORTING.md)
+envs/             # cvbench.yml, internvl.yml conda environments
+tests/            # compare_prompts_vs_fork.py — prompt-equivalence gate vs the reference
 ```
 
-Run everything **from the repo root** (imports are top-level packages).
+Run everything from the repo root — modules are top-level packages
+(`from harnesses.uniform import ...`).
 
 ## Setup
 
 ```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-# ffmpeg/ffprobe must be on PATH.
-# OpenAI models/judge: put OPENAI_API_KEY=... (or OPENAI_API_KEY1=) in .env at repo root.
+conda env create -f envs/cvbench.yml
+conda env create -f envs/internvl.yml
 ```
+
+> ⚠️ **The two-env split is mandatory.** Qwen legs run under `cvbench`; InternVL3 runs
+> under `internvl` — a transformers version conflict breaks InternVL3's remote code
+> under `cvbench`.
+
+Models load from the local HF cache; pre-download them on a login node
+(`HF_HUB_OFFLINE=1` works after that).
 
 ## Run
 
 ```bash
-# 1. serve a VLM (skip for OpenAI models)
-bash scripts/serve_vllm.sh Qwen/Qwen2.5-VL-7B-Instruct 0 8000   # GPU 0 → port 8000
-
-# 2. evaluate (port is derived from --gpu: localhost:800<gpu>)
-python run_vqa.py --dataset meva \
-    --data_dir /nas/neurosymbolic/multi-cam-dataset-organized/meva \
-    --model Qwen/Qwen2.5-VL-7B-Instruct --gpu 0 \
-    --strategy uniform --num_frames 8
-
-# swap --strategy stitched | decentralized for the other harnesses
-# decentralized extras: --aggregator_model gpt-5.2 --frame_budget total --log_reasoning
-# error bars: --passes 4 --seeds 1,2,3,4 --temperature 0.7
-# parallel shards: --shard i:N --out_dir results/run_name_shard_i
+python run_vqa.py --subset data/subsets/cvbench_full_runnable_subset.json \
+    --methods temporal_weighted --backends internvl3 \
+    --video-root <your CVBench video dir> \
+    --passes 4 --seeds 1,2,3,4 --temperature 0.7
 ```
 
-Results land in `results/<model>/<dataset>/<strategy>/` (per-category JSONs + `results.txt`
-tables); raw request logs in `logs/`. Both are gitignored — outputs never go in git.
-
-## Summarization scoring
-
-ROUGE is computed inline for continuity, but the headline metric is the LLM judge
-(G-Eval-style, see `evaluation/llm_judge.py` docstring):
+The same run under SLURM, sharded 8 ways:
 
 ```bash
-python -m evaluation.llm_judge results/<...>/<model>_<ds>_<strat>_summarization.json
-# add --claims for the claim-level (interpretable) variant
+ENV=internvl SUBSET=data/subsets/cvbench_full_runnable_subset.json \
+    METHODS=temporal_weighted BACKENDS=internvl3 \
+    CHUNK=8 sbatch --array=0-7 scripts/run_bench.sbatch
 ```
+
+The sbatch partition defaults to `gpul40q`; override with `sbatch -p <partition>`.
+Error-bar convention for anything reported: `--passes 4 --seeds 1,2,3,4 --temperature 0.7`.
+
+## Results
+
+Runs append to `results/<subset>_<...>.jsonl` — one row per question × method × backend ×
+pass — and write a `*_summary.json` next to it. `results/` and `logs/` are gitignored —
+outputs never go in git.
+
+## Summarization / clip-selection scoring
+
+Answers are scored by deterministic choice parsing (`evaluation/scoring.py`
+`parse_choice`; an unparseable answer = abstain = wrong). `clip_select` needs the
+per-clip summary cache: generate it with `scripts/gen_clip_summaries.sbatch` →
+`results/clip_summaries_internvl3.jsonl`. An LLM judge is **not** implemented in v1
+(the sibling repo has one; port it when needed — do not fabricate one).
 
 ## Plotting
 
 ```bash
-python -m plotting.plot_results results/ --out figures/
+python plotting/plot_results.py --jsonl results/<run>.jsonl --out-dir results/figs
 ```
+
+`--jsonl` accepts one or more results files (shards are pooled); `--out-dir` defaults to
+a `figs/` directory next to the first input. Writes Table 1 (`table1.md/.csv`) and
+Plots 1–4.
 
 ## Ground rules
 
-- **Inference-only.** No training; the harness is the variable.
-- **Equal budget.** Compare harnesses at the same frame budget (watch token parity too).
-- **One change at a time.** Only visual packaging differs between harnesses.
-- **Inspect by hand.** Watch the clips before trusting a number.
-- **Never commit** data, video, weights, or run outputs (see `.gitignore`).
-- Single greedy passes are preliminary — no error bars until `--passes 4`.
+- **Inference-only** — no training; the harness is the variable.
+- **Equal budget** — compare harnesses at the same frame budget (watch token parity too).
+- **One change at a time** — only visual packaging differs between harnesses.
+- **Inspect by hand** — watch the clips before trusting a number.
+- **Never commit data, video, weights, or run outputs** (see `.gitignore`).
+- **Single greedy passes are preliminary** — no error bars until `--passes 4`.
+- **Ours:** the two-conda-env split is mandatory; harness equivalence claims are enforced
+  by `tests/compare_prompts_vs_fork.py` (prompts must stay byte-identical to the
+  reference implementation).
 
 ## Data
 
-QA JSONs (per category: best_camera, counting, event_ordering, spatial, summarization,
-temporal): `/nas/neurosymbolic/multi-cam-dataset-organized/meva/` on the swarmcluster.
-MEVA raw video: `/nas/mars/dataset/MEVA`. If you're on a different machine, copy the QA
-JSONs + referenced clips locally and pass your local `--data_dir`.
+Subset JSONs are committed under `data/subsets/` (they define the benchmark); videos are
+never committed. CVBench videos: `scripts/data/download_videos.py` (HF). CrossView: the
+release annotations plus `scripts/data/fetch_meva_videos.py` (public S3),
+`scripts/data/fetch_egoexo_videos.py` (license-gated), and
+`scripts/data/fetch_agibot_videos.py` (gated HF). Set your video roots in
+`configs/datasets.yaml` or pass `--video-root`.

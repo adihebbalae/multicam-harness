@@ -1,101 +1,58 @@
-"""Token/cost accounting shared by every model call in a run."""
-import os
+"""Dollar-cost estimation for benchmark runs (new code, not ported).
+
+Reads a price sheet (``configs/model_prices.yaml``) mapping a model id to
+per-million-token USD rates and converts already-aggregated token counts into
+an estimated dollar cost. Locally hosted checkpoints carry ``null`` rates, in
+which case ``estimate_usd`` returns ``None`` (no estimate) rather than 0.
+
+Expected YAML shape::
+
+    Qwen/Qwen3-VL-8B-Thinking:
+      input: null    # USD per 1M input tokens (null = no price known)
+      output: null   # USD per 1M output tokens
+
+Token aggregation itself lives in ``evaluation.scoring``; this module only
+prices token totals produced elsewhere.
+"""
 
 
-class BudgetExceeded(Exception):
-    """Raised to stop a run once the --max_usd cap is hit."""
+def load_model_prices(path="configs/model_prices.yaml"):
+    """Load the model price sheet; returns ``{}`` if the file is missing or empty."""
+    import os
 
+    import yaml
 
-class CostMeter:
-    """Accumulates token usage and (for priced models) USD cost across every model call in a run.
-    Shared by VLLMClient and TextLLM so decentralized's per-camera + aggregation calls all count.
-    Local vLLM models have no price entry -> cost stays 0 but tokens are still logged."""
-
-    def __init__(self):
-        self.prices = {}      # {model: {"input": usd_per_1M, "output": usd_per_1M}}
-        self.max_usd = None
-        self.prompt_tokens = 0
-        self.completion_tokens = 0
-        self.usd = 0.0
-        self.calls = 0
-
-    def configure(self, prices=None, max_usd=None):
-        self.prices = prices or {}
-        self.max_usd = max_usd
-
-    def record(self, model, usage):
-        self.calls += 1
-        if usage is None:
-            return
-        pt = getattr(usage, "prompt_tokens", 0) or 0
-        ct = getattr(usage, "completion_tokens", 0) or 0
-        self.prompt_tokens += pt
-        self.completion_tokens += ct
-        p = self.prices.get(model)
-        if p:
-            self.usd += pt / 1e6 * p.get("input", 0.0) + ct / 1e6 * p.get("output", 0.0)
-
-    def over_cap(self):
-        return self.max_usd is not None and self.usd >= self.max_usd
-
-
-# One meter per process: VLLMClient and TextLLM both record into it, so the
-# decentralized harness's per-camera + aggregation calls are counted together.
-METER = CostMeter()
-
-
-def load_prices(path):
-    if not path:
+    if not os.path.exists(path):
         return {}
-    try:
-        import yaml
-        with open(path) as f:
-            return yaml.safe_load(f) or {}
-    except Exception as e:
-        print(f"(no price table at {path}: {e})")
-        return {}
+    with open(path) as f:
+        prices = yaml.safe_load(f)
+    return prices or {}
 
 
-def estimate_cost(datasets_by_category, strategy, num_frames, model, prices):
-    """Order-of-magnitude pre-run USD estimate for a priced (OpenAI) model. Image-token counts vary
-    a lot, so this is a heads-up, not a guarantee — the live --max_usd cap is the real guard.
-    Returns (usd, n_questions) or (None, n) when the model isn't priced (local vLLM)."""
-    n = sum(len(d) for d in datasets_by_category.values())
-    p = prices.get(model)
-    if not p:
-        return None, n
-    IMG_TOK, TXT_IN = 800, 400  # rough tokens per frame / per text prompt
-    if strategy == "decentralized":
-        avg_cams = 3  # true value is per-question; ~3 is typical for the gauge subset
-        in_tok = avg_cams * (num_frames * IMG_TOK + TXT_IN) + (avg_cams * 512 + TXT_IN)
-        out_tok = avg_cams * 512 + 16
-    else:  # uniform / stitched: one VLM call per question
-        in_tok = num_frames * IMG_TOK + TXT_IN
-        out_tok = 64
-    usd = n * (in_tok / 1e6 * p.get("input", 0.0) + out_tok / 1e6 * p.get("output", 0.0))
-    return usd, n
-
-
-def resolve_openai_key():
-    """Find an OpenAI key. Our .env files use OPENAI_API_KEY1/OPENAI_API_KEY2 (numbered),
-    not the standard OPENAI_API_KEY, so the default OpenAI() lookup would miss it."""
-    key_vars = ("OPENAI_API_KEY1", "OPENAI_API_KEY2", "OPENAI_API_KEY")
-    for var in key_vars:
-        if os.environ.get(var):
-            return os.environ[var]
-    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    candidates = [
-        os.path.join(repo_root, ".env"),         # multicam-harness/.env
-        os.path.join(repo_root, "..", ".env"),    # parent workspace .env
-        os.path.join(os.getcwd(), ".env"),
-    ]
-    for env_path in candidates:
-        if not os.path.exists(env_path):
-            continue
-        with open(env_path) as f:
-            for line in f:
-                line = line.strip()
-                for var in key_vars:
-                    if line.startswith(var + "="):
-                        return line.split("=", 1)[1].strip().strip('"').strip("'")
+def _lookup(prices, model_id):
+    """Price entry for ``model_id``: exact key match first, then a match on the
+    HF id's last path component so callers may pass either the full id
+    ("Org/Model-X") or the backend's short ``name`` ("Model-X")."""
+    if model_id in prices:
+        return prices[model_id]
+    tail = str(model_id).rstrip("/").split("/")[-1]
+    for key, entry in prices.items():
+        if str(key).rstrip("/").split("/")[-1] == tail:
+            return entry
     return None
+
+
+def estimate_usd(input_tokens, output_tokens, model_id, prices):
+    """Estimated USD for one generation (or an aggregated run) at the sheet's
+    per-1M-token rates. Returns ``None`` when the model has no entry, either
+    rate is ``null``, or a token count is unknown."""
+    entry = _lookup(prices or {}, model_id)
+    if not isinstance(entry, dict):
+        return None
+    rate_in = entry.get("input")
+    rate_out = entry.get("output")
+    if rate_in is None or rate_out is None:
+        return None
+    if input_tokens is None or output_tokens is None:
+        return None
+    return (input_tokens * rate_in + output_tokens * rate_out) / 1_000_000

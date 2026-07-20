@@ -67,6 +67,16 @@ ENV=internvl SUBSET=data/subsets/cvbench_full_runnable_subset.json \
     CHUNK=8 sbatch --array=0-7 scripts/run_bench.sbatch
 ```
 
+One leg of the stitch frame-budget sweep — the `centralized` 2×2 arm at `NFRAMES` frames
+per clip with nothing else changed (design + findings in `docs/stitch_frame_sweep.md`):
+
+```bash
+ENV=internvl SUBSET=data/subsets/cvbench_full_runnable_subset.json BACKENDS=internvl3 \
+    METHODS=centralized MONTAGE_KIND=video NFRAMES=32 TAG=_fullstitch32 CHUNK=8 \
+    VIDEO_ROOT=<your CVBench video dir> \
+    sbatch --array=0-7 scripts/run_bench.sbatch
+```
+
 The sbatch partition defaults to `gpul40q`; override with `sbatch -p <partition>`.
 Error-bar convention for anything reported: `--passes 4 --seeds 1,2,3,4 --temperature 0.7`.
 
@@ -74,7 +84,13 @@ Error-bar convention for anything reported: `--passes 4 --seeds 1,2,3,4 --temper
 
 Runs append to `results/<subset>_<...>.jsonl` — one row per question × method × backend ×
 pass — and write a `*_summary.json` next to it. `results/` and `logs/` are gitignored —
-outputs never go in git.
+outputs never go in git. `scripts/finalize_cvbench_full.sh` pools the full-1000 3-way
+shards into one report; `scripts/pool_stitch_sweep.sh` does the same for the stitch
+frame-budget sweep legs (renaming each leg's rows to `stitch<NN>_f<N>` by its TAG so the
+budgets stay distinct arms). Caution: finalize's glob matches *every* full-1000 shard,
+sweep legs included — since sweep rows record `method='centralized'`, running it with
+sweep shards present folds all budgets into its centralized arm, so move sweep shards
+aside (or use only `pool_stitch_sweep.sh`) when both run families coexist.
 
 ## Summarization / clip-selection scoring
 

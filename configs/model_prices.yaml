@@ -1,18 +1,16 @@
-# OpenAI API prices in USD per 1,000,000 tokens. Used only for cost estimation and the
-# --max_usd hard cap in vqa.py; local vLLM models cost $0 (omit them here).
-# Verified July 2026 from aipricing.guru / OpenAI. GPT-4o and GPT-5.2 are legacy but still
-# API-available. Update when rates change.
-gpt-4o:
-  input: 2.50
-  output: 10.00
-  cached_input: 1.25
-gpt-5.2:
-  input: 1.75
-  output: 14.00
-  cached_input: 0.175
-gpt-5:
-  input: 1.75
-  output: 14.00
-o3:
-  input: 2.00
-  output: 8.00
+# local HF models — no USD cost; populate usd_per_1M_* when an API model (e.g. OpenAI aggregator for decentralized) is added
+Qwen/Qwen3-VL-8B-Thinking:
+  usd_per_1M_input: null
+  usd_per_1M_output: null
+Qwen/Qwen3-VL-8B-Instruct:
+  usd_per_1M_input: null
+  usd_per_1M_output: null
+OpenGVLab/InternVL3-8B:
+  usd_per_1M_input: null
+  usd_per_1M_output: null
+openai/clip-vit-base-patch32:
+  usd_per_1M_input: null
+  usd_per_1M_output: null
+google/siglip-so400m-patch14-384:
+  usd_per_1M_input: null
+  usd_per_1M_output: null

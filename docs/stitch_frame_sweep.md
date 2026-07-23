@@ -1,6 +1,8 @@
 <!-- Results generated with the reference implementation (Wavy-Hec/CVBench bench/ — this
      repo's harnesses are prompt-equivalence-gated against it, tests/compare_prompts_vs_fork.py);
-     pooling script ported @ 4fce134e79bed7400ae9ddb0c28f8744e65d22f3. Doc written 2026-07-20. -->
+     pooling script ported @ 4fce134e79bed7400ae9ddb0c28f8744e65d22f3. Doc written 2026-07-20;
+     chance baseline + figure scripts ported @ db18c06633ffd3183d008bf3fd8ac8138d273cd5,
+     added 2026-07-22. -->
 # Stitch frame-budget sweep — CVBench full-1000, InternVL3-8B
 
 **Question.** The stitched (centralized 2×2 montage) harness loses to temporal sequencing
@@ -36,6 +38,41 @@ ran 2026-07-15 → 07-16.
 
 By camera count, every leg is weakest on 4-cam questions, and more frames never fix that
 weakness (f8: 59.5/58.7/53.8; f128: 57.3/56.5/49.3 for 2/3/4 cams).
+
+## Chance baseline
+
+Every accuracy above should be read against what a model scores by guessing, and that
+floor is **not** a flat 25%. CVBench mixes 861 four-option questions with 139 yes/no ones,
+so the expected score of a guesser picking uniformly among the options it is shown is
+
+    chance = mean over that set's questions of 1 / (number of answer options)
+
+which differs by task category. `evaluation/chance.py` computes it from the subset's real
+option lists (`python -m evaluation.chance` prints the full table):
+
+| set | option mix | chance |
+|---|---|--:|
+| **full-1000 (pooled)** | 139 yes/no, 861 four-option | **28.5%** |
+| Cross-video Scene Recognition | 122 yes/no, 27 four-option | 45.5% |
+| Cross-video Entity Matching | 8 yes/no, 66 four-option | 27.7% |
+| Joint-video Spatial Navigating | 2 yes/no, 40 four-option | 26.2% |
+| Multi-video Temporal Reasoning | 2 yes/no, 73 four-option | 25.7% |
+| all-four-option categories | — | 25.0% |
+
+Two consequences for the reading below. First, raw accuracy flatters the categories with
+high floors: Cross-video Scene Recognition ranks 4th of the fifteen on raw accuracy (68.0%
+at f8) but most of its questions are binary, so it clears its own 45.5% floor by only
++22.5 — 13th of fifteen on margin, and second-lowest of all on accuracy relative to its
+floor (1.49×). Ranking by margin rather than accuracy moves it most.
+Second, and going the other way, Multi-video Temporal Reasoning at f64 sits only **+9.3 pts
+above chance** with a ±3.3 pass std — at the larger budgets that category is not merely
+degrading, it is approaching the guessing floor. The smallest margins overall belong to
+Joint-video Counting (+13.8 averaged over the sweep) and, at f64 and f128, to Temporal
+Reasoning; `python -m plotting.frame_budget_smallmultiples` prints the full ranking.
+
+One source-data caveat the calculator handles: a single row's four choices are
+concatenated into one options string, which a naive `len(options)` reads as one option
+(chance 100%). Embedded `A. / B. / C. / D.` markers are detected and the row counts as 4.
 
 ## Reading
 
@@ -73,3 +110,23 @@ bash scripts/pool_stitch_sweep.sh
 ```
 
 Result JSONLs are not committed (ground rules); the report regenerates from the shards.
+
+### Figures
+
+Both figure scripts recompute every number from the pooled JSONL (per-pass accuracy, then
+mean and population std across passes) and draw each series' own chance line, so nothing
+is hardcoded:
+
+```bash
+# four-series line chart: Overall + the three categories that move most
+python -m plotting.frame_sweep_by_category --jsonl results/<pooled>.jsonl
+
+# small multiples: one panel per task type, sorted by frame-budget gain
+python -m plotting.frame_budget_smallmultiples --jsonl results/<pooled>.jsonl
+```
+
+Both take `--qa-json` for the option counts — it defaults to `subsets.cvbench_full` from
+`configs/datasets.yaml` when that key is set, otherwise to
+`data/subsets/cvbench_full_runnable_subset.json` — and `--out-dir` (defaults to
+`figures/frame_sweep/`, gitignored).
+Each prints the plotted arrays plus an above-chance row before writing png/pdf/svg.

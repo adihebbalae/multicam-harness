@@ -21,6 +21,8 @@ data/
 *.jpeg
 !figures/*.png
 !figures/*.jpg
+# ...but the sweep figure scripts regenerate a whole directory (png/pdf/svg)
+figures/frame_sweep/
 
 # Python
 __pycache__/

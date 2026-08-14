@@ -4,8 +4,9 @@ outputs/
 logs/
 runs/
 
-# Raw data / video / weights
-data/
+# Raw data / video / weights (anchored: unanchored `data/` also hits scripts/data/)
+/data/*
+!/data/subsets/
 *.avi
 *.mp4
 *.pt

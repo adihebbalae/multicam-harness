@@ -50,6 +50,82 @@ and decentralized arms; the selection arms sample frames out of clips and raise 
 clear error on a still-image record rather than silently running with no visual
 input.
 
+## MVU-Eval, end to end
+
+MVU-Eval (multi-video QA, NeurIPS 2025 D&B) is the pool `run.py`'s usage examples
+point at. It is a public HF dataset — no license gate — so this runs on any
+cluster with internet and a GPU. Five steps from a fresh clone:
+
+```bash
+# 1. environment. requirements.txt covers the Qwen path. InternVL3 needs its
+#    OWN environment pinned to an older transformers -- the newer one the Qwen
+#    path wants breaks InternVL3's remote code, so one environment cannot
+#    serve both backends.
+python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+
+# 2. the questions (small: one JSON + one CSV)
+python3 scripts/data/fetch_mvueval_videos.py --qa-only
+
+# 3. build the record pool. No GPU, no videos needed. Reproduces the committed
+#    data/subsets/mvueval_qa.json byte for byte from the same release.
+python3 scripts/data/build_mvueval.py --qa-json data/mvueval/MVU_Eval_QAs.json
+
+# 4. the clips. The dev subset needs a few hundred; the full pool needs ~4.9k.
+python3 scripts/data/fetch_mvueval_videos.py --subset data/subsets/mvueval_dev_subset.json
+python3 scripts/data/fetch_mvueval_videos.py --check   # confirm before launching
+
+# 5. smoke it: 5 questions, one pass, sequential baseline only
+mkdir -p logs                      # Slurm opens --output before the body runs
+LIMIT=5 PASSES=1 SEEDS=1 STRICT=1 METHODS=cvbench_native \
+    sbatch -p <your partition> scripts/run_mvueval.sbatch
+```
+
+Then the real legs — `scripts/run_mvueval.sbatch` wraps `python -m inprocess.run`
+and shards over a Slurm array. It declares no partition, so pass `-p` yourself;
+the walltime, gres and cpus-per-task are one cluster's defaults, overridable with
+`sbatch -t <yours> --gres=<yours>`. It activates `$VENV` or `$ENV` if you set one,
+and otherwise assumes you activated the environment before submitting. `STRICT`
+is required — see below.
+
+```bash
+# the two arms that need no gated weights
+STRICT=1 METHODS=frame_select_siglip_optu,query_search_siglip \
+    SUBSET=data/subsets/mvueval_qa.json CHUNK=8 \
+    sbatch -p <your partition> --array=0-7 scripts/run_mvueval.sbatch
+```
+
+Step 3 emits the full pool plus a task x clip-count stratified dev subset and the
+deduped clip list that subset needs, so a smoke run never requires the whole
+release. Questions carry 2–13 videos and 2–11 options; the slot cap and the legal
+letter range are imported from `inprocess/dataloaders/qa_json.py` rather than
+restated, so emitted records cannot desync from the loader that reads them.
+
+### Four things that will bite you
+
+- **`--strict-answer-prompt` is required and has no default.** It rewrites nearly
+  every prompt of a multi-option subset, so rows produced with `0` and rows
+  produced with `1` **cannot be pooled**. Agree on one value with anyone else
+  running these legs before either of you launches, and check the `strict_prompt`
+  field on the rows before combining anything.
+- **The release ships two answer keys that disagree.** `MVU_Eval_QAs.json` and
+  `mvu_eval_config.csv` give different ground truth for **92 of the 1,824
+  questions (5.04%)**, joined positionally — the question text matches on all
+  1,824, so the join is sound. `build_mvueval.py` reads the JSON. Say which key
+  you scored against when comparing against published numbers.
+- **`clip_select_viclip_optu` needs a gated download.** ViCLIP is not on PyPI:
+  `huggingface-cli login`, then `huggingface-cli download OpenGVLab/ViCLIP
+  --local-dir $VICLIP_DIR` (default `~/models/ViCLIP`), and it must be the
+  *full* download — code files and the `ViClip-InternVid-10M-FLT.pth`
+  checkpoint. The other `.pth` in that repo is vision-encoder-only and is not a
+  valid fallback. The other two arms need no gated weights — but note that
+  `run.py`'s default `--methods` includes the viclip arm, so a run that passes
+  no `--methods` exits early without that download.
+- **On InternVL3, keep `--internvl-max-tiles 1`.** An image is tiled while a
+  video frame is not, so a matched frame budget stops being matched once tiling
+  is on; the selection arms refuse to construct rather than produce a
+  tokenization artifact. The sbatch adds the flag automatically when `MODEL`
+  names an InternVL checkpoint.
+
 ## Reasoning mode and option-guided selection
 
 Two knobs were added since the initial drop, both default-off so existing calls

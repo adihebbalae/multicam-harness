@@ -1,9 +1,13 @@
 # Ported from Wavy-Hec/CVBench bench/methods/clip_select.py @ 7f3e480aa4fc4ce615a4735a593594f8b6e71a93
+# clip_scores' return_image_embs extension additionally ported from
+# @ 8ecae1f0c33cb5dc20b565d9cad49c0089cbfec6.
 # Deliberate delta vs source: gen_clip_summaries references updated from the
 # fork's `bench/gen_clip_summaries.py` module path to this repo's
 # `scripts/gen_clip_summaries.py` (docstring, comment, and SystemExit hint).
 # Deliberate delta vs source: the per-clip-floor comment states the failure mode
 # but omits the fork's measured percentages, which are unpublished results.
+# Deliberate delta vs source: clip_scores' docstring cites the archived
+# adaptive-frames writeup by its path rather than the fork's git-show pointer.
 """CLIP-SELECTION harness (D3, the PRIMARY decision): choose WHICH of the K
 independent clips a question actually needs, then spend the whole 64-frame
 budget on the selected clips only. Two selector families, three method arms:
@@ -62,13 +66,18 @@ from inprocess.dataloaders.qa_json import build_messages, letters_of, video_path
 from inprocess.evaluation.scoring import parse_choice, gt_choice, extract_think
 
 
-def clip_scores(clip_bundle, text, pil_frames, batch=32):
+def clip_scores(clip_bundle, text, pil_frames, batch=32, return_image_embs=False):
     """CLIP/SigLIP cosine similarity between ``text`` and each PIL frame
     (higher = closer). Raw normalized cosine is monotonic in the model's own
     logit, so it ranks identically for both families. (Relocated from the
     retired frame-level adaptive ablation, whose result — motion −6.4 pts,
     CLIP-frames tie vs uniform — is archived in
-    analysis/adaptive_frames_experiment.md §B.)"""
+    analysis/adaptive_frames_experiment.md §B.)
+
+    ``return_image_embs``: also return the L2-normalized per-frame image
+    embeddings ``[n_frames, dim]`` (as ``(sims, embs)``) — segment_select
+    reuses them for frame-vs-frame near-duplicate removal, so dedup costs no
+    second encoder pass."""
     import torch
     model, proc, device = clip_bundle
     # transformers <5 returns the projected embedding tensor directly from
@@ -95,16 +104,21 @@ def clip_scores(clip_bundle, text, pil_frames, batch=32):
     with torch.no_grad():
         t_emb = _emb(model.get_text_features(**tok))
         t_emb = t_emb / t_emb.norm(dim=-1, keepdim=True)
-        sims = []
+        sims, embs = [], []
         for i in range(0, len(pil_frames), batch):
             chunk = proc(images=pil_frames[i:i + batch], return_tensors="pt").to(device)
             i_emb = _emb(model.get_image_features(**chunk))
             i_emb = i_emb / i_emb.norm(dim=-1, keepdim=True)
+            if return_image_embs:
+                embs.append(i_emb.float().cpu().numpy())
             # [n_frames_in_batch, n_texts]; the historical contract is 1-D, so
             # only the single-text call collapses the text axis.
             sims.append((i_emb @ t_emb.T).float().cpu().numpy())
     out = np.concatenate(sims, axis=0)
-    return out[:, 0] if one_text else out
+    out = out[:, 0] if one_text else out
+    if return_image_embs:
+        return out, np.concatenate(embs, axis=0)
+    return out
 
 
 OPT_PREFIX = re.compile(r"^\s*[A-Za-z]\s*[.)]\s*")   # == evaluation/scoring.py

@@ -1,4 +1,6 @@
-# Ported from Wavy-Hec/CVBench bench/methods/option_union.py @ 967fe27
+# Ported from Wavy-Hec/CVBench bench/methods/option_union.py @ 967fe27;
+# the _per_option_tau small-n caveat additionally ported from
+# @ 8b4fbd117b6084dafb743eb30b5298e9a1ba91e3.
 """Option-aware subsampling (Follow-up 1) and tool-based query search (Follow-up 2).
 
 Three new arms, all reducing the visual input BEFORE the answer call:
@@ -139,7 +141,18 @@ def _frame_content(im, backend, resize):
 def _per_option_tau(scores_2d, tau, tau_q):
     """One threshold per option (column). tau > 0: the absolute cutoff for all;
     else: each option's own tau_q quantile, so 'passing' means 'in this
-    option's top (1-tau_q) fraction' regardless of the scorer's cosine scale."""
+    option's top (1-tau_q) fraction' regardless of the scorer's cosine scale.
+
+    Small-n caveat: np.quantile interpolates, so with few rows the q=0.85
+    default lands BETWEEN the top scores — over the CLIP-level arm's K clips,
+    exactly 1 passes per option for K <= 7 and 2 for K = 8-13. At typical K
+    the clip-level 'union' therefore degenerates to each option's best clip
+    (the backstop's set), i.e. effectively top-1 per option, NOT a spread of
+    passing clips. The frame-level arms pool K x candidates rows (~128+),
+    where the quantile keeps the intended ~(1-q) fraction. The straight top-K
+    selection discussed for the segment pipeline lives in segment_select
+    (``--segments-keep`` / 0 = budget-derived auto K), not here — this arm
+    stays the Follow-up-1 threshold-union record."""
     if tau > 0:
         return [float(tau)] * scores_2d.shape[1]
     return [float(np.quantile(scores_2d[:, j], tau_q))

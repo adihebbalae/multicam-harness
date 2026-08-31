@@ -118,7 +118,7 @@ import socket
 from collections import Counter, defaultdict
 
 from inprocess.dataloaders import qa_json
-from inprocess.dataloaders.qa_json import video_paths
+from inprocess.dataloaders.qa_json import media_remap, video_paths
 from inprocess.evaluation.scoring import (format_summary,
                                           summarize_by_method_backend_passes)
 from inprocess.harnesses.option_union import (OptionUnionClipSelect,
@@ -369,21 +369,24 @@ def row_key(row):
 
 
 def scan_output(path):
-    """``(key counts, keys whose row carries an error, {knob: values seen})``."""
+    """``(key counts, keys whose row carries an error, {knob: values seen},
+    media_remap values seen — 'unstamped' for rows that predate the stamp)``."""
     counts = Counter()
     errored = set()
     seen = defaultdict(set)
+    remaps = set()
     for row in iter_rows(path):
         key = row_key(row)
         counts[key] += 1
         if row.get("error"):
             errored.add(key)
+        remaps.add(row.get("media_remap", "unstamped"))
         for knob in IDENTITY_KNOBS:
             if knob in row:
                 value = row[knob]
                 seen[knob].add(value if isinstance(value, (str, int, float, bool))
                                or value is None else json.dumps(value, sort_keys=True))
-    return counts, errored, seen
+    return counts, errored, seen, remaps
 
 
 def drop_error_rows(path, keys):
@@ -502,8 +505,16 @@ def preflight_media(data, video_root, need_video, allow_missing):
     different mistakes with the same symptom.
     """
     missing, seen, no_video = [], set(), 0
+    unremuxed = []
     for rec in data:
-        paths = video_paths(rec, video_root)
+        try:
+            paths = video_paths(rec, video_root)
+        except FileNotFoundError as e:
+            # the resolver refuses a bare .avi (decord decodes the wrong frames
+            # out of those containers); a missing sibling must fail here, at
+            # second zero, not after the model load on a GPU node
+            unremuxed.append(str(e).split(":")[0])
+            continue
         if not paths:
             no_video += 1
             continue
@@ -513,6 +524,13 @@ def preflight_media(data, video_root, need_video, allow_missing):
             seen.add(path)
             if not os.path.exists(path):
                 missing.append(path)
+    if unremuxed:
+        raise SystemExit(
+            f"{len(unremuxed)} record(s) name an .avi without a verified .mp4 "
+            "sibling. decord decodes the wrong frames out of a bare .avi, so "
+            "this is deliberately not downgradable by --allow-missing-media: "
+            "run scripts/data/remux_avi.py, then its --check. First: "
+            f"{unremuxed[:3]}")
     if no_video and need_video:
         raise SystemExit(
             f"{no_video} record(s) carry no video_i slot. The selection arms "
@@ -679,7 +697,8 @@ def build_parser():
                          "take error rows for the affected records")
     ap.add_argument("--allow-mixed", action="store_true",
                     help="permit appending to a file whose rows carry a different "
-                         "backend, dataset or run-defining knob (default: refuse — "
+                         "backend, dataset, run-defining knob or media-provenance "
+                         "stamp (default: refuse — "
                          "the resume key cannot tell those rows apart, so the run "
                          "would skip work and label another protocol's data with "
                          "this run's summary)")
@@ -813,7 +832,7 @@ def main():
               "concurrent appends interleave and tear each other's lines.")
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
 
-    counts, errored, prior = scan_output(out)
+    counts, errored, prior, prior_remaps = scan_output(out)
     dup = describe_duplicates(counts)
     if dup:
         raise SystemExit(
@@ -842,6 +861,28 @@ def main():
                   "--allow-mixed if you genuinely intend one mixed file.")
         print("[warn] --allow-mixed: " + detail, flush=True)
 
+    # media provenance, checked separately from the identity knobs because it is
+    # per RECORD, not per launch: rows written before the .avi remux carry no
+    # media_remap stamp and decoded the wrong frames, so resume/append must not
+    # pool them with remuxed rows under a reused --out. A new or empty file, or
+    # a non-MEVA file (every stamp None), is always compatible.
+    this_remap = {media_remap(rec) for rec in data} - {None}
+    prior_stamped = prior_remaps - {"unstamped", None}
+    mixed_media = ((this_remap and "unstamped" in prior_remaps)
+                   or (prior_stamped and prior_stamped != this_remap))
+    if mixed_media:
+        detail = (f"{out} holds rows with media_remap "
+                  f"{sorted(str(v) for v in prior_remaps)}; this run would stamp "
+                  f"{sorted(str(v) for v in this_remap) or ['None']}\n"
+                  "  (rows without the stamp predate the MEVA remux and decoded "
+                  "the wrong frames).")
+        if not args.allow_mixed:
+            raise SystemExit(
+                "refusing to append: " + detail
+                + "\n  Give this run a fresh --out, or pass --allow-mixed if you "
+                  "genuinely intend one mixed file.")
+        print("[warn] --allow-mixed: " + detail, flush=True)
+
     need_video = any(k != "baseline" for k in kinds.values())
     n_clips, n_missing = preflight_media(data, args.video_root, need_video,
                                          args.allow_missing_media)
@@ -853,7 +894,7 @@ def main():
         dropped = drop_error_rows(out, errored & planned)
         print(f"--retry-errors: removed {dropped} error row(s) from {out}; they "
               "will be re-run and replaced.", flush=True)
-        counts, errored, _ = scan_output(out)
+        counts, errored, _, _ = scan_output(out)
     done = set(counts)      # a row is done whether or not it carries an error
 
     # The summary is the completion signal, so a stale one from an earlier run of
@@ -873,7 +914,8 @@ def main():
     print(f"segments_keep={args.segments_keep} seg_pool={args.seg_pool} "
           f"dedup_tau={args.dedup_tau}")
     print(f"reasoning={int(reasoning)} strict_prompt={int(strict_prompt)} "
-          f"dataset={dataset} run_id={run_id} node={node}")
+          f"dataset={dataset} run_id={run_id} node={node} "
+          f"allow_avi={int(qa_json.ALLOW_AVI)}")
     print(f"video_root={args.video_root}\nout={out} (rows already present: "
           f"{len(done)}, of them errors: {len(errored)})", flush=True)
 
@@ -922,6 +964,10 @@ def main():
                         "record would be retried on every resume forever.")
                 res.pass_idx = pass_idx
                 row = res.to_dict()
+                # .avi records decode from their remuxed .mp4 sibling
+                # (qa_json.resolve_media); stamp the provenance so rows from
+                # before the remux (wrapped frames) never pool with these
+                row["media_remap"] = media_remap(rec)
                 row.update(stamp)
                 # flushed per row: a job killed at the wall clock keeps every
                 # question it has already paid for

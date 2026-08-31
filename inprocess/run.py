@@ -124,6 +124,7 @@ from inprocess.evaluation.scoring import (format_summary,
 from inprocess.harnesses.option_union import (OptionUnionClipSelect,
                                               OptionUnionFrameSelect,
                                               QuerySearchMethod)
+from inprocess.harnesses.segment_select import SegmentSelectMethod
 from inprocess.harnesses.uniform import CVBenchNativeMethod
 from inprocess.models.clients import (INTERNVL_ALIASES, QWEN_ALIASES,
                                       make_backend)
@@ -142,10 +143,17 @@ OPTION_UNION_FRAME_RE = re.compile(
 OPTION_UNION_CLIP_RE = re.compile(
     r"^clip_select(?:_(?P<tag>(?!optu(?:_|$))[a-z0-9]+))?_optu$")
 QUERY_SEARCH_RE = re.compile(r"^query_search(?:_(?P<tag>[a-z0-9]+))?$")
+# segment_select: top-K segments PER clip -> per-segment frames -> question-wide
+# near-duplicate removal -> even thinning to the budget. Same tag/_opt grammar
+# as frame_select, plus 'viclip' (each segment embedded jointly as one tube for
+# segment relevance; an image tower still supplies the dedup embeddings).
+SEGMENT_SELECT_RE = re.compile(
+    r"^segment_select(?:_(?P<tag>(?!opt(?:_|$))[a-z0-9]+))?(?P<opt>_opt)?$")
 
 # HF image-text scorers. 'viclip' is deliberately absent: it is not a
 # transformers id but a local download named by VICLIP_DIR, and it embeds a
-# whole clip jointly, so only the clip-level arm can use it.
+# whole clip jointly, so only the clip-level and segment-level arms can use it
+# (they score whole clips / whole segment tubes, never single frames).
 SCORER_ALIASES = {"siglip": "google/siglip-so400m-patch14-384",
                   "siglip2": "google/siglip2-so400m-patch14-384"}
 DEFAULT_SCORER = "openai/clip-vit-base-patch32"
@@ -160,6 +168,12 @@ SEL_THUMBS = 8             # thumbnails scored per clip by the clip-level arm
 CELL_PX = 448              # frame size on backends without per-item pixel caps
 FRAME_FLOOR = 1            # frame-level arms: per-clip minimum kept frames
 CLIP_FLOOR = 2             # clip-level arm: per-clip minimum allocated frames
+SEGMENTS_PER_VIDEO = 8     # segment_select: segments each clip is split into
+FRAMES_PER_SEGMENT = 8     # segment_select: frames sampled per segment
+# segment_select_viclip*: the dedup tower is pinned to the reference campaign's
+# SigLIP id, so viclip-vs-siglip scorer comparisons share one dedup space and
+# the only moving part is what scores the segments.
+SEG_DEDUP_TOWER = SCORER_ALIASES["siglip"]
 
 DEFAULT_METHODS = "frame_select_siglip_optu,clip_select_viclip_optu,query_search_siglip"
 
@@ -172,7 +186,9 @@ IDENTITY_KNOBS = ("dataset", "backend", "subset_sha256", "strict_prompt",
                   "reasoning", "temperature", "seeds", "nframes", "budget",
                   "sel_tau", "sel_tau_q", "n_queries", "query_max_new_tokens",
                   "max_new_tokens", "internvl_max_tiles", "frame_candidates",
-                  "sel_thumbs", "cell_px", "frame_floor", "clip_floor")
+                  "sel_thumbs", "cell_px", "frame_floor", "clip_floor",
+                  "segments_per_video", "segments_keep", "frames_per_segment",
+                  "dedup_tau", "seg_pool")
 
 # The four ViCLIP class files, in the order the loader executes them.
 VICLIP_CLASS_FILES = ("simple_tokenizer.py", "viclip_text.py",
@@ -219,10 +235,16 @@ def parse_method(mname):
             raise SystemExit("query_search_viclip: ViCLIP has no per-frame "
                              "scores; use a CLIP/SigLIP tag.")
         return "query_search", scorer_for(m.group("tag"))
+    m = SEGMENT_SELECT_RE.match(mname)
+    if m:
+        tag = m.group("tag")
+        kind = "segment_opt" if m.group("opt") else "segment"
+        return kind, (VICLIP_SCORER if tag == VICLIP_SCORER else scorer_for(tag))
     raise SystemExit(
         f"unknown method '{mname}'. Known: {BASELINE}, "
         "frame_select[_<scorer>]_optu, clip_select[_<scorer>|_viclip]_optu, "
-        f"query_search[_<scorer>], with <scorer> in {sorted(SCORER_ALIASES)}.")
+        "query_search[_<scorer>], segment_select[_<scorer>|_viclip][_opt], "
+        f"with <scorer> in {sorted(SCORER_ALIASES)}.")
 
 
 def make_method(mname, kind, scorer, backend, args):
@@ -258,6 +280,28 @@ def make_method(mname, kind, scorer, backend, args):
             name=mname, **common)
         want = {"budget": args.budget, "floor": CLIP_FLOOR, "thumbs": SEL_THUMBS,
                 "tau": args.sel_tau, "tau_q": args.sel_tau_q}
+    elif kind in ("segment", "segment_opt"):
+        # under the viclip tag the tube scorer replaces only the segment-
+        # RELEVANCE signal; the dedup step needs per-frame image embeddings (a
+        # joint tube embedding has none), so an image tower runs alongside —
+        # pinned to SEG_DEDUP_TOWER so scorer A/Bs share one dedup space.
+        seg_scorer = VICLIP_SCORER if scorer == VICLIP_SCORER else None
+        method = SegmentSelectMethod(
+            backend, budget=args.budget, floor=FRAME_FLOOR,
+            segments_per_video=SEGMENTS_PER_VIDEO,
+            segments_keep=args.segments_keep,
+            frames_per_segment=FRAMES_PER_SEGMENT,
+            dedup_tau=args.dedup_tau, seg_scorer=seg_scorer,
+            seg_pool=args.seg_pool,
+            clip_model=SEG_DEDUP_TOWER if seg_scorer else scorer,
+            cell_px=CELL_PX, name=mname,
+            query="options" if kind == "segment_opt" else "question", **common)
+        want = {"budget": args.budget, "floor": FRAME_FLOOR,
+                "segments_per_video": SEGMENTS_PER_VIDEO,
+                "segments_keep": args.segments_keep,
+                "frames_per_segment": FRAMES_PER_SEGMENT,
+                "dedup_tau": args.dedup_tau, "seg_pool": args.seg_pool,
+                "cell_px": CELL_PX}
     else:
         method = QuerySearchMethod(
             backend, n_queries=args.n_queries,
@@ -577,6 +621,26 @@ def build_parser():
                          "is in that option's top (1-q) fraction")
     ap.add_argument("--n-queries", type=int, default=4,
                     help="query_search: visual search phrases per question")
+    ap.add_argument("--segments-keep", type=int, default=4,
+                    help="segment_select: top-K segments kept per clip "
+                         "(straight top-K over the per-option score matrix, "
+                         "descending). 0 = AUTO: K = --seg-pool // "
+                         "(frames_per_segment x n_streams), clamped to "
+                         "[1, min(16, segments_per_video)]")
+    ap.add_argument("--seg-pool", type=int, default=128,
+                    help="segment_select with --segments-keep 0: pooled-frame "
+                         "target the auto top-K fills with whole segments, "
+                         "split evenly across the record's streams (128 with "
+                         "8-frame segments: 4 streams -> 4 segments/clip, "
+                         "16+ -> 1). Auto K never exceeds segments_per_video, "
+                         "so reaching 16 on few-stream records needs a larger "
+                         "segment split")
+    ap.add_argument("--dedup-tau", type=float, default=0.95,
+                    help="segment_select: near-duplicate cosine cutoff in "
+                         "(0, 1]. 1 = dedup OFF; 0 is INVALID (fails fast) — "
+                         "NOT the --sel-tau '0 = off' convention. Static "
+                         "cameras collapse hard at 0.95: budget-parity sweeps "
+                         "must pass 1")
     ap.add_argument("--query-max-new-tokens", type=int, default=256,
                     help="query_search: token cap for the phrase-writing call")
     ap.add_argument("--max-new-tokens", type=int, default=8192,
@@ -732,6 +796,11 @@ def main():
         "cell_px": CELL_PX,
         "frame_floor": FRAME_FLOOR,
         "clip_floor": CLIP_FLOOR,
+        "segments_per_video": SEGMENTS_PER_VIDEO,
+        "segments_keep": args.segments_keep,
+        "frames_per_segment": FRAMES_PER_SEGMENT,
+        "dedup_tau": args.dedup_tau,
+        "seg_pool": args.seg_pool,
     }
 
     shard_tag = f"_shard{args.offset}" if args.chunk > 1 else ""
@@ -801,6 +870,8 @@ def main():
     print(f"nframes={args.nframes} budget={shown_budget} sel_tau={args.sel_tau} "
           f"sel_tau_q={args.sel_tau_q} n_queries={args.n_queries} "
           f"internvl_max_tiles={args.internvl_max_tiles}")
+    print(f"segments_keep={args.segments_keep} seg_pool={args.seg_pool} "
+          f"dedup_tau={args.dedup_tau}")
     print(f"reasoning={int(reasoning)} strict_prompt={int(strict_prompt)} "
           f"dataset={dataset} run_id={run_id} node={node}")
     print(f"video_root={args.video_root}\nout={out} (rows already present: "

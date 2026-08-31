@@ -242,6 +242,10 @@ class CentralizedMethod(Method):
             # sbatch log. Without them a leg run at a different cell size is
             # indistinguishable from one that was not.
             alloc = {"kind": "image_montage", "K": len(paths),
+                     # the EFFECTIVE prompt/label variant (stills force "view");
+                     # without it, rows of different montage_kind legs differ
+                     # only by file path and a glob aggregation blends them
+                     "montage_kind": "view",
                      "cell_px": self.cell_px,
                      "canvas_wh": list(montages[0].size),
                      # InternVL re-tiles the canvas by aspect ratio, so max_tiles
@@ -273,6 +277,8 @@ class CentralizedMethod(Method):
                                       cell_px=self.cell_px, label_prefix=self._label)
             prefix = self._prefix
             alloc = {"kind": "montage", "T": t, "K": len(paths),
+                     # prompt/label variant — see the still-image branch note
+                     "montage_kind": self.montage_kind,
                      "frames_total": t * len(paths),
                      "total_frames": self.total_frames or None,
                      # same reason as the still-image branch above: cell_px and

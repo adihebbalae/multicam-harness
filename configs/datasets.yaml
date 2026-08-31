@@ -1,3 +1,10 @@
+# Where the multi-view release lives on this machine. The crossview root must
+# match scripts/data/fetch_meva_videos.py --release-root and remux_avi.py --root,
+# or the fetched .avi clips and their verified .mp4 siblings land somewhere the
+# harness never looks.
+video_roots:
+  crossview: data/crossview-release-annotations/crossview-release
+
 # Question categories evaluated per dataset. Edit here (not in code) to narrow a run.
 categories:
   meva:      [counting, spatial, temporal, event_ordering, best_camera, summarization]

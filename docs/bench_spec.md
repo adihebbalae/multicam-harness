@@ -47,13 +47,20 @@ per-pass accuracies (`metrics.summarize_passes`).
 - Scale (1,033 Q): `data/subsets/crossview_meva1033_subset.json` (cameras 2–16).
 - `video_root` = your CrossView release directory (`crossview-release`, MEVA .avi +
   EgoExo4D .mp4) — set it in `configs/datasets.yaml` or pass `--video-root`.
-- NOTE: records carry `video_1..video_4` (input capped at 4 cams → montage ≤ 2×2); the
+- NOTE (historical): the committed CrossView subsets carry `video_1..video_4` (4 cams →
+  montage ≤ 2×2), but the loader itself now takes up to 13 slots
+  (`inprocess/dataloaders/qa_json.py` MAX_SLOTS) and the montage grid generalizes past 2×2; the
   Plot 3/4 camera axis is `orig_num_cameras` (the original difficulty count, 2–16).
 
 ## Commands
 
-*(The CPU scoring gate — reproduce 19/60 from a stored eval JSON, no GPU — is the fork's
-`bench/validate_scoring.py`; it was not ported.)*
+*(The CPU scoring gate is ported: `python -m tests.validate_scoring` replays the
+committed fixture with a hard-asserted score, no GPU or data needed.)*
+
+*(The commands below are the original vLLM harness's, kept as written. The
+in-process port launches the same arms as
+`python -m inprocess.run --methods centralized,per_stream,temporal_weighted
+--model <hf-id> ...` — see `inprocess/README.md`.)*
 
 ```bash
 # GPU smoke (Qwen, cvbench env), both harnesses, 4 passes:

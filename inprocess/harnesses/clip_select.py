@@ -358,10 +358,11 @@ def summary_cache_files(path_or_glob):
 def load_summary_cache(path_or_glob):
     """{rel_video_path: summary} over summary_cache_files().
 
-    Rows with an ``error``, an empty ``summary``, or a prompt_ver other than
-    the current SUMMARY_PROMPT_VER are skipped (stale-version rows count as
-    missing, so a prompt bump regenerates instead of silently mixing versions);
-    last row per video wins.
+    Rows with an ``error``, an empty ``summary``, a stale media provenance
+    (summarized from a raw .avi, whose random access decoded the wrong frames),
+    or a prompt_ver other than the current SUMMARY_PROMPT_VER are skipped
+    (stale rows count as missing, so the cache regenerates instead of silently
+    mixing versions or pre-remux pixels); last row per video wins.
     """
     paths = summary_cache_files(path_or_glob)
     cache = {}
@@ -375,7 +376,12 @@ def load_summary_cache(path_or_glob):
                     row = json.loads(line)
                 except Exception:
                     continue
-                if (row.get("summary") and not row.get("error")
+                # summaries decoded from a raw .avi (pre-remux rows lack the
+                # stamp; CVBENCH_ALLOW_AVI rows stamp avi-raw) are stale
+                stale_media = (row.get("media_remap") == "avi-raw"
+                               or ("media_remap" not in row
+                                   and str(row.get("video")).lower().endswith(".avi")))
+                if (row.get("summary") and not row.get("error") and not stale_media
                         and row.get("prompt_ver", SUMMARY_PROMPT_VER) == SUMMARY_PROMPT_VER):
                     cache[row["video"]] = row["summary"]
     return cache, paths

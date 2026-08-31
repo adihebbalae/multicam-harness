@@ -3,11 +3,14 @@ results/
 outputs/
 logs/
 runs/
+remux*.jsonl
 
-# Raw data / video / weights
-data/
+# Raw data / video / weights (anchored: unanchored `data/` also hits scripts/data/)
+/data/*
+!/data/subsets/
 *.avi
 *.mp4
+*.mp4.bad
 *.pt
 *.bin
 *.safetensors

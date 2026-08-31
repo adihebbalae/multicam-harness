@@ -118,14 +118,18 @@ import socket
 from collections import Counter, defaultdict
 
 from inprocess.dataloaders import qa_json
-from inprocess.dataloaders.qa_json import video_paths
+from inprocess.dataloaders.qa_json import media_remap, video_paths
 from inprocess.evaluation.scoring import (format_summary,
                                           summarize_by_method_backend_passes)
+from inprocess.harnesses.blind import BlindMethod
+from inprocess.harnesses.decentralized import PerStreamMethod
 from inprocess.harnesses.option_union import (OptionUnionClipSelect,
                                               OptionUnionFrameSelect,
                                               QuerySearchMethod)
 from inprocess.harnesses.segment_select import SegmentSelectMethod
-from inprocess.harnesses.uniform import CVBenchNativeMethod
+from inprocess.harnesses.stitched import CentralizedMethod
+from inprocess.harnesses.uniform import (CVBenchNativeMethod,
+                                         TemporalWeightedMethod)
 from inprocess.models.clients import (INTERNVL_ALIASES, QWEN_ALIASES,
                                       make_backend)
 
@@ -168,6 +172,7 @@ SEL_THUMBS = 8             # thumbnails scored per clip by the clip-level arm
 CELL_PX = 448              # frame size on backends without per-item pixel caps
 FRAME_FLOOR = 1            # frame-level arms: per-clip minimum kept frames
 CLIP_FLOOR = 2             # clip-level arm: per-clip minimum allocated frames
+TEMPORAL_FLOOR = 2         # temporal_weighted: per-clip minimum frames
 SEGMENTS_PER_VIDEO = 8     # segment_select: segments each clip is split into
 FRAMES_PER_SEGMENT = 8     # segment_select: frames sampled per segment
 # segment_select_viclip*: the dedup tower is pinned to the reference campaign's
@@ -176,6 +181,14 @@ FRAMES_PER_SEGMENT = 8     # segment_select: frames sampled per segment
 SEG_DEDUP_TOWER = SCORER_ALIASES["siglip"]
 
 DEFAULT_METHODS = "frame_select_siglip_optu,clip_select_viclip_optu,query_search_siglip"
+
+# The kinds whose arms SELECT frames and send them as images. The tile-parity
+# guard and the still-image preflight apply to these, not to the classic arms:
+# a montage leg legitimately tiles (its budget saturates at max_tiles — compare
+# its token columns before reading a centralized-vs-sequential difference as
+# architecture), and blind reads no media at all.
+SELECTION_KINDS = {"frame_optu", "clip_optu", "query_search",
+                   "segment", "segment_opt"}
 
 # Run-defining values compared against the rows already in an output file before
 # appending to it. A knob absent from a prior row is not compared (that row
@@ -188,7 +201,8 @@ IDENTITY_KNOBS = ("dataset", "backend", "subset_sha256", "strict_prompt",
                   "max_new_tokens", "internvl_max_tiles", "frame_candidates",
                   "sel_thumbs", "cell_px", "frame_floor", "clip_floor",
                   "segments_per_video", "segments_keep", "frames_per_segment",
-                  "dedup_tau", "seg_pool")
+                  "dedup_tau", "seg_pool", "total_frames", "montage_kind",
+                  "stream_kind", "weighting", "perception_max_new_tokens")
 
 # The four ViCLIP class files, in the order the loader executes them.
 VICLIP_CLASS_FILES = ("simple_tokenizer.py", "viclip_text.py",
@@ -208,6 +222,9 @@ def parse_method(mname):
     """
     if mname == BASELINE:
         return "baseline", None
+
+    if mname in ("centralized", "per_stream", "temporal_weighted", "blind"):
+        return mname, None
 
     def scorer_for(tag):
         if tag is None:
@@ -241,7 +258,8 @@ def parse_method(mname):
         kind = "segment_opt" if m.group("opt") else "segment"
         return kind, (VICLIP_SCORER if tag == VICLIP_SCORER else scorer_for(tag))
     raise SystemExit(
-        f"unknown method '{mname}'. Known: {BASELINE}, "
+        f"unknown method '{mname}'. Known: {BASELINE}, centralized, per_stream, "
+        "temporal_weighted, blind, "
         "frame_select[_<scorer>]_optu, clip_select[_<scorer>|_viclip]_optu, "
         "query_search[_<scorer>], segment_select[_<scorer>|_viclip][_opt], "
         f"with <scorer> in {sorted(SCORER_ALIASES)}.")
@@ -262,7 +280,31 @@ def make_method(mname, kind, scorer, backend, args):
     common = dict(nframes=args.nframes, max_new_tokens=args.max_new_tokens,
                   temperature=args.temperature, reasoning=not args.no_reasoning)
     if kind == "baseline":
-        method = CVBenchNativeMethod(backend, **common)     # --budget does not apply
+        method = CVBenchNativeMethod(backend, total_frames=args.total_frames,
+                                     **common)              # --budget does not apply
+        want = {"total_frames": args.total_frames}
+    elif kind == "centralized":
+        method = CentralizedMethod(backend, cell_px=CELL_PX,
+                                   montage_kind=args.montage_kind,
+                                   total_frames=args.total_frames, **common)
+        want = {"cell_px": CELL_PX, "montage_kind": args.montage_kind,
+                "total_frames": args.total_frames}
+    elif kind == "per_stream":
+        method = PerStreamMethod(
+            backend, perception_max_new_tokens=args.perception_max_new_tokens,
+            stream_kind=args.stream_kind, total_frames=args.total_frames,
+            **common)
+        want = {"perception_max_new_tokens": args.perception_max_new_tokens,
+                "stream_kind": args.stream_kind,
+                "total_frames": args.total_frames}
+    elif kind == "temporal_weighted":
+        method = TemporalWeightedMethod(backend, budget=args.budget,
+                                        floor=TEMPORAL_FLOOR,
+                                        weighting=args.weighting, **common)
+        want = {"budget": args.budget, "floor": TEMPORAL_FLOOR,
+                "weighting": args.weighting}
+    elif kind == "blind":
+        method = BlindMethod(backend, **common)
         want = {}
     elif kind == "frame_optu":
         method = OptionUnionFrameSelect(
@@ -321,7 +363,12 @@ def make_method(mname, kind, scorer, backend, args):
             + ".\n  A keyword that does not reach the frame budget means this leg "
               "runs a different experiment from the one it is labelled with and "
               "cannot be pooled. Fix the constructor before launching.")
-    if method.name != mname:
+    # temporal_weighted deliberately renames itself 'temporal_even' under the
+    # even weighting so the two variants never collide on a resume key; every
+    # other arm must record exactly the name it was launched under.
+    renamed_ok = (mname == "temporal_weighted"
+                  and method.name in ("temporal_weighted", "temporal_even"))
+    if method.name != mname and not renamed_ok:
         raise SystemExit(
             f"{mname}: the arm records itself as '{method.name}'. Rows and resume "
             "keys use the recorded name, so the two must agree or a resume "
@@ -369,21 +416,24 @@ def row_key(row):
 
 
 def scan_output(path):
-    """``(key counts, keys whose row carries an error, {knob: values seen})``."""
+    """``(key counts, keys whose row carries an error, {knob: values seen},
+    media_remap values seen — 'unstamped' for rows that predate the stamp)``."""
     counts = Counter()
     errored = set()
     seen = defaultdict(set)
+    remaps = set()
     for row in iter_rows(path):
         key = row_key(row)
         counts[key] += 1
         if row.get("error"):
             errored.add(key)
+        remaps.add(row.get("media_remap", "unstamped"))
         for knob in IDENTITY_KNOBS:
             if knob in row:
                 value = row[knob]
                 seen[knob].add(value if isinstance(value, (str, int, float, bool))
                                or value is None else json.dumps(value, sort_keys=True))
-    return counts, errored, seen
+    return counts, errored, seen, remaps
 
 
 def drop_error_rows(path, keys):
@@ -502,8 +552,16 @@ def preflight_media(data, video_root, need_video, allow_missing):
     different mistakes with the same symptom.
     """
     missing, seen, no_video = [], set(), 0
+    unremuxed = []
     for rec in data:
-        paths = video_paths(rec, video_root)
+        try:
+            paths = video_paths(rec, video_root)
+        except FileNotFoundError as e:
+            # the resolver refuses a bare .avi (decord decodes the wrong frames
+            # out of those containers); a missing sibling must fail here, at
+            # second zero, not after the model load on a GPU node
+            unremuxed.append(str(e).split(":")[0])
+            continue
         if not paths:
             no_video += 1
             continue
@@ -513,6 +571,13 @@ def preflight_media(data, video_root, need_video, allow_missing):
             seen.add(path)
             if not os.path.exists(path):
                 missing.append(path)
+    if unremuxed:
+        raise SystemExit(
+            f"{len(unremuxed)} record(s) name an .avi without a verified .mp4 "
+            "sibling. decord decodes the wrong frames out of a bare .avi, so "
+            "this is deliberately not downgradable by --allow-missing-media: "
+            "run scripts/data/remux_avi.py, then its --check. First: "
+            f"{unremuxed[:3]}")
     if no_video and need_video:
         raise SystemExit(
             f"{no_video} record(s) carry no video_i slot. The selection arms "
@@ -596,8 +661,32 @@ def build_parser():
                          "strict_prompt and is part of the default output name.")
     ap.add_argument("--methods", default=DEFAULT_METHODS,
                     help="comma list; default = the three option-guided arms. "
-                         f"Also accepts {BASELINE}, the sequential baseline the "
-                         "matched budget is matched to.")
+                         f"Also accepts {BASELINE} (the sequential baseline the "
+                         "matched budget is matched to), the classic arms "
+                         "centralized / per_stream / temporal_weighted, and the "
+                         "text-prior floor blind.")
+    ap.add_argument("--total-frames", type=int, default=0,
+                    help="centralized/per_stream/" f"{BASELINE}: hold the TOTAL "
+                         "frame count per question fixed (split evenly across its "
+                         "clips) instead of a flat --nframes per clip; 0 = off")
+    ap.add_argument("--montage-kind", default="camera",
+                    choices=["camera", "video", "view"],
+                    help="centralized montage framing: 'camera' (synced views, "
+                         "default), 'video' (independent clips), or 'view'; the "
+                         "preamble wording and the burned-in cell labels follow it")
+    ap.add_argument("--stream-kind", default="camera",
+                    choices=["camera", "video", "view"],
+                    help="per_stream: label/phrase clips as synced 'camera' views "
+                         "or independent 'video' clips, mirroring --montage-kind")
+    ap.add_argument("--weighting", default="duration",
+                    choices=["duration", "even"],
+                    help="temporal_weighted: split the budget by clip duration "
+                         "('duration') or evenly ('even', the budget-matched "
+                         "control; rows record method=temporal_even)")
+    ap.add_argument("--perception-max-new-tokens", type=int, default=1024,
+                    help="per_stream: token cap for each per-view perception call "
+                         "(1024 truncates thinking backends mid-<think>; raise "
+                         "for those)")
     ap.add_argument("--nframes", type=int, default=8,
                     help="frames per clip for the sequential baseline, and the "
                          "per-clip term of the matched budget (nframes x K)")
@@ -679,7 +768,8 @@ def build_parser():
                          "take error rows for the affected records")
     ap.add_argument("--allow-mixed", action="store_true",
                     help="permit appending to a file whose rows carry a different "
-                         "backend, dataset or run-defining knob (default: refuse — "
+                         "backend, dataset, run-defining knob or media-provenance "
+                         "stamp (default: refuse — "
                          "the resume key cannot tell those rows apart, so the run "
                          "would skip work and label another protocol's data with "
                          "this run's summary)")
@@ -732,8 +822,13 @@ def main():
     if args.budget and BASELINE in kinds:
         print(f"[note] --budget {args.budget} does not apply to {BASELINE}; it "
               f"always shows --nframes {args.nframes} frames per clip.")
+    if "temporal_weighted" in kinds.values() and args.budget == 0:
+        raise SystemExit(
+            "temporal_weighted does not implement the matched --budget 0 "
+            "convention — at 0 it would allocate nothing and answer blind. "
+            "Pass an explicit --budget (the arm's historic value is 64).")
     if "internvl" in args.model.lower() and args.internvl_max_tiles != 1 \
-            and any(k != "baseline" for k in kinds.values()):
+            and any(k in SELECTION_KINDS for k in kinds.values()):
         raise SystemExit(
             f"--internvl-max-tiles {args.internvl_max_tiles} with a selection arm: "
             "selected frames are sent as images, which tile, while the sequential "
@@ -801,6 +896,11 @@ def main():
         "frames_per_segment": FRAMES_PER_SEGMENT,
         "dedup_tau": args.dedup_tau,
         "seg_pool": args.seg_pool,
+        "total_frames": args.total_frames,
+        "montage_kind": args.montage_kind,
+        "stream_kind": args.stream_kind,
+        "weighting": args.weighting,
+        "perception_max_new_tokens": args.perception_max_new_tokens,
     }
 
     shard_tag = f"_shard{args.offset}" if args.chunk > 1 else ""
@@ -813,7 +913,7 @@ def main():
               "concurrent appends interleave and tear each other's lines.")
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
 
-    counts, errored, prior = scan_output(out)
+    counts, errored, prior, prior_remaps = scan_output(out)
     dup = describe_duplicates(counts)
     if dup:
         raise SystemExit(
@@ -842,18 +942,55 @@ def main():
                   "--allow-mixed if you genuinely intend one mixed file.")
         print("[warn] --allow-mixed: " + detail, flush=True)
 
-    need_video = any(k != "baseline" for k in kinds.values())
-    n_clips, n_missing = preflight_media(data, args.video_root, need_video,
-                                         args.allow_missing_media)
+    # media provenance, checked separately from the identity knobs because it is
+    # per RECORD, not per launch: rows written before the .avi remux carry no
+    # media_remap stamp and decoded the wrong frames, so resume/append must not
+    # pool them with remuxed rows under a reused --out. A new or empty file, or
+    # a non-MEVA file (every stamp None), is always compatible.
+    this_remap = {media_remap(rec) for rec in data} - {None}
+    prior_stamped = prior_remaps - {"unstamped", None}
+    mixed_media = ((this_remap and "unstamped" in prior_remaps)
+                   or (prior_stamped and prior_stamped != this_remap))
+    if mixed_media:
+        detail = (f"{out} holds rows with media_remap "
+                  f"{sorted(str(v) for v in prior_remaps)}; this run would stamp "
+                  f"{sorted(str(v) for v in this_remap) or ['None']}\n"
+                  "  (rows without the stamp predate the MEVA remux and decoded "
+                  "the wrong frames).")
+        if not args.allow_mixed:
+            raise SystemExit(
+                "refusing to append: " + detail
+                + "\n  Give this run a fresh --out, or pass --allow-mixed if you "
+                  "genuinely intend one mixed file.")
+        print("[warn] --allow-mixed: " + detail, flush=True)
 
-    planned = {(dataset, rec.get("id"), mname, model_tag, pi)
+    # temporal_weighted requires video records too (it allocates by clip
+    # duration and refuses stills), so it counts toward the preflight's
+    # no-video-slot refusal alongside the selection kinds
+    need_video = any(k in SELECTION_KINDS or k == "temporal_weighted"
+                     for k in kinds.values())
+    if all(k == "blind" for k in kinds.values()):
+        n_clips, n_missing = 0, 0       # text-only: nothing to resolve
+    else:
+        n_clips, n_missing = preflight_media(data, args.video_root, need_video,
+                                             args.allow_missing_media)
+
+    # What each launched name will RECORD on its rows: temporal_weighted under
+    # the even weighting writes method='temporal_even' (make_method allows the
+    # rename), and every name-keyed consumer below — the retry set and the
+    # health filter — must use the recorded name or that leg's rows are
+    # invisible to it.
+    recorded = {m: ("temporal_even"
+                    if kinds[m] == "temporal_weighted" and args.weighting == "even"
+                    else m) for m in methods}
+    planned = {(dataset, rec.get("id"), recorded[mname], model_tag, pi)
                for mname in methods for rec in data
                for pi in range(1, len(seeds) + 1)}
     if args.retry_errors:
         dropped = drop_error_rows(out, errored & planned)
         print(f"--retry-errors: removed {dropped} error row(s) from {out}; they "
               "will be re-run and replaced.", flush=True)
-        counts, errored, _ = scan_output(out)
+        counts, errored, _, _ = scan_output(out)
     done = set(counts)      # a row is done whether or not it carries an error
 
     # The summary is the completion signal, so a stale one from an earlier run of
@@ -870,10 +1007,13 @@ def main():
     print(f"nframes={args.nframes} budget={shown_budget} sel_tau={args.sel_tau} "
           f"sel_tau_q={args.sel_tau_q} n_queries={args.n_queries} "
           f"internvl_max_tiles={args.internvl_max_tiles}")
+    print(f"total_frames={args.total_frames} montage_kind={args.montage_kind} "
+          f"stream_kind={args.stream_kind} weighting={args.weighting}")
     print(f"segments_keep={args.segments_keep} seg_pool={args.seg_pool} "
           f"dedup_tau={args.dedup_tau}")
     print(f"reasoning={int(reasoning)} strict_prompt={int(strict_prompt)} "
-          f"dataset={dataset} run_id={run_id} node={node}")
+          f"dataset={dataset} run_id={run_id} node={node} "
+          f"allow_avi={int(qa_json.ALLOW_AVI)}")
     print(f"video_root={args.video_root}\nout={out} (rows already present: "
           f"{len(done)}, of them errors: {len(errored)})", flush=True)
 
@@ -922,6 +1062,12 @@ def main():
                         "record would be retried on every resume forever.")
                 res.pass_idx = pass_idx
                 row = res.to_dict()
+                # .avi records decode from their remuxed .mp4 sibling
+                # (qa_json.resolve_media); stamp the provenance so rows from
+                # before the remux (wrapped frames) never pool with these.
+                # Blind rows stamp None: the arm never reads media.
+                row["media_remap"] = (None if kind == "blind"
+                                      else media_remap(rec))
                 row.update(stamp)
                 # flushed per row: a job killed at the wall clock keeps every
                 # question it has already paid for
@@ -946,7 +1092,7 @@ def main():
                   default=jsonable)
     # Health is reported for THIS leg's rows, not for whatever else a mixed file
     # may hold: a leg is only poolable at its full row count with no error rows.
-    mine = [r for r in rows if r.get("method") in methods
+    mine = [r for r in rows if r.get("method") in set(recorded.values())
             and all(r.get(k, knobs[k]) == knobs[k] for k in IDENTITY_KNOBS)]
     expected = len(data) * len(methods) * len(seeds)
     errors = sum(1 for r in mine if r.get("error"))

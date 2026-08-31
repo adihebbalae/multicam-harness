@@ -1,4 +1,4 @@
-# Ported from Wavy-Hec/CVBench Video-R1/src/eval_thinking.py @ 7b9089009cda4badf580f4fc80960a1a3295e972
+# Ported from Wavy-Hec/CVBench Video-R1/src/eval_thinking.py @ 4d8f5b2605e45d0860454886708fa8ff06e61840
 # Ported from Wavy-Hec/CVBench bench/reuse.py @ 619af02e8e65762f725bccff302b2fd3de379d36
 """QA-record loading/prompting helpers shared by every harness.
 
@@ -65,12 +65,54 @@ def num_videos(rec):
     return sum(1 for i in range(1, MAX_SLOTS + 1) if rec.get(f"video_{i}"))
 
 
+# decord returns the wrong frame on random access into the MEVA release AVIs:
+# the packets carry no pts, so every seek lands on keyframe 0 and
+# decodes forward — vr[i] is sequential frame (i mod 60) on the release's
+# 60-frame keyframe grid. Only the first ~2 s of every 5-minute clip was ever
+# decoded, on every sighted arm. Every reader in the harness random-accesses
+# (models/clients.py, the selection arms, qwen_vl_utils with decord
+# installed), so an .avi must never reach a decoder. scripts/data/remux_avi.py
+# writes a verified .mp4 sibling (sequential decode identical; random access
+# within the H.264 reorder depth, <= 3 frames); a record naming an .avi
+# resolves to it. The refusal is deliberate: a missing remux must fail on the
+# first record, not silently score a 2-second-blind run. CVBENCH_ALLOW_AVI=1
+# bypasses it for diagnostics only (reproducing the defect).
+ALLOW_AVI = os.environ.get("CVBENCH_ALLOW_AVI", "0") == "1"
+
+
+def resolve_media(path):
+    if ALLOW_AVI or not path.lower().endswith(".avi"):
+        return path
+    mp4 = path[:-4] + ".mp4"
+    if os.path.exists(mp4):
+        return mp4
+    raise FileNotFoundError(
+        f"{path}: refusing to decode an .avi — decord returns wrong frames on "
+        "random access into these containers (see scripts/data/remux_avi.py). "
+        "Create the verified .mp4 sibling first:\n"
+        "  conda run -n cvbench python scripts/data/remux_avi.py\n"
+        "or set CVBENCH_ALLOW_AVI=1 to reproduce the bug deliberately.")
+
+
+def media_remap(rec):
+    """Media provenance of the RECORD (not of what an arm chose to decode):
+    'avi->mp4' when any clip is named .avi (video_paths resolves it to the
+    remuxed sibling), 'avi-raw' under CVBENCH_ALLOW_AVI, else None. Stamped
+    on result rows so runs before and after the remux never pool; rows
+    without the key predate the remux."""
+    has_avi = any((rec.get(f"video_{i}") or "").lower().endswith(".avi")
+                  for i in range(1, MAX_SLOTS + 1))
+    if not has_avi:
+        return None
+    return "avi-raw" if ALLOW_AVI else "avi->mp4"
+
+
 def video_paths(rec, video_root):
     out = []
     for i in range(1, MAX_SLOTS + 1):
         v = rec.get(f"video_{i}")
         if v:
-            out.append(os.path.normpath(os.path.join(video_root, v)))
+            out.append(resolve_media(os.path.normpath(os.path.join(video_root, v))))
     return out
 
 

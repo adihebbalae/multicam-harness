@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-# Ported from Wavy-Hec/CVBench analysis/convert_crossview.py @ 480d6f41cddddc7efea9a09b79134811740ba17a
+# Ported from Wavy-Hec/CVBench analysis/convert_crossview.py @ 4d8f5b2605e45d0860454886708fa8ff06e61840
+# Not ported from 4d8f5b2: the fork's later reworking of this script beyond the
+# MEVA extension default — the MAX_SLOTS-wide slot layout, the local-file require
+# loop, the --max-cameras bounds check, and its argparse ordering. This file
+# reproduces 4d8f5b2 only for the extension default ported in this sync.
 """Convert UT Austin CrossView (Multi-Camera VQA) annotations into the CVBench
 record schema so the existing eval harness can benchmark them side-by-side.
 
@@ -21,7 +25,7 @@ Outputs (under data/subsets/ by default):
   crossview_qa.json            - full converted pool
   crossview_subset.json        - balanced Stage-A subset (CVBench schema)
   crossview_subset_videos.txt  - deduped <=4 video paths referenced by the subset
-  crossview_subset_fetch.json  - [{"video_paths":[...]}] for hosting/fetch_videos.py
+  crossview_subset_fetch.json  - [{"video_paths":[...]}] for scripts/data/fetch_meva_videos.py
 
 Run (no GPU, no videos needed), from the repo root:
   python3 scripts/data/build_crossview.py --n 60
@@ -96,7 +100,7 @@ def cap_cameras_ego(video_paths):
     return (aria + rest)[:4]
 
 
-def convert(sources, meva_ext="mp4", require_local_root=None):
+def convert(sources, meva_ext="avi", require_local_root=None):
     stats = Counter()
     pool = []
     for source, files in SOURCE_FILES.items():
@@ -207,7 +211,7 @@ def cam_bucket(n):
 
 def select(records, n, per_type_cap):
     """Balance within task_type over orig_num_cameras buckets, round-robin across
-    task types (mirrors analysis/select_subset.py but keyed on #cameras buckets)."""
+    task types (mirrors the fork's subset selector but keyed on #cameras buckets)."""
     by_type = defaultdict(list)
     for r in records:
         by_type[r["task_type"]].append(r)
@@ -293,9 +297,11 @@ def main():
                          "MEVA-only run). meva videos are public; ego-exo4d and "
                          "agibot are video-gated (separate licenses); nuscenes is "
                          "not wired (structurally lossy under the <=4 cap).")
-    ap.add_argument("--meva-video-ext", default="mp4", choices=["mp4", "avi"],
-                    help="extension for MEVA video paths; 'avi' matches the public "
-                         "MEVA source so no transcoding is needed (decord reads avi)")
+    ap.add_argument("--meva-video-ext", default="avi", choices=["mp4", "avi"],
+                    help="extension for MEVA video paths; 'avi' (default) matches "
+                         "the public MEVA source on disk — the harness decodes the "
+                         "remuxed .mp4 sibling (scripts/data/remux_avi.py) and stamps "
+                         "media_remap; keep records spelled .avi")
     ap.add_argument("--require-local", default=None, metavar="RELEASE_ROOT",
                     help="drop questions whose videos are not present under this release "
                          "root; use to build a runnable subset from a partial/incremental "

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Ported from Wavy-Hec/CVBench analysis/fetch_meva_videos.py @ 480d6f41cddddc7efea9a09b79134811740ba17a
+# Ported from Wavy-Hec/CVBench analysis/fetch_meva_videos.py @ 4d8f5b2605e45d0860454886708fa8ff06e61840
 """Download the MEVA videos referenced by a CrossView subset into the release root.
 
 MEVA is public (CC-BY-4.0) on the open S3 bucket `mevadata-public-01`, served over
@@ -9,9 +9,11 @@ but the hour sub-dir does not map cleanly from the filename, so for each needed
 date we LIST drops-123-r13/<date>/ and match clips by basename.
 
 The release QA paths are like `videos/meva/mp4_resized/<date>/<hour>/<slot>/<name>.EXT`.
-Source files are `.avi`. If the subset was built with `--meva-video-ext avi`
-(recommended) the .avi is saved directly. If the path ends in `.mp4`, the .avi is
-transcoded with ffmpeg (must be installed).
+Source files are `.avi`, and the converter spells them `.avi` by default: the
+harness decodes the verified `.mp4` sibling that scripts/data/remux_avi.py writes
+next to each one, so run that after fetching. If a subset path ends in `.mp4`
+instead, the .avi is transcoded with ffmpeg (must be installed) — that loses the
+media-provenance stamp, so prefer the `.avi` spelling.
 
 Run (no GPU; needs internet), from the repo root:
   python3 scripts/data/fetch_meva_videos.py --subset data/subsets/crossview_subset.json

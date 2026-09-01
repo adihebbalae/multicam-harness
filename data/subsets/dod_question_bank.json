@@ -1,0 +1,555 @@
+{
+ "note": "DOD-relevant question bank over the MEVA release: real questions per evidence-locality class, chosen deterministically. Classes and rules: scripts/data/label_evidence_class.py (one source of truth).",
+ "themes_supported": [
+  "perimeter / entry-exit monitoring",
+  "vehicle activity",
+  "object transfer / carry",
+  "interaction / communications posture",
+  "activity counting",
+  "cross-camera tracking / timeline reconstruction"
+ ],
+ "themes_not_supported": [
+  "weapons / threat / contraband",
+  "abandoned objects",
+  "loitering / dwell time",
+  "crowd density",
+  "identity (faces, plates, names)",
+  "camera-to-camera geometry (no calibration in release)",
+  "intent / anomaly detection"
+ ],
+ "templates_by_class": {
+  "C1": [
+   "attribute snapshot at a named sensor + time",
+   "presence check for a described subject on one sensor"
+  ],
+  "C2": [
+   "single-sensor activity recognition over a window",
+   "vehicle maneuver sequence on one sensor",
+   "single-camera activity count"
+  ],
+  "C3": [
+   "first-detection sensor for a described subject",
+   "concurrent coverage: which sensors have eyes on the subject at t",
+   "simultaneity check across the network"
+  ],
+  "C4": [
+   "cross-sensor precedence (which event happened first)",
+   "incident timeline reconstruction across sensors",
+   "re-ID handoff: where does the subject reappear, doing what"
+  ],
+  "C5": [
+   "network-wide activity census",
+   "scene characterization across all feeds",
+   "network-wide negative assertion (did ANY sensor record X)"
+  ]
+ },
+ "counts": {
+  "entries": 20
+ },
+ "bank": [
+  {
+   "evidence_class": "C2",
+   "status": "runnable",
+   "question_type": "spatial",
+   "join_key": "spatial#0",
+   "dod_theme": "single-sensor observation",
+   "question": "In the footage, how close does the person in black pants with indigo shoes get to the person wearing a dark indigo top with dark gray pants and dark gray shoes?",
+   "options": {
+    "A": "They approach and stay near each other (within a few meters)",
+    "B": "They stay at a moderate distance (5-15 meters apart)",
+    "C": "They remain far apart (more than 15 meters)",
+    "D": "They walk past each other, swapping positions (cross paths)"
+   },
+   "answer": "A",
+   "slot": "2018-03-05.13-10.school",
+   "requires_cameras": [
+    "G424"
+   ],
+   "activities": [],
+   "harness_ids": {
+    "meva1033": 297
+   }
+  },
+  {
+   "evidence_class": "C2",
+   "status": "runnable",
+   "question_type": "spatial",
+   "join_key": "spatial#1",
+   "dod_theme": "single-sensor observation",
+   "question": "In the footage, how close do the black-haired person in a navy top and black pants (wearing a hat and carrying a bag) and the black-haired person dressed all in black (also wearing a hat and carrying a bag) get to each other?",
+   "options": {
+    "A": "They approach and stay near each other (within a few meters)",
+    "B": "They stay at a moderate distance (5-15 meters apart)",
+    "C": "They remain far apart (more than 15 meters)",
+    "D": "They walk past each other, swapping positions (cross paths)"
+   },
+   "answer": "A",
+   "slot": "2018-03-05.13-15.bus",
+   "requires_cameras": [
+    "G340"
+   ],
+   "activities": [],
+   "harness_ids": {
+    "meva1033": 298
+   }
+  },
+  {
+   "evidence_class": "C2",
+   "status": "runnable",
+   "question_type": "spatial",
+   "join_key": "spatial#2",
+   "dod_theme": "single-sensor observation",
+   "question": "In the footage, how close do the black-haired person dressed all in black with a hat and a bag get to the black-haired person in a blue top, black pants, and black shoes who is also carrying a bag?",
+   "options": {
+    "A": "They approach and stay near each other (within a few meters)",
+    "B": "They stay at a moderate distance (5-15 meters apart)",
+    "C": "They remain far apart (more than 15 meters)",
+    "D": "They walk past each other, swapping positions (cross paths)"
+   },
+   "answer": "A",
+   "slot": "2018-03-05.13-15.bus",
+   "requires_cameras": [
+    "G340"
+   ],
+   "activities": [],
+   "harness_ids": {
+    "meva1033": 299
+   }
+  },
+  {
+   "evidence_class": "C2",
+   "status": "needs_conversion",
+   "question_type": "counting",
+   "join_key": "counting#12",
+   "dod_theme": "interaction / communications posture",
+   "question": "Across all camera views in this time window, how many separate instances are there of someone talking to another person?",
+   "answer": "2",
+   "slot": "2018-03-05.14-10.bus",
+   "requires_cameras": [
+    "G506"
+   ],
+   "activities": [
+    "person_talks_to_person"
+   ],
+   "note": "single-camera counting under the positive-evidence reading; open-numeric today"
+  },
+  {
+   "evidence_class": "C4",
+   "status": "runnable",
+   "question_type": "temporal",
+   "join_key": "temporal#0",
+   "dod_theme": "perimeter / entry-exit monitoring",
+   "question": "Which happened first: the person with indigo hair wearing an olive top, dark indigo pants, indigo shoes, and a hat leaving through a structure, or the black-haired person in a patterned green top, navy pants, indigo shoes, and a hat talking on the phone?",
+   "options": {
+    "A": "The person with indigo hair, wearing an olive top and dark indigo pants, indigo shoes, with a hat, exiting a scene through a structure occurred first",
+    "B": "The person with black hair, wearing a patterned green top and navy pants, indigo shoes, with a hat, talking on a phone occurred first",
+    "C": "They occurred simultaneously",
+    "D": "Cannot be determined"
+   },
+   "answer": "A",
+   "slot": "2018-03-05.13-10.school",
+   "requires_cameras": [
+    "G300",
+    "G419"
+   ],
+   "activities": [
+    "person_exits_scene_through_structure",
+    "person_talks_on_phone"
+   ],
+   "harness_ids": {
+    "meva1033": 728
+   }
+  },
+  {
+   "evidence_class": "C4",
+   "status": "runnable",
+   "question_type": "temporal",
+   "join_key": "temporal#1",
+   "dod_theme": "perimeter / entry-exit monitoring",
+   "question": "Which happened first: the black-haired person in a dark green top with indigo pants and indigo shoes, wearing a scarf, walking in through a structure, or someone opening a facility door?",
+   "options": {
+    "A": "The person with black hair, wearing a dark green top and indigo pants, indigo shoes, with a scarf, entering a scene through a structure occurred first",
+    "B": "The person opening a facility door occurred first",
+    "C": "They occurred simultaneously",
+    "D": "Cannot be determined"
+   },
+   "answer": "B",
+   "slot": "2018-03-05.13-10.school",
+   "requires_cameras": [
+    "G300",
+    "G420"
+   ],
+   "activities": [
+    "person_opens_facility_door",
+    "person_enters_scene_through_structure"
+   ],
+   "harness_ids": {
+    "meva1033": 729
+   }
+  },
+  {
+   "evidence_class": "C4",
+   "status": "runnable",
+   "question_type": "temporal",
+   "join_key": "temporal#2",
+   "dod_theme": "vehicle activity",
+   "question": "Between these two moments, which happened first: the person in a blue top and blue pants closing a trunk, or the black-haired person dressed in black with black shoes, wearing a hat and carrying a bag, sitting down?",
+   "options": {
+    "A": "The person, wearing a blue top and blue pants, closing a trunk occurred first",
+    "B": "The person with black hair, wearing a black top and black pants, black shoes, with a hat, carrying a bag, sitting down occurred first",
+    "C": "They occurred simultaneously",
+    "D": "Cannot be determined"
+   },
+   "answer": "A",
+   "slot": "2018-03-05.13-15.bus",
+   "requires_cameras": [
+    "G331",
+    "G506"
+   ],
+   "activities": [
+    "person_closes_trunk",
+    "person_sits_down"
+   ],
+   "harness_ids": {
+    "meva1033": 730
+   }
+  },
+  {
+   "evidence_class": "C4",
+   "status": "runnable",
+   "question_type": "event_ordering",
+   "join_key": "event_ordering#0",
+   "dod_theme": "timeline reconstruction",
+   "question": "Put the following moments in the order they happened: I. A vehicle makes a right turn II. A black-haired person in a black top, navy pants, and navy shoes—wearing a hat and carrying a bag—walks into view through a doorway III. A navy-haired person in a navy top and black pants—wearing a hat and scarf and carrying a bag—sets an object down IV. A blue-haired person in a navy top and black pants with black shoes—wearing a scarf and carrying a bag—picks an object up Which sequence is correct?",
+   "options": {
+    "A": "III -> I -> II -> IV",
+    "B": "IV -> I -> II -> III",
+    "C": "IV -> II -> I -> III",
+    "D": "II -> IV -> I -> III"
+   },
+   "answer": "C",
+   "slot": "2018-03-05.13-10.bus",
+   "requires_cameras": [
+    "G331",
+    "G340"
+   ],
+   "activities": [
+    "person_picks_up_object",
+    "person_enters_scene_through_structure",
+    "vehicle_turns_right",
+    "person_puts_down_object"
+   ],
+   "harness_ids": {
+    "meva1033": 0
+   }
+  },
+  {
+   "evidence_class": "C4",
+   "status": "runnable",
+   "question_type": "event_ordering",
+   "join_key": "event_ordering#1",
+   "dod_theme": "timeline reconstruction",
+   "question": "Put these four moments in the order they happened: I. A black-haired person in a dark green top, indigo pants, and indigo shoes, wearing a scarf, walks into view through a doorway II. A vehicle begins moving III. A black-haired person in an olive top, black pants, and navy shoes, wearing a hat, is texting on a phone IV. A vehicle reverses Which sequence is correct?",
+   "options": {
+    "A": "II -> IV -> I -> III",
+    "B": "III -> IV -> I -> II",
+    "C": "III -> I -> IV -> II",
+    "D": "I -> III -> IV -> II"
+   },
+   "answer": "C",
+   "slot": "2018-03-05.13-10.school",
+   "requires_cameras": [
+    "G300",
+    "G328",
+    "G420",
+    "G424"
+   ],
+   "activities": [
+    "person_texts_on_phone",
+    "person_enters_scene_through_structure",
+    "vehicle_reverses",
+    "vehicle_starts"
+   ],
+   "harness_ids": {
+    "meva1033": 1
+   }
+  },
+  {
+   "evidence_class": "C4",
+   "status": "runnable",
+   "question_type": "event_ordering",
+   "join_key": "event_ordering#2",
+   "dod_theme": "timeline reconstruction",
+   "question": "Put the following observed moments in the order they happened: I. A person in a navy top and navy pants hands an object to someone II. A black-haired person in a navy top, black pants, and black shoes, carrying a bag, hands an object to someone III. A black-haired person wearing a hat, dressed in a black top and black pants with navy shoes, carrying a bag, talks on the phone IV. A vehicle picks up an object Which sequence is correct?",
+   "options": {
+    "A": "II -> IV -> I -> III",
+    "B": "III -> IV -> I -> II",
+    "C": "III -> I -> IV -> II",
+    "D": "I -> III -> IV -> II"
+   },
+   "answer": "C",
+   "slot": "2018-03-05.13-15.bus",
+   "requires_cameras": [
+    "G331",
+    "G340",
+    "G506"
+   ],
+   "activities": [
+    "person_talks_on_phone",
+    "person_transfers_object",
+    "person_picks_up_object",
+    "person_transfers_object"
+   ],
+   "harness_ids": {
+    "meva1033": 2
+   }
+  },
+  {
+   "evidence_class": "C3-adjacent",
+   "status": "seed",
+   "question_type": "temporal",
+   "join_key": "temporal#21",
+   "dod_theme": "concurrent cross-sensor coverage",
+   "question": "Between these two moments, which happened first: the person with charcoal hair in a charcoal top and navy pants, wearing dark gray shoes and a hat, making a purchase, or the person with blue hair in a blue top and navy pants, wearing black shoes and a scarf, getting into a vehicle?",
+   "options": {
+    "A": "The person with charcoal hair, wearing a charcoal top and navy pants, dark gray shoes, with a hat, purchasing occurred first",
+    "B": "The person with blue hair, wearing a blue top and navy pants, black shoes, with a scarf, entering a vehicle occurred first",
+    "C": "They occurred simultaneously",
+    "D": "Cannot be determined"
+   },
+   "answer": "A",
+   "slot": "2018-03-07.11-00.school",
+   "requires_cameras": [
+    "G421",
+    "G424"
+   ],
+   "activities": [
+    "person_purchases",
+    "person_enters_vehicle"
+   ],
+   "note": "events 1.0s apart with a 'simultaneously' option — the nearest thing to a same-moment cross-camera question in the release",
+   "harness_ids": {
+    "meva1033": 749
+   }
+  },
+  {
+   "evidence_class": "C3-adjacent",
+   "status": "seed",
+   "question_type": "temporal",
+   "join_key": "temporal#85",
+   "dod_theme": "concurrent cross-sensor coverage",
+   "question": "Between these two moments, which happened first: a person with teal hair in a navy top and dark teal pants talking to someone, or a vehicle coming to a stop?",
+   "options": {
+    "A": "The person with teal hair, wearing a navy top and dark teal pants, talking to a person occurred first",
+    "B": "The vehicle stopping occurred first",
+    "C": "They occurred simultaneously",
+    "D": "Cannot be determined"
+   },
+   "answer": "A",
+   "slot": "2018-03-09.10-10.school",
+   "requires_cameras": [
+    "G339",
+    "G639"
+   ],
+   "activities": [
+    "person_talks_to_person",
+    "vehicle_stops"
+   ],
+   "note": "events 1.0s apart with a 'simultaneously' option — the nearest thing to a same-moment cross-camera question in the release",
+   "harness_ids": {
+    "meva1033": 813
+   }
+  },
+  {
+   "evidence_class": "C3-adjacent",
+   "status": "seed",
+   "question_type": "temporal",
+   "join_key": "temporal#103",
+   "dod_theme": "concurrent cross-sensor coverage",
+   "question": "Between these two moments, which happened first: a person in a navy top and black pants with black shoes, carrying a bag, closing a vehicle door, or a person with indigo hair in an indigo top and blue pants with navy shoes and a scarf getting into a vehicle?",
+   "options": {
+    "A": "The person, wearing a navy top and black pants, black shoes, carrying a bag, closing a vehicle door occurred first",
+    "B": "The person with indigo hair, wearing an indigo top and blue pants, navy shoes, with a scarf, entering a vehicle occurred first",
+    "C": "They occurred simultaneously",
+    "D": "Cannot be determined"
+   },
+   "answer": "A",
+   "slot": "2018-03-11.11-15.school",
+   "requires_cameras": [
+    "G328",
+    "G424"
+   ],
+   "activities": [
+    "person_closes_vehicle_door",
+    "person_enters_vehicle"
+   ],
+   "note": "events 1.0s apart with a 'simultaneously' option — the nearest thing to a same-moment cross-camera question in the release",
+   "harness_ids": {
+    "meva1033": 831
+   }
+  },
+  {
+   "evidence_class": "AMBIGUOUS(C1|C5)",
+   "status": "pending_ruling",
+   "question_type": "camera",
+   "join_key": "camera#0",
+   "dod_theme": "perimeter / entry-exit monitoring",
+   "question": "Which camera shows the first appearance of a black-haired person wearing a dark plum top, a dark crimson skirt, and pink shoes as they enter the scene?",
+   "options": {
+    "A": "Camera G424",
+    "B": "Camera G419",
+    "C": "Camera G423",
+    "D": "Camera G336"
+   },
+   "answer": "D",
+   "slot": "2018-03-05.13-10.school",
+   "requires_cameras": [
+    "G336",
+    "G300",
+    "G328",
+    "G339",
+    "G419",
+    "G420",
+    "G421",
+    "G423",
+    "G424"
+   ],
+   "activities": [
+    "person_enters_scene_through_structure"
+   ],
+   "note": "positive evidence = one entrance moment in one camera (C1); verification scans all feeds (C5); options name physical camera IDs — the harness relabel fix is prerequisite"
+  },
+  {
+   "evidence_class": "AMBIGUOUS(C1|C5)",
+   "status": "pending_ruling",
+   "question_type": "camera",
+   "join_key": "camera#1",
+   "dod_theme": "perimeter / entry-exit monitoring",
+   "question": "Which camera shows the first appearance of a black-haired person wearing a dark green top, indigo pants, indigo shoes, and a scarf as they enter the scene?",
+   "options": {
+    "A": "Camera G300",
+    "B": "Camera G423",
+    "C": "Camera G421",
+    "D": "Camera G419"
+   },
+   "answer": "A",
+   "slot": "2018-03-05.13-10.school",
+   "requires_cameras": [
+    "G300",
+    "G328",
+    "G336",
+    "G339",
+    "G419",
+    "G420",
+    "G421",
+    "G423",
+    "G424"
+   ],
+   "activities": [
+    "person_enters_scene_through_structure"
+   ],
+   "note": "positive evidence = one entrance moment in one camera (C1); verification scans all feeds (C5); options name physical camera IDs — the harness relabel fix is prerequisite"
+  },
+  {
+   "evidence_class": "AMBIGUOUS(C1|C5)",
+   "status": "pending_ruling",
+   "question_type": "camera",
+   "join_key": "camera#2",
+   "dod_theme": "perimeter / entry-exit monitoring",
+   "question": "Which camera shows the first appearance of a person wearing a pink top and a dark plum dress, black shoes, and a scarf, carrying a bag as they enter the scene?",
+   "options": {
+    "A": "Camera G421",
+    "B": "Camera G419",
+    "C": "Camera G336",
+    "D": "Camera G328"
+   },
+   "answer": "C",
+   "slot": "2018-03-05.13-10.school",
+   "requires_cameras": [
+    "G336",
+    "G300",
+    "G328",
+    "G339",
+    "G419",
+    "G420",
+    "G421",
+    "G423",
+    "G424"
+   ],
+   "activities": [
+    "person_enters_scene_through_structure"
+   ],
+   "note": "positive evidence = one entrance moment in one camera (C1); verification scans all feeds (C5); options name physical camera IDs — the harness relabel fix is prerequisite"
+  },
+  {
+   "evidence_class": "C5",
+   "status": "needs_conversion",
+   "question_type": "counting",
+   "join_key": "counting#0",
+   "dod_theme": "network-wide activity census",
+   "question": "Across all camera views in this time window, how many separate instances are there of someone talking to another person?",
+   "answer": "3",
+   "slot": "2018-03-05.13-10.bus",
+   "requires_cameras": [
+    "G331",
+    "G340"
+   ],
+   "activities": [
+    "person_talks_to_person"
+   ]
+  },
+  {
+   "evidence_class": "C5",
+   "status": "needs_conversion",
+   "question_type": "counting",
+   "join_key": "counting#1",
+   "dod_theme": "network-wide activity census",
+   "question": "Across all camera feeds in this time window, how many times does a person exit the camera’s view through a doorway?",
+   "answer": "2",
+   "slot": "2018-03-05.13-10.hospital",
+   "requires_cameras": [
+    "G341",
+    "G436"
+   ],
+   "activities": [
+    "person_exits_scene_through_structure"
+   ]
+  },
+  {
+   "evidence_class": "C5",
+   "status": "needs_conversion",
+   "question_type": "counting",
+   "join_key": "counting#2",
+   "dod_theme": "network-wide activity census",
+   "question": "Across all camera views in this time window, how many times do you see a person come to a stop?",
+   "answer": "3",
+   "slot": "2018-03-05.13-10.school",
+   "requires_cameras": [
+    "G328",
+    "G336",
+    "G339",
+    "G421",
+    "G424"
+   ],
+   "activities": [
+    "vehicle_stops"
+   ]
+  },
+  {
+   "evidence_class": "C5",
+   "status": "needs_conversion",
+   "question_type": "summarization",
+   "join_key": "summarization#0",
+   "dod_theme": "scene characterization / pattern of life",
+   "question": "Across both of the 2 camera feeds in this time slot, which option most accurately summarizes the overall scene?",
+   "answer": "A pedestrian-dominant scene across 2 cameras, primarily featuring sitting down",
+   "slot": "2018-03-05.13-10.bus",
+   "requires_cameras": [
+    "G331",
+    "G340"
+   ],
+   "activities": [],
+   "note": "free-text today; MCQ via scene_type/top_activity distractor swap"
+  }
+ ]
+}

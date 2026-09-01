@@ -176,6 +176,18 @@ carrying no guidance is worse than a crashed leg.
   question, so a multi-pass standard deviation isolates the answer stage rather
   than re-rolling the selection.
 
+## Evidence classes, the question bank and the bounds protocol
+
+Every MEVA question in `data/subsets/crossview_meva1033_subset.json` carries an
+evidence-locality class — where the answer's evidence lives: one timestamp or a
+window, on one camera, several, or all — assigned mechanically from the release
+metadata by `scripts/data/label_evidence_class.py` and stored in
+`data/subsets/meva_evidence_labels.json`. `python -m evaluation.evidence_class_split
+results/<leg>*.jsonl` splits any leg's rows by class against per-class floors.
+The class definitions, the curated question bank and the lower/upper-bound
+protocol are written up in `docs/evidence_taxonomy.md`,
+`docs/dod_question_bank.md` and `docs/bounds_meva_internvl3.md`.
+
 ## Provenance
 
 Ported from the CVBench evaluation fork; each module carries a header naming the

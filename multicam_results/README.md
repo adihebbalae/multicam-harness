@@ -1,6 +1,6 @@
 # MultiCam benchmark results
 
-Per-question result rows from the `Wavy-Hec/MultiCam` harness, one merged JSONL per leg file group, exported at commit `bb372e450a25fc1b0e5aca6df8234768dc8e7abb`.
+Per-question result rows from the `Wavy-Hec/MultiCam` harness, one merged JSONL per leg file group, exported at commit `8b8a04b3f716216fd0772a158ee35d3457591370`.
 
 A row is one question x method x backend x sampling pass. **Key on `(dataset, id)`** — `id` restarts at 0 in every subset. The question records live in `data/subsets/<dataset>.json`.
 
@@ -165,7 +165,7 @@ df.groupby(['method', 'backend']).video_tokens.mean()               # the budget
 | `crossview_meva_cap13_cvbench_mp4t1q25` | CrossView-MEVA | Qwen2.5-VL-7B-Instruct | centralized | 8 frames/video | 1033/1033 | 4132 | 47.99 | yes |
 | `crossview_meva_cap13_cvbench_mp4t1q25` | CrossView-MEVA | Qwen2.5-VL-7B-Instruct | cvbench_native | 8 frames/video | 1033/1033 | 4132 | 41.36 | yes |
 | `crossview_meva_cap13_cvbench_mp4t1q25` | CrossView-MEVA | Qwen2.5-VL-7B-Instruct | per_stream | 8 frames/video | 1033/1033 | 4132 | 24.95 | yes |
-| `crossview_meva1033_subset_internvl_mp4bd` | CrossView-MEVA | InternVL3-8B | blind | no images | 515/1033 | 2055 | 36.89 | NO |
+| `crossview_meva1033_subset_internvl_mp4bd` | CrossView-MEVA | InternVL3-8B | blind | no images | 1033/1033 | 4132 | 34.75 | yes |
 | `crossview_meva1033_subset_internvl_mp4sv8` | CrossView-MEVA | InternVL3-8B | single_view1 | 8 frames/view, single view | 1033/1033 | 4132 | 37.73 | yes |
 | `crossview_meva1033_subset_internvl_mp4sv8` | CrossView-MEVA | InternVL3-8B | single_view2 | 8 frames/view, single view | 1033/1033 | 4132 | 35.67 | yes |
 | `crossview_meva1033_subset_internvl_mp4sv8` | CrossView-MEVA | InternVL3-8B | single_view3 | 8 frames/view, single view | 958/958 | 3832 | 31.73 | yes |
@@ -200,12 +200,12 @@ The MEVA release ships `.avi` containers whose packets carry no timestamps; rand
 
 ## Subsets
 
-- `data/subsets/allangles_egohumans_qa.json`: copied
-- `data/subsets/allangles_qa.json`: copied
-- `data/subsets/crossview_egoexo500.json`: copied
+- `data/subsets/allangles_egohumans_qa.json`: present, identical
+- `data/subsets/allangles_qa.json`: present, identical
+- `data/subsets/crossview_egoexo500.json`: present, identical
 - `data/subsets/crossview_meva1033_subset.json`: present, identical
-- `data/subsets/crossview_meva_cap13.json`: copied
-- `data/subsets/mvueval_noview_subset.json`: copied
+- `data/subsets/crossview_meva_cap13.json`: present, identical
+- `data/subsets/mvueval_noview_subset.json`: present, identical
 - `data/subsets/mvueval_qa.json`: present, identical
 
 ## Regenerating

@@ -2,7 +2,9 @@
      bench/; this repo's arms are prompt-equivalence-gated against it), media-valid
      rows only (MEVA decoded through the remuxed containers, media_remap stamped), split
      by evaluation/evidence_class_split.py against data/subsets/meva_evidence_labels.json.
-     Written 2026-08-31. -->
+     Written 2026-08-31.
+     Revised 2026-09-03: blind leg complete on the full pool; per-letter
+     recall added; budget, prompt and parity claims qualified. -->
 # Empirical performance bounds — MEVA (meva1033 pool), InternVL3-8B
 
 One dataset, one model. Three questions: what is the lowest score a sighted arm
@@ -24,10 +26,14 @@ with an optimal view.
 - **Model** — InternVL3-8B, one tile per frame (256 visual tokens per frame),
   direct-answer prompt (no reasoning trace), temperature 0.1, 4 passes with
   seeds 1–4. Cells are mean ± std over passes; n is the number of questions.
-- **Budget** — "N frames total" is split evenly across a question's views
-  (8 / 16 / 24 frames per view at K = 4 for the 32 / 64 / 96 legs), and
-  `video_tokens` = 256 × N on every row, so token parity holds across arms
-  within a budget.
+- **Budget** — "N frames total" is split evenly across a question's views.
+  That holds exactly for the 955 four-view questions (8 / 16 / 24 frames per
+  view at K = 4 for the 32 / 64 / 96 legs, `video_tokens` = 256 × N). The
+  32-total sequential leg instead gives the 75 two-view questions 16 frames
+  per view and the 3 three-view questions 11/11/10, and the segment-selection
+  legs give two-view questions a fixed 64 frames at the 96-total budget (300
+  of 4,132 rows) — so token parity across arms within a budget is exact on
+  the four-view majority and approximate elsewhere.
 
 ## 2. Lower bounds — what a text-only guesser scores
 
@@ -36,21 +42,23 @@ with an optimal view.
 | chance (uniform over the four options) | 25.00 | 25.00 | 25.00 | computed |
 | pool modal letter (always the most common gold letter) | 36.21 | | | computed |
 | task-conditioned modal letter, leave-one-out | **54.70** | **48.03** | **59.47** | computed — the floor arms are held to |
-| blind arm (the full prompt with zero pixels — the model's own text prior) | 36.94 ± 1.49 | 45.25 ± 1.40 | 30.89 ± 1.82 | PARTIAL — 513 of 1,033 questions complete (job hit its time limit; resumed); reasoning-on prompt, T = 0.7, see section 4 |
+| blind arm (the full prompt with zero pixels — the model's own text prior) | 34.75 ± 0.89 | 45.36 ± 1.04 | 27.16 ± 1.05 | complete — 4 passes; reasoning-on prompt, T = 0.7, see section 4 |
 
 The leave-one-out floor answers each question with the most common gold letter
 among the *other* questions of its task type. It is the honest text-only bar:
 the in-sample version overfits (it has seen the question's own letter), and the
 pool-wide modal letter ignores a per-task prior a model can plausibly pick up.
-The blind arm will show whether this model actually exploits that prior — below
-54.70 it does not; above it the question text carries more than the letter
-prior.
+At 34.75, the blind arm sits about 20 points under the 54.70 floor, so this
+model does not exploit the per-task letter prior. By class it is near the C2
+floor (45.36 vs 48.03 — spatial questions have gold A on 48% of items, and
+the model's text prior leans A) and near chance on C4 (27.16).
 
 ## 3. Measured all-view arms — the systems being bounded
 
-Every media-valid leg on the pool, split by class. Selection arms keep the
-prompt byte-identical to the sequential baseline and differ only in which
-frames they pass.
+Every media-valid leg on the pool, split by class. The question scaffold is
+identical across arms; segment selection prepends its own arm preamble and a
+per-clip banner, so prompts match in the question text but are not identical
+end-to-end.
 
 | Arm | Budget | C2 (n=431) | C4 (n=602) | Overall |
 |---|---|---|---|---:|
@@ -68,16 +76,40 @@ What the table says:
 
 - **No arm clears the floor** — overall (best 49.10 vs 54.70) or within either
   class (C2 best 44.72 vs 48.03; C4 best 53.16 vs 59.47).
-- **Segment selection's gain is a C2 phenomenon.** Sequential → segment
-  selection at 96 total moves C2 from 35.32 to 44.72 and C4 only from 49.96 to
-  52.24. Picking the right window on one camera is where the pixels start to
-  pay; the cross-camera questions barely move.
+
+**The C2 movement is letter-prior collapse, not perception.** Per-letter
+recall by leg:
+
+| leg (method@budget) | C2 acc | C2 balanced | C2 recall A/B/C/D | C4 acc | C4 balanced |
+|---|---:|---:|---|---:|---:|
+| mp4fs32 (cvbench_native@32) | 35.90 | 20.54 | 73.55/0.00/0.00/8.62 | 47.88 | 48.68 |
+| mp4fs64 (cvbench_native@64) | 37.99 | 24.22 | 76.21/0.00/0.00/20.69 | 50.33 | 51.17 |
+| mp4fs96 (cvbench_native@96) | 35.32 | 22.46 | 70.89/0.00/0.00/18.97 | 49.96 | 50.59 |
+| mp4sg32 (segment_select_siglip@32) | 34.92 | 20.81 | 67.27/2.68/8.13/5.17 | 50.79 | 51.99 |
+| mp4sg64 (segment_select_siglip@64) | 40.66 | 22.77 | 82.37/1.12/2.41/5.17 | 52.82 | 53.71 |
+| mp4sg96 (segment_select_siglip@96) | 44.72 | 25.25 | 91.06/0.67/1.51/7.76 | 52.24 | 53.42 |
+| mp4sgva32 (segment_select_viclip_opt@32) | 36.02 | 21.18 | 69.69/2.90/7.83/4.31 | 48.96 | 49.87 |
+| mp4sgva64 (segment_select_viclip_opt@64) | 40.72 | 23.73 | 82.25/1.12/1.20/10.34 | 53.16 | 54.16 |
+| mp4sgva96 (segment_select_viclip_opt@96) | 43.16 | 24.90 | 88.16/0.22/0.00/11.21 | 51.99 | 52.98 |
+
+On every native leg the model never answers B and essentially never answers
+C; gold is A on 207 of 431 C2 questions (48%). The segment-selection gain is
+A-recall rising (native@96 ≈71% → segment@96 ≈91%) while B/C/D recall stays
+at the floor; accuracy on the 224 non-A-gold C2 questions falls (2.46% →
+1.90%). Balanced accuracy on C2 is 20–25% on all nine legs, at or below the
+25% chance line — there is no perception signal on C2 in any arm. C4 is
+different: predictions spread over all four letters and balanced ≈ raw, so
+the C4 numbers are real.
+
 - **Sequential sampling is flat in frames**: 42.88 / 45.18 / 43.85 at
   32 / 64 / 96 total. More frames spread evenly over four views do not help.
 
 The same questions with up to 13 views delivered (the cap-13 pool; 8 frames per
 view, so the total budget grows with K and is *not* matched to the ladder above;
-montage cells 448 px, up to 6 tiles):
+montage cells 448 px, up to 6 tiles). Token parity does not hold here: 0 of
+1,033 questions have equal video_tokens between centralized and native at
+pass 1, and at K=13 (464 of 1,033 questions, 45% of the pool) centralized
+runs at 0.38× native's video_tokens (10,240 vs 26,624):
 
 | Arm | C2 | C4 | Overall |
 |---|---|---|---:|
@@ -95,8 +127,8 @@ per_stream 17.98 / 29.94 / 24.95 (C2 / C4 / overall). The C4 cell of
 64.49 ± 1.18 is the only cell on either backend above its class floor, and it
 sits next to a C2 at chance; it carries two confounds — the montage arm's prompt
 text is arm-exclusive, and the direct-answer template suppresses refusals
-differently across arms — so it needs a matched-prompt rerun before it is read
-as a fusion effect.
+differently across arms, on either backend — so it needs a matched-prompt
+rerun before it is read as a fusion effect.
 
 ## 4. Upper bound — the optimal-view oracle
 
@@ -112,13 +144,18 @@ comparisons are possible:
   frames against the sequential arm at *N* total — the same pixels, spent on
   one view. No 8-total sequential leg exists, so this row is open.
 
+**602 of the 1,033 questions are C4 by construction** — evidence on at least
+two cameras — so a single view cannot in principle hold their evidence; the
+pool-wide oracle below is a ceiling over a policy class that cannot answer
+58% of the pool.
+
 Estimators, per class, because the naive one is biased upward:
 
 | Estimator | Definition | Bias |
 |---|---|---|
 | raw best-of-K | mean over questions of the max over views of the view's pass-mean score | inflated — a max over K noisy estimates |
-| luck-best-of-K null | for each question, the expected max of K draws with replacement from its own per-view scores: Σ_i x_(i) · [(i/K)^K − ((i−1)/K)^K] over the sorted scores; the headroom is raw − luck | the null the raw number must beat |
-| split-half cross-validation | choose each question's best view on passes 1–2, score that view on passes 3–4, and the mirror; average | unbiased selection under the standard 4-pass protocol; an 8-pass variant tightens it |
+| luck-best-of-K null | for each question, the expected max of K draws with replacement from its own per-view scores: Σ_i x_(i) · [(i/K)^K − ((i−1)/K)^K] over the sorted scores; the headroom is raw − luck | the null the raw number must beat; raw ≥ luck holds by construction, so raw − luck is the noise-corrected margin, not a significance test |
+| split-half cross-validation | choose each question's best view on passes 1–2, score that view on passes 3–4, and the mirror; when several views tie for best on the selection half (1,161 of the 2,066 question-halves, 56.20%), the held-out score is averaged over the tied views; average both halves | unbiased selection under the standard 4-pass protocol; an 8-pass variant tightens it |
 | worst / random view | min and mean over views | the rest of the curve |
 
 Completeness gate: a question is complete when every *delivered* view
@@ -135,7 +172,7 @@ size would silently drop them.
 | Estimator | Overall (n=1033) | C2 (n=431) | C4 (n=602) |
 |---|---:|---:|---:|
 | text-only floor (task-LOO) | 54.70 | 48.03 | 59.47 |
-| sequential, all views, 8 frames/view (per-view parity; reasoning off, T = 0.1) | 42.88 ± 0.68 | 35.90 ± 2.15 | 47.88 ± 1.37 |
+| sequential, all views, 8 frames/view (per-view parity, exact on the 955 four-view questions; reasoning off, T = 0.1) | 42.88 ± 0.68 | 35.90 ± 2.15 | 47.88 ± 1.37 |
 | single view 1 alone | 37.73 | 38.17 | 37.42 |
 | single view 2 alone | 35.67 | 32.95 | 37.62 |
 | single view 3 alone (n=958) | 31.73 | 30.96 | 32.36 |
@@ -146,6 +183,10 @@ size would silently drop them.
 | raw best-of-K (inflated) | 57.65 | 58.12 | 57.31 |
 | headroom: raw − luck | 6.75 | 7.08 | 6.52 |
 | **optimal view, split-half CV** | **40.64** | **39.30** | **41.59** |
+
+*The two-view questions in this leg get 16 frames per view and the
+three-view questions 11/11/10, not 8 — the per-view parity label above is
+exact only for the 955 four-view questions (section 1).*
 
 What the table says:
 
@@ -166,7 +207,9 @@ What the table says:
   where a single view *should* suffice) reaches only 39.30 with the optimal
   view against its 48.03 floor; C4 41.59 against 59.47. The class where the
   taxonomy predicts single-view sufficiency is not the class where single
-  views work.
+  views work. The oracle reads *higher* on C4 (41.59) than on C2 (39.30) —
+  consistent with the C2 letter-prior finding in section 3, not with genuine
+  single-view perception.
 
 **Protocol caveat.** The single-view and blind legs were launched with the
 harness defaults — the reasoning-trace prompt at temperature 0.7 — while every
@@ -186,17 +229,18 @@ neither number is wrong; they are not matched.
 | text-only floor (LOO) | 54.70 | 48.03 | 59.47 |
 | best all-view arm | 49.10 | 44.72 | 53.16 |
 | gap to floor | −5.60 | −3.31 | −6.31 |
-| blind arm (partial, 513 q; reasoning on, T = 0.7) | 36.94 | 45.25 | 30.89 |
+| blind arm (reasoning on, T = 0.7) | 34.75 | 45.36 | 27.16 |
 | optimal-view oracle (split-half CV; reasoning on, T = 0.7) | 40.64 | 39.30 | 41.59 |
 | raw best-of-4 / its luck null | 57.65 / 50.90 | 58.12 / 51.04 | 57.31 / 50.79 |
 
 The lower bound is binding: on this pool and model, no sighted configuration
-beats a guesser that knows the per-task answer-letter prior. The blind arm
-(36.94 on the half of the pool that has run) sits 18 points *below* that
-guesser, so the model does not exploit the letter prior the floor assumes — the
-sighted arms' shortfall against the floor is not the model reading the letters
-either; it is pixels that add ~6–12 points over the model's own text prior and
-still land short of a statistical guesser.
+beats a guesser that knows the per-task answer-letter prior. Blind (34.75)
+sits about 20 points below the floor; pixels add about 8 points at per-view
+parity (42.88) and about 14 at best (49.10) overall. By class, though, the
+sighted gain is entirely C4: on C2 the blind arm (45.36) matches or beats
+every sighted C2 cell (best 44.72; native 35.90–37.99), while on C4
+sequential adds about 21 points over blind (47.88 vs 27.16) and the best arm
+about 26 (53.16 vs 27.16).
 
 The upper bound answers the question section 4 was written to ask: the deficit
 is a **perception problem, not a view-selection problem**. An oracle that always
@@ -204,10 +248,10 @@ picks the best of four views, cross-validated, scores 40.64 — under the floor,
 and under the all-view arm at the same frames per view. There is no large
 selection margin waiting to be captured by a better view picker on this pool;
 the 6.75-point raw-minus-luck headroom is the whole of it, and the honest
-estimate spends it. What moves the number is what the segment-selection ladder
-in section 3 already showed: which *window* is shown (C2 from 35 to 45), not
-which *camera*.
+estimate spends it. The C2 movement in section 3 is the letter prior, not a
+window effect, so on this pool no arm has shown a perception gain on C2; the
+only real sighted signal is on C4, and the oracle says that signal is not
+recoverable by choosing a camera.
 
-Open items: the blind leg's second half (resumed under the same tag; the row
-above updates in place), and the matched-protocol single-view sweep that would
-turn the oracle-versus-sequential row into a like-for-like comparison.
+Open items: the matched-protocol single-view sweep that would turn the
+oracle-versus-sequential row into a like-for-like comparison.

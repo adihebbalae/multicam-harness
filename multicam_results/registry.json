@@ -1,7 +1,7 @@
 {
  "note": "One entry per (dataset, backend, method, budget) leg; `file` is the merged row file, `complete` says whether every question ran. Legs with media_ok=false are not shipped; see `excluded`.",
  "source_repo": "Wavy-Hec/MultiCam",
- "source_commit": "bb372e450a25fc1b0e5aca6df8234768dc8e7abb",
+ "source_commit": "8b8a04b3f716216fd0772a158ee35d3457591370",
  "legs": [
   {
    "dataset": "MVU-Eval",
@@ -3725,11 +3725,11 @@
    "subset_sha256": "cee491cbb8832140",
    "subset_questions": 1033,
    "questions_expected": 1033,
-   "questions_run": 515,
-   "rows": 2055,
+   "questions_run": 1033,
+   "rows": 4132,
    "passes": 4,
-   "complete": false,
-   "accuracy_pct": 36.89,
+   "complete": true,
+   "accuracy_pct": 34.75,
    "errors": 0,
    "glob": "bench_crossview_meva1033_subset_internvl_mp4bd_shard*.jsonl",
    "rescored": true,
@@ -3737,7 +3737,7 @@
     "temperature": [
      0.7
     ],
-    "reasoning": "mixed (82% traced)",
+    "reasoning": "mixed (87% traced)",
     "total_frames": null,
     "cell_px": null,
     "max_tiles": null,

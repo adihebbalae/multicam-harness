@@ -1,4 +1,7 @@
-# Ported from Wavy-Hec/CVBench bench/methods/segment_select.py @ 8b4fbd117b6084dafb743eb30b5298e9a1ba91e3
+# Ported from Wavy-Hec/CVBench bench/methods/segment_select.py @ 8b4fbd117b6084dafb743eb30b5298e9a1ba91e3;
+# the global (cross-clip) selection mode (select_segments, --seg-select /
+# --seg-floor, SEGMENT_SELECT_GLOBAL_PREFIX) additionally ported from
+# @ a8e995dd0c069911c1c99acbc5854cc22337d34c.
 # Deliberate delta vs source: the docstring's dedup-collapse caveat and its
 # ordering paragraph state the failure mode and rationale but omit the fork's
 # measured figures and internal review/audit references, which are
@@ -6,11 +9,29 @@
 # Deliberate delta vs source: the Qwen parity note (docstring and __init__
 # comment) keeps the 2x patch-merge mechanism but drops the fork's measured
 # verification figure.
+# Deliberate delta vs source: the global-mode docstring and comments name
+# neither the fork's relevance-free control arm nor its coverage reduce (this
+# port carries neither), and state the sampling-density confound without the
+# fork's unpublished measured figures.
 """SEGMENT selection: split each clip into temporal segments, keep each clip's
 most question-relevant segments, pool their frames, drop near-duplicates, and
 answer from an evenly-thinned subset of the unique pool.
 
   segment_select[_<scorer>][_opt]
+      (``--seg-select global``: the top-K is taken over ALL clips at once
+      instead of within each clip — every (clip, segment) pair is ranked by
+      the same reduced score and the best N pairs survive, N = budget //
+      frames_per_segment (``--segments-keep``/``--seg-pool`` do not bind).
+      ``--seg-floor`` segments per clip are reserved first (default 1, capped
+      at N // K), so a camera goes unrepresented only when the segment budget
+      cannot seat one apiece. A clip may then contribute several segments,
+      one, or none; presentation still groups the survivors by clip in
+      original slot order. At a FIXED frame budget global concentrates the
+      frames into fewer, better-scored segments than per_clip, so a
+      global-vs-per_clip delta confounds segment CHOICE with sampling
+      density — run a relevance-free control beside it at the same
+      seg_select and budget. Rows stamp ``segment_select_mode``,
+      ``seg_floor``, ``segments_kept_total`` and ``clips_with_no_segment``.)
       1. Each of the K clips is split into ``segments_per_video`` contiguous
          equal-time segments (fewer when the clip is shorter than that).
       2. ``frames_per_segment`` frames are sampled uniformly WITHIN each
@@ -91,7 +112,9 @@ from decord import VideoReader, cpu
 
 from inprocess.harnesses.base import require_video_record
 from inprocess.harnesses.clip_select import FrameSelectMethod, clip_scores, query_for
-from inprocess.harnesses.option_union import _check_token_parity, _frame_content
+from inprocess.harnesses.option_union import (_check_token_parity,
+                                              _floor_then_fill,
+                                              _frame_content)
 from inprocess.harnesses.uniform import allocate_frames
 from inprocess.dataloaders.qa_json import build_messages, letters_of, video_paths
 from inprocess.evaluation.scoring import gt_choice
@@ -106,6 +129,28 @@ SEGMENT_SELECT_PREFIX = (
     "wherever they exceeded the frame budget). Frames are shown grouped by "
     "their source Video (ORIGINAL numbering) and in temporal order within "
     "each Video; a banner '=== Video k ===' precedes each Video's frames. A "
+    "clip whose frames were all removed as duplicates is omitted. Reason "
+    "over the shown frames to answer.")
+
+# --seg-select global: identical to SEGMENT_SELECT_PREFIX except for the
+# sentence naming WHICH segments survived (one ranking across all clips, not
+# each clip's own top-K) and the added omission clause — a global ranking can
+# leave a clip with no represented segment, which the per-clip prompt promises
+# never happens. Every other sentence is byte-identical so the prompt
+# difference between the two modes is the selection rule and nothing else.
+SEGMENT_SELECT_GLOBAL_PREFIX = (
+    "The question below refers to {K} INDEPENDENT video clips (different, "
+    "unrelated scenes), numbered Video 1 to Video {K} in their original "
+    "order. Each clip was split into up to {S} equal time segments and only "
+    "the most relevant segments across ALL clips (at most {top} in total) "
+    "are represented: frames were "
+    "sampled uniformly within those segments, near-duplicate frames were "
+    "removed, and the {n} frames shown remain (thinned evenly in time "
+    "wherever they exceeded the frame budget). Frames are shown grouped by "
+    "their source Video (ORIGINAL numbering) and in temporal order within "
+    "each Video; a banner '=== Video k ===' precedes each Video's frames. A "
+    "clip may contribute several segments, one, or none; a clip with no "
+    "represented segment is omitted. A "
     "clip whose frames were all removed as duplicates is omitted. Reason "
     "over the shown frames to answer.")
 
@@ -160,13 +205,59 @@ def _spread(items, n):
     return [items[round(i * step)] for i in range(n)]
 
 
+def select_segments(seg_scores, mode, keep_top, seg_floor, K):
+    """Which segments each clip contributes: {video: sorted [segment_id]}.
+
+    ``seg_scores`` is the max-reduced matrix {video: {segment_id: float}}.
+    Every video present in ``seg_scores`` is present in the result, possibly
+    with an EMPTY list (global mode only) — the caller indexes it per clip.
+
+    ``mode="per_clip"`` (historic, the default): each clip keeps its own best
+    ``keep_top`` segments, so every clip is represented and the frame budget
+    spreads over all K of them. Ties keep the earlier-inserted segment
+    (Python's stable sort over the score dict, which is built in ascending
+    segment order) — reproduced here expression-for-expression.
+
+    ``mode="global"``: every (clip, segment) pair competes in ONE ranking and
+    the best ``keep_top`` pairs overall survive, so a clip may contribute
+    several segments, one, or none. ``seg_floor`` segments per clip are
+    reserved first — capped at ``keep_top // K``, i.e. dropped entirely when
+    the segment budget cannot seat one per clip — so a global ranking cannot
+    silently blind a camera unless the budget forces it. Ties break on
+    (video, segment): deterministic across passes, shards and reruns, like
+    every other choice this arm makes.
+    """
+    if mode == "per_clip":
+        return {v: sorted(sorted(d, key=lambda s: -d[s])[: keep_top])
+                for v, d in seg_scores.items()}
+    if mode != "global":
+        raise ValueError(
+            f"select_segments: mode must be 'per_clip' or 'global', got "
+            f"{mode!r}")
+    if int(seg_floor) < 0:
+        raise ValueError(
+            f"select_segments: seg_floor must be >= 0, got {seg_floor}")
+    pairs = [(v, s) for v, d in seg_scores.items() for s in d]
+    pair_video = [v for v, _ in pairs]
+    order = sorted(range(len(pairs)),
+                   key=lambda j: (-seg_scores[pairs[j][0]][pairs[j][1]],
+                                  pairs[j][0], pairs[j][1]))
+    floor = max(0, min(int(seg_floor), keep_top // K)) if K else 0
+    out = {v: [] for v in seg_scores}
+    for j in _floor_then_fill(pair_video, order, None, keep_top, floor):
+        v, s = pairs[j]
+        out[v].append(s)
+    return {v: sorted(segs) for v, segs in out.items()}
+
+
 class SegmentSelectMethod(FrameSelectMethod):
-    """segment_select[_<scorer>][_opt] — top segments per clip, dedup, thin."""
+    """segment_select[_<scorer>][_opt] — top segments per clip (or, under
+    --seg-select global, across all clips), dedup, thin."""
     name = "segment_select"
 
     def __init__(self, backend, segments_per_video=8, segments_keep=4,
                  frames_per_segment=8, dedup_tau=0.95, seg_scorer=None,
-                 seg_pool=128, **kw):
+                 seg_pool=128, seg_select="per_clip", seg_floor=1, **kw):
         super().__init__(backend, **kw)
         self.segments_per_video = int(segments_per_video)
         # 0 = AUTO: K per clip derived from seg_pool and the record's stream
@@ -179,6 +270,18 @@ class SegmentSelectMethod(FrameSelectMethod):
         # while the image tower still supplies dedup embeddings
         self.seg_scorer = seg_scorer
         self.seg_pool = int(seg_pool)
+        # "per_clip" (historic) = top-K segments WITHIN each clip; "global" =
+        # one ranking over every (clip, segment) pair, with seg_floor segments
+        # reserved per clip first. See select_segments().
+        self.seg_select = str(seg_select)
+        self.seg_floor = int(seg_floor)
+        if self.seg_select not in ("per_clip", "global"):
+            raise ValueError(
+                f"{self.name}: seg_select must be 'per_clip' or 'global', got "
+                f"{self.seg_select!r}")
+        if self.seg_floor < 0:
+            raise ValueError(
+                f"{self.name}: seg_floor must be >= 0, got {self.seg_floor}")
         if self.segments_per_video < 1 or self.segments_keep < 0 \
                 or self.frames_per_segment < 1:
             raise ValueError(
@@ -319,16 +422,37 @@ class SegmentSelectMethod(FrameSelectMethod):
         seg_scores = {v: {sid: float(r.max()) for sid, r in d.items()}
                       for v, d in seg_opt.items()}
 
-        # straight TOP-K per clip over the reduced matrix (descending; a tie
-        # keeps the earlier segment), then restore chronological (segment-id)
-        # order within the clip. segments_keep 0 = AUTO: fill the seg_pool
-        # frame target with whole segments split evenly across the K streams,
-        # clamped to [1, SEG_KEEP_MAX].
-        keep_top = self.segments_keep or max(1, min(
-            SEG_KEEP_MAX, self.segments_per_video,
-            self.seg_pool // (self.frames_per_segment * K)))
-        kept_segs = {v: sorted(sorted(d, key=lambda s: -d[s])[: keep_top])
-                     for v, d in seg_scores.items()}
+        # straight TOP-K over the reduced matrix (descending; a tie keeps the
+        # earlier segment), then restore chronological (segment-id) order
+        # within the clip. PER CLIP by default; --seg-select global takes the
+        # same top-K across all clips at once (select_segments).
+        # segments_keep 0 = AUTO: fill the seg_pool frame target with whole
+        # segments split evenly across the K streams, clamped to
+        # [1, SEG_KEEP_MAX]. Auto and global are separate rules for keep_top.
+        glob = self.seg_select == "global"
+        if glob:
+            # GLOBAL: keep_top is a budget of segments for the whole question,
+            # not a per-clip K, so it comes from the FRAME budget (--seg-pool
+            # plays no part) — as many whole segments as the budget seats.
+            # Consequence to keep in view when reading a global leg: at the
+            # same frame budget global concentrates the frames into fewer,
+            # higher-scored segments than per_clip does (per_clip spends
+            # keep_top x K segments' worth on the same budget), so a
+            # global-vs-per_clip delta confounds "the RIGHT segments" with
+            # "denser sampling inside fewer segments". A relevance-free
+            # segment-selection control must run BESIDE a global leg, at the
+            # identical seg_select/budget, to separate the two.
+            keep_top = max(1, budget_eff // self.frames_per_segment)
+        else:
+            keep_top = self.segments_keep or max(1, min(
+                SEG_KEEP_MAX, self.segments_per_video,
+                self.seg_pool // (self.frames_per_segment * K)))
+        kept_segs = select_segments(seg_scores, self.seg_select, keep_top,
+                                    self.seg_floor, K)
+        # the per-clip floor that actually bound (global only; per_clip has no
+        # such lever — every clip keeps its own top-K by construction)
+        seg_floor_eff = (max(0, min(self.seg_floor, keep_top // K))
+                         if glob and K else None)
         kept = [j for j, (v, sid, t, im) in enumerate(pool)
                 if sid in kept_segs[v]]
 
@@ -363,7 +487,8 @@ class SegmentSelectMethod(FrameSelectMethod):
 
         qwen_video_list = self.img_token_parity == "qwen_video_list"
         qwen_pad = {}
-        content = [{"type": "text", "text": SEGMENT_SELECT_PREFIX.format(
+        prefix = SEGMENT_SELECT_GLOBAL_PREFIX if glob else SEGMENT_SELECT_PREFIX
+        content = [{"type": "text", "text": prefix.format(
             K=K, S=self.segments_per_video, top=keep_top,
             n=n_selected)}]
         for v in vids:
@@ -394,12 +519,26 @@ class SegmentSelectMethod(FrameSelectMethod):
             "img_token_parity": self.img_token_parity,
             "K": K,
             "segments_per_video": self.segments_per_video,
-            # the EFFECTIVE per-clip K (auto rows resolve it per record)
+            # "per_clip" = top-K WITHIN each clip; "global" = one ranking over
+            # every (clip, segment) pair (select_segments)
+            "segment_select_mode": self.seg_select,
+            # the EFFECTIVE per-clip K (auto rows resolve it per record);
+            # under global it is instead the question-wide segment budget N
             "segments_keep": keep_top,
-            "segments_keep_auto": self.segments_keep == 0,
-            "seg_pool": self.seg_pool if self.segments_keep == 0 else None,
+            # auto-K is a per_clip rule: global derives N from the frame
+            # budget, so --segments-keep/--seg-pool never bind there
+            "segments_keep_auto": self.segments_keep == 0 and not glob,
+            "seg_pool": (self.seg_pool
+                         if self.segments_keep == 0 and not glob else None),
+            # segments reserved per clip before the global fill, AFTER the
+            # keep_top // K cap; None in per_clip (no such lever)
+            "seg_floor": seg_floor_eff,
             "frames_per_segment": self.frames_per_segment,
             "segments_kept_per_video": kept_segs,
+            # how much of the segment budget was actually spent, and how many
+            # clips the ranking left unrepresented (always 0 under per_clip)
+            "segments_kept_total": sum(len(s) for s in kept_segs.values()),
+            "clips_with_no_segment": sum(1 for s in kept_segs.values() if not s),
             # keyed by segment id (a bare list shifts silently when decord
             # drops a whole segment's frames, mismapping scores post-hoc)
             "segment_scores": {v: {s: round(d[s], 4) for s in sorted(d)}

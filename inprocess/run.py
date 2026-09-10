@@ -151,6 +151,9 @@ QUERY_SEARCH_RE = re.compile(r"^query_search(?:_(?P<tag>[a-z0-9]+))?$")
 # near-duplicate removal -> even thinning to the budget. Same tag/_opt grammar
 # as frame_select, plus 'viclip' (each segment embedded jointly as one tube for
 # segment relevance; an image tower still supplies the dedup embeddings).
+# --seg-select global takes that top-K over ALL clips at once (a clip may
+# contribute several segments, one, or none; --seg-floor reserves a per-clip
+# minimum first) — a FLAG, not a name: the mode is carried by the run's rows.
 SEGMENT_SELECT_RE = re.compile(
     r"^segment_select(?:_(?P<tag>(?!opt(?:_|$))[a-z0-9]+))?(?P<opt>_opt)?$")
 
@@ -334,7 +337,8 @@ def make_method(mname, kind, scorer, backend, args):
             segments_keep=args.segments_keep,
             frames_per_segment=FRAMES_PER_SEGMENT,
             dedup_tau=args.dedup_tau, seg_scorer=seg_scorer,
-            seg_pool=args.seg_pool,
+            seg_pool=args.seg_pool, seg_select=args.seg_select,
+            seg_floor=args.seg_floor,
             clip_model=SEG_DEDUP_TOWER if seg_scorer else scorer,
             cell_px=CELL_PX, name=mname,
             query="options" if kind == "segment_opt" else "question", **common)
@@ -343,6 +347,7 @@ def make_method(mname, kind, scorer, backend, args):
                 "segments_keep": args.segments_keep,
                 "frames_per_segment": FRAMES_PER_SEGMENT,
                 "dedup_tau": args.dedup_tau, "seg_pool": args.seg_pool,
+                "seg_select": args.seg_select, "seg_floor": args.seg_floor,
                 "cell_px": CELL_PX}
     else:
         method = QuerySearchMethod(
@@ -730,6 +735,26 @@ def build_parser():
                          "NOT the --sel-tau '0 = off' convention. Static "
                          "cameras collapse hard at 0.95: budget-parity sweeps "
                          "must pass 1")
+    ap.add_argument("--seg-select", choices=("per_clip", "global"),
+                    default="per_clip",
+                    help="segment_select: WHERE the top-K is taken. 'per_clip' "
+                         "(default, historic) = each clip keeps its own best "
+                         "--segments-keep segments, so every clip is "
+                         "represented. 'global' = every (clip, segment) pair "
+                         "is ranked together and the best N survive, N = "
+                         "budget // frames_per_segment (--segments-keep and "
+                         "--seg-pool stop binding); a clip may contribute "
+                         "several segments, one, or none, subject to "
+                         "--seg-floor. At a fixed budget global samples "
+                         "denser inside fewer segments than per_clip, so run "
+                         "a relevance-free control beside it")
+    ap.add_argument("--seg-floor", type=int, default=1,
+                    help="segment_select --seg-select global: segments reserved "
+                         "per clip before the global fill, so one ranking "
+                         "cannot blind a camera (0 = pure global top-N). "
+                         "Capped at N // n_streams, i.e. dropped where the "
+                         "segment budget cannot seat one per clip. Ignored — "
+                         "and refused at submit — outside global mode")
     ap.add_argument("--query-max-new-tokens", type=int, default=256,
                     help="query_search: token cap for the phrase-writing call")
     ap.add_argument("--max-new-tokens", type=int, default=8192,
@@ -835,6 +860,29 @@ def main():
             "arm's video frames do not — the matched-budget comparison would be a "
             "tokenization artifact. Run those legs with 1, and any higher-tile "
             "montage leg separately.")
+    seg_arms = sorted(m for m, k in kinds.items()
+                      if k in ("segment", "segment_opt"))
+    other_arms = sorted(m for m, k in kinds.items()
+                        if k not in ("segment", "segment_opt"))
+    # --seg-floor is the global fill's per-clip reservation; under per_clip
+    # every clip keeps its own top-K unconditionally, so a non-default value
+    # there changes nothing while the row still stamps it.
+    if seg_arms and args.seg_floor != 1 and args.seg_select != "global":
+        raise SystemExit(
+            f"--seg-floor {args.seg_floor} applies only to --seg-select "
+            f"global (per_clip represents every clip by construction); on "
+            f"{seg_arms} it would silently no-op. Drop --seg-floor or pass "
+            "--seg-select global.")
+    # both flags reach SegmentSelectMethod and nothing else, so a leg that
+    # sets them on any other arm would run the historic protocol while the
+    # launch command reads like a global one
+    if other_arms and (args.seg_select != "per_clip" or args.seg_floor != 1):
+        raise SystemExit(
+            f"--seg-select/--seg-floor are segment_select-only levers (got "
+            f"seg_select={args.seg_select}, seg_floor={args.seg_floor}); on "
+            f"{other_arms} they would silently no-op. Drop "
+            "--seg-select/--seg-floor or run only "
+            "segment_select[_<scorer>][_opt] arms.")
     if VICLIP_SCORER in scorers:
         viclip_precheck()
 

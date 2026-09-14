@@ -66,6 +66,28 @@ from inprocess.dataloaders.qa_json import build_messages, letters_of, video_path
 from inprocess.evaluation.scoring import parse_choice, gt_choice, extract_think
 
 
+SCORER_DEVICE_ENV = "INPROCESS_SCORER_DEVICE"
+
+
+def scorer_device(backend):
+    """Where to put the CLIP/SigLIP scorer: the backend's own device unless
+    ``INPROCESS_SCORER_DEVICE`` names another one.
+
+    The scorer defaults onto the answering model's GPU, which is right whenever
+    there is room for both. There is not always room: so400m loads in fp32 at
+    ~3.5 GB, and beside InternVL3-8B in bf16 plus a 96-frame KV cache that does
+    not fit in 24 GB -- every multi-clip question OOMs on an RTX A5000, and the
+    arm cannot run on that card at all. Pointing the scorer at a second GPU is
+    enough; it is only ever asked for embeddings, so the two never contend.
+
+    Unset, this returns exactly what the call sites computed before, so default
+    behaviour is unchanged. dtype and model are untouched either way, so the
+    scores -- and therefore the selection -- are the same on either device.
+    """
+    dev = getattr(backend, "device", "cuda:0")
+    return os.environ.get(SCORER_DEVICE_ENV) or dev
+
+
 def clip_scores(clip_bundle, text, pil_frames, batch=32, return_image_embs=False):
     """CLIP/SigLIP cosine similarity between ``text`` and each PIL frame
     (higher = closer). Raw normalized cosine is monotonic in the model's own
@@ -575,7 +597,7 @@ class ClipScoreSelectMethod(Method):
             # AutoModel resolves CLIPModel for openai/clip-* and SiglipModel
             # for google/siglip-*; both expose get_{text,image}_features.
             from transformers import AutoModel, AutoProcessor
-            dev = getattr(self.backend, "device", "cuda:0")
+            dev = scorer_device(self.backend)
             model = AutoModel.from_pretrained(self.clip_model_name).to(dev).eval()
             proc = AutoProcessor.from_pretrained(self.clip_model_name)
             self._clip = (model, proc, dev)
@@ -707,7 +729,7 @@ class FrameSelectMethod(Method):
     def _ensure_clip(self):
         if self._clip is None:
             from transformers import AutoModel, AutoProcessor
-            dev = getattr(self.backend, "device", "cuda:0")
+            dev = scorer_device(self.backend)
             model = AutoModel.from_pretrained(self.clip_model_name).to(dev).eval()
             proc = AutoProcessor.from_pretrained(self.clip_model_name)
             self._clip = (model, proc, dev)

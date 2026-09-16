@@ -1,0 +1,4034 @@
+{
+ "generated_by": "analysis/render_demo.py",
+ "subset": "analysis/demo_meva4cam_subset.json",
+ "row_files": [
+  "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+  "rows/bench_demo_meva4cam_subset_internvl_demo_global_direct.jsonl",
+  "rows/bench_demo_meva4cam_subset_internvl_demo_viclip_direct.jsonl",
+  "rows/bench_demo_meva4cam_subset_internvl_demo_viclip_global_direct.jsonl"
+ ],
+ "media_resolution": "local .avi->.mp4 replica",
+ "video_root": "crossview-release-annotations/crossview-release",
+ "thumbs_per_cam": 6,
+ "dpi": 150,
+ "ladder_meva1033": [
+  {
+   "label": "Chance (4 options)",
+   "value": 25.0,
+   "kind": "floor"
+  },
+  {
+   "label": "Model, no video (reasoning, T=0.7)",
+   "value": 34.75,
+   "kind": "arm"
+  },
+  {
+   "label": "All cameras, 32 frames",
+   "value": 42.88,
+   "kind": "arm"
+  },
+  {
+   "label": "ViCLIP-opt segments, 32 frames",
+   "value": 43.56,
+   "kind": "arm"
+  },
+  {
+   "label": "All cameras, 96 frames",
+   "value": 43.85,
+   "kind": "arm"
+  },
+  {
+   "label": "ViCLIP-opt segments, 64 frames",
+   "value": 47.97,
+   "kind": "arm"
+  },
+  {
+   "label": "ViCLIP-opt segments, 96 frames",
+   "value": 48.31,
+   "kind": "arm"
+  },
+  {
+   "label": "SigLIP segments, 96 frames",
+   "value": 49.1,
+   "kind": "arm"
+  },
+  {
+   "label": "Text-only letter floor",
+   "value": 54.7,
+   "kind": "floor"
+  }
+ ],
+ "caveat": "Demo questions were chosen where selection helps or fails visibly; the ladder is the full 1,033-question pool.",
+ "questions": [
+  {
+   "id": 860,
+   "question": "Between these two events, which happened first: a vehicle starting or a vehicle turning right?",
+   "options": [
+    "A. The vehicle starting occurred first",
+    "B. The vehicle turning right occurred first",
+    "C. They occurred simultaneously",
+    "D. Cannot be determined"
+   ],
+   "gold": "A",
+   "question_type": "temporal",
+   "task_type": "CrossView-MEVA-Temporal",
+   "orig_id": "2018-03-11.14-10.school#132",
+   "requires_cameras": [
+    "G336",
+    "G424"
+   ],
+   "selection_leg": {
+    "method": "segment_select_viclip_opt",
+    "tag": "demo_viclip_direct",
+    "protocol": "direct",
+    "pass_idx": 1,
+    "scorer": "viclip",
+    "budget": 96,
+    "frames_per_segment": 8,
+    "segments_keep": 4
+   },
+   "global_leg": {
+    "method": "segment_select_viclip_opt",
+    "tag": "demo_viclip_global_direct"
+   },
+   "event_windows": [
+    {
+     "label": "A",
+     "camera": "G424",
+     "start_sec": 168.97,
+     "end_sec": 173.23,
+     "end_estimated": false,
+     "activity": "vehicle_starts",
+     "description": "a vehicle starts moving"
+    },
+    {
+     "label": "B",
+     "camera": "G336",
+     "start_sec": 175.13,
+     "end_sec": 178.37,
+     "end_estimated": false,
+     "activity": "vehicle_turns_right",
+     "description": "a vehicle turns right"
+    }
+   ],
+   "cameras": [
+    {
+     "slot": 1,
+     "camera": "G336",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-11/14/2018-03-11.14-10.school/2018-03-11.14-10-01.14-15-01.school.G336.r13.mp4",
+     "duration_s": 300.0,
+     "fps": 30.0,
+     "n_frames_mp4": 9000,
+     "n_frames_scored": 9000,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.5
+      ],
+      [
+       37.5,
+       75.0
+      ],
+      [
+       75.0,
+       112.5
+      ],
+      [
+       112.5,
+       150.0
+      ],
+      [
+       150.0,
+       187.5
+      ],
+      [
+       187.5,
+       225.0
+      ],
+      [
+       225.0,
+       262.5
+      ],
+      [
+       262.5,
+       300.0
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.173549,
+      "1": 0.176663,
+      "2": 0.17391,
+      "3": 0.173113,
+      "4": 0.171978,
+      "5": 0.173249,
+      "6": 0.172686,
+      "7": 0.174327
+     },
+     "max_score": 0.176663,
+     "segments_kept": [
+      0,
+      1,
+      2,
+      7
+     ],
+     "segments_kept_global": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "selected_times_s": [
+      2.33,
+      7.0,
+      16.4,
+      21.07,
+      25.77,
+      35.13,
+      39.83,
+      44.5,
+      53.9,
+      58.57,
+      63.27,
+      72.63,
+      77.33,
+      86.7,
+      91.4,
+      96.07,
+      105.47,
+      110.13,
+      264.83,
+      274.2,
+      278.9,
+      283.57,
+      292.97,
+      297.63
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      2.33,
+      7.0,
+      11.7,
+      16.4,
+      21.07,
+      25.77,
+      30.47,
+      35.13,
+      39.83,
+      44.5,
+      49.2,
+      53.9,
+      58.57,
+      63.27,
+      67.97,
+      72.63,
+      77.33,
+      82.0,
+      86.7,
+      91.4,
+      96.07,
+      100.77,
+      105.47,
+      110.13,
+      114.83,
+      119.5,
+      124.2,
+      128.9,
+      133.57,
+      138.27,
+      142.97,
+      147.63,
+      152.33,
+      157.0,
+      161.7,
+      166.4,
+      171.07,
+      175.77,
+      180.47,
+      185.13,
+      189.83,
+      194.5,
+      199.2,
+      203.9,
+      208.57,
+      213.27,
+      217.97,
+      222.63,
+      227.33,
+      232.0,
+      236.7,
+      241.4,
+      246.07,
+      250.77,
+      255.47,
+      260.13,
+      264.83,
+      269.5,
+      274.2,
+      278.9,
+      283.57,
+      288.27,
+      292.97,
+      297.63
+     ],
+     "n_frames_selected_global": 64,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "B",
+       "camera": "G336",
+       "start_sec": 175.13,
+       "end_sec": 178.37,
+       "end_estimated": false,
+       "activity": "vehicle_turns_right",
+       "description": "a vehicle turns right",
+       "nearest_frame_gap_s": 65.0
+      }
+     ],
+     "thumb_times_s": [
+      2.33,
+      35.13,
+      58.57,
+      91.4,
+      264.83,
+      297.63
+     ],
+     "thumb_in_window": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    {
+     "slot": 2,
+     "camera": "G424",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-11/14/2018-03-11.14-10.school/2018-03-11.14-10-02.14-15-02.school.G424.r13.mp4",
+     "duration_s": 300.03,
+     "fps": 30.0,
+     "n_frames_mp4": 9001,
+     "n_frames_scored": 9001,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.5
+      ],
+      [
+       37.5,
+       75.0
+      ],
+      [
+       75.0,
+       112.5
+      ],
+      [
+       112.5,
+       150.0
+      ],
+      [
+       150.0,
+       187.53
+      ],
+      [
+       187.53,
+       225.03
+      ],
+      [
+       225.03,
+       262.53
+      ],
+      [
+       262.53,
+       300.03
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.144778,
+      "1": 0.144887,
+      "2": 0.144039,
+      "3": 0.143568,
+      "4": 0.145029,
+      "5": 0.145329,
+      "6": 0.144315,
+      "7": 0.144746
+     },
+     "max_score": 0.145329,
+     "segments_kept": [
+      0,
+      1,
+      4,
+      5
+     ],
+     "segments_kept_global": [
+      4,
+      5
+     ],
+     "selected_times_s": [
+      2.33,
+      7.0,
+      16.4,
+      21.07,
+      25.77,
+      35.13,
+      39.83,
+      44.5,
+      53.9,
+      58.57,
+      63.27,
+      72.63,
+      152.33,
+      161.7,
+      166.4,
+      171.1,
+      180.47,
+      185.17,
+      189.87,
+      199.23,
+      203.93,
+      208.6,
+      218.0,
+      222.67
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      152.33,
+      157.03,
+      161.7,
+      166.4,
+      171.1,
+      175.8,
+      180.47,
+      185.17,
+      189.87,
+      194.53,
+      199.23,
+      203.93,
+      208.6,
+      213.3,
+      218.0,
+      222.67
+     ],
+     "n_frames_selected_global": 16,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "A",
+       "camera": "G424",
+       "start_sec": 168.97,
+       "end_sec": 173.23,
+       "end_estimated": false,
+       "activity": "vehicle_starts",
+       "description": "a vehicle starts moving",
+       "nearest_frame_gap_s": 0.0
+      }
+     ],
+     "thumb_times_s": [
+      2.33,
+      35.13,
+      58.57,
+      166.4,
+      171.1,
+      222.67
+     ],
+     "thumb_in_window": [
+      false,
+      false,
+      false,
+      true,
+      true,
+      false
+     ]
+    },
+    {
+     "slot": 3,
+     "camera": "G299",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-11/14/2018-03-11.14-10.school/2018-03-11.14-10-00.14-15-00.school.G299.r13.mp4",
+     "duration_s": 300.2,
+     "fps": 30.0,
+     "n_frames_mp4": 9006,
+     "n_frames_scored": 9006,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.53
+      ],
+      [
+       37.53,
+       75.07
+      ],
+      [
+       75.07,
+       112.57
+      ],
+      [
+       112.57,
+       150.1
+      ],
+      [
+       150.1,
+       187.63
+      ],
+      [
+       187.63,
+       225.13
+      ],
+      [
+       225.13,
+       262.67
+      ],
+      [
+       262.67,
+       300.2
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.071453,
+      "1": 0.072529,
+      "2": 0.073028,
+      "3": 0.074977,
+      "4": 0.071436,
+      "5": 0.073469,
+      "6": 0.072322,
+      "7": 0.072343
+     },
+     "max_score": 0.074977,
+     "segments_kept": [
+      1,
+      2,
+      3,
+      5
+     ],
+     "segments_kept_global": [
+      3
+     ],
+     "selected_times_s": [
+      39.87,
+      44.57,
+      53.93,
+      58.63,
+      63.33,
+      72.7,
+      77.4,
+      82.07,
+      91.47,
+      96.13,
+      100.83,
+      110.2,
+      114.9,
+      124.27,
+      128.97,
+      133.67,
+      143.03,
+      147.73,
+      189.97,
+      199.33,
+      204.03,
+      208.7,
+      218.1,
+      222.77
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      114.9,
+      119.6,
+      124.27,
+      128.97,
+      133.67,
+      138.37,
+      143.03,
+      147.73
+     ],
+     "n_frames_selected_global": 8,
+     "evidence": false,
+     "event_windows": [],
+     "thumb_times_s": [
+      39.87,
+      72.7,
+      96.13,
+      128.97,
+      189.97,
+      222.77
+     ],
+     "thumb_in_window": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    {
+     "slot": 4,
+     "camera": "G330",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-11/14/2018-03-11.14-10.school/2018-03-11.14-10-00.14-15-00.school.G330.r13.mp4",
+     "duration_s": 300.3,
+     "fps": 30.0,
+     "n_frames_mp4": 9009,
+     "n_frames_scored": 9009,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.53
+      ],
+      [
+       37.53,
+       75.07
+      ],
+      [
+       75.07,
+       112.6
+      ],
+      [
+       112.6,
+       150.13
+      ],
+      [
+       150.13,
+       187.7
+      ],
+      [
+       187.7,
+       225.23
+      ],
+      [
+       225.23,
+       262.77
+      ],
+      [
+       262.77,
+       300.3
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.062184,
+      "1": 0.06285,
+      "2": 0.062312,
+      "3": 0.05943,
+      "4": 0.060974,
+      "5": 0.062711,
+      "6": 0.06183,
+      "7": 0.06599
+     },
+     "max_score": 0.06599,
+     "segments_kept": [
+      1,
+      2,
+      5,
+      7
+     ],
+     "segments_kept_global": [
+      7
+     ],
+     "selected_times_s": [
+      39.87,
+      44.57,
+      53.93,
+      58.63,
+      63.33,
+      72.7,
+      77.4,
+      82.1,
+      91.47,
+      96.17,
+      100.87,
+      110.23,
+      190.03,
+      199.4,
+      204.1,
+      208.8,
+      218.17,
+      222.87,
+      265.1,
+      274.47,
+      279.17,
+      283.87,
+      293.23,
+      297.93
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      265.1,
+      269.8,
+      274.47,
+      279.17,
+      283.87,
+      288.57,
+      293.23,
+      297.93
+     ],
+     "n_frames_selected_global": 8,
+     "evidence": false,
+     "event_windows": [],
+     "thumb_times_s": [
+      39.87,
+      72.7,
+      96.17,
+      204.1,
+      265.1,
+      297.93
+     ],
+     "thumb_in_window": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    }
+   ],
+   "arms": [
+    {
+     "arm": "blind",
+     "label": "Blind (no video)",
+     "method": "blind",
+     "tag": "demo_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "A",
+     "gold": "A",
+     "correct": true,
+     "latency_s": 0.8458666168153286,
+     "selection_latency_s": null,
+     "input_tokens": 133,
+     "video_tokens": 0,
+     "predictions_all_passes": [
+      "A"
+     ]
+    },
+    {
+     "arm": "native",
+     "label": "All cameras, 96 frames",
+     "method": "cvbench_native",
+     "tag": "demo_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "A",
+     "gold": "A",
+     "correct": true,
+     "latency_s": 9.632807243615389,
+     "selection_latency_s": null,
+     "input_tokens": 25361,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "A"
+     ]
+    },
+    {
+     "arm": "seg_perclip",
+     "label": "SigLIP segments 96 (per-clip)",
+     "method": "segment_select_siglip",
+     "tag": "demo_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "A",
+     "gold": "A",
+     "correct": true,
+     "latency_s": 3.269879601895809,
+     "selection_latency_s": 51.688,
+     "input_tokens": 25246,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "A"
+     ]
+    },
+    {
+     "arm": "seg_global",
+     "label": "SigLIP segments 96 (global)",
+     "method": "segment_select_siglip",
+     "tag": "demo_global_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_global_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "A",
+     "gold": "A",
+     "correct": true,
+     "latency_s": 3.650671061128378,
+     "selection_latency_s": 113.803,
+     "input_tokens": 25271,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "A"
+     ]
+    },
+    {
+     "arm": "viclip_perclip",
+     "label": "ViCLIP segments 96 (per-clip)",
+     "method": "segment_select_viclip_opt",
+     "tag": "demo_viclip_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_viclip_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "A",
+     "gold": "A",
+     "correct": true,
+     "latency_s": 3.7332949712872505,
+     "selection_latency_s": 73.464,
+     "input_tokens": 25246,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "A"
+     ]
+    },
+    {
+     "arm": "viclip_global",
+     "label": "ViCLIP segments 96 (global)",
+     "method": "segment_select_viclip_opt",
+     "tag": "demo_viclip_global_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_viclip_global_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "A",
+     "gold": "A",
+     "correct": true,
+     "latency_s": 3.4576993137598038,
+     "selection_latency_s": 73.451,
+     "input_tokens": 25271,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "A"
+     ]
+    }
+   ],
+   "trace_excerpt": "A",
+   "trace_source": {
+    "method": "segment_select_viclip_opt",
+    "tag": "demo_viclip_direct",
+    "arm": "viclip_perclip",
+    "protocol": "direct"
+   },
+   "trace_is_reasoning": false,
+   "trace_is_blind": false,
+   "trace_full_chars": 1
+  },
+  {
+   "id": 749,
+   "question": "Between these two moments, which happened first: the person with charcoal hair in a charcoal top and navy pants, wearing dark gray shoes and a hat, making a purchase, or the person with blue hair in a blue top and navy pants, wearing black shoes and a scarf, getting into a vehicle?",
+   "options": [
+    "A. The person with charcoal hair, wearing a charcoal top and navy pants, dark gray shoes, with a hat, purchasing occurred first",
+    "B. The person with blue hair, wearing a blue top and navy pants, black shoes, with a scarf, entering a vehicle occurred first",
+    "C. They occurred simultaneously",
+    "D. Cannot be determined"
+   ],
+   "gold": "A",
+   "question_type": "temporal",
+   "task_type": "CrossView-MEVA-Temporal",
+   "orig_id": "2018-03-07.11-00.school#21",
+   "requires_cameras": [
+    "G421",
+    "G424"
+   ],
+   "selection_leg": {
+    "method": "segment_select_viclip_opt",
+    "tag": "demo_viclip_direct",
+    "protocol": "direct",
+    "pass_idx": 1,
+    "scorer": "viclip",
+    "budget": 96,
+    "frames_per_segment": 8,
+    "segments_keep": 4
+   },
+   "global_leg": {
+    "method": "segment_select_viclip_opt",
+    "tag": "demo_viclip_global_direct"
+   },
+   "event_windows": [
+    {
+     "label": "A",
+     "camera": "G421",
+     "start_sec": 75.8,
+     "end_sec": 98.47,
+     "end_estimated": false,
+     "activity": "person_purchases",
+     "description": "a person with charcoal hair, wearing a charcoal top and navy pants, dark gray shoes, with a hat purchases"
+    },
+    {
+     "label": "B",
+     "camera": "G424",
+     "start_sec": 99.47,
+     "end_sec": 109.6,
+     "end_estimated": false,
+     "activity": "person_enters_vehicle",
+     "description": "a person with blue hair, wearing a blue top and navy pants, black shoes, with a scarf enters vehicle"
+    }
+   ],
+   "cameras": [
+    {
+     "slot": 1,
+     "camera": "G421",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-07/11/2018-03-07.11-00.school/2018-03-07.11-00-01.11-05-01.school.G421.r13.mp4",
+     "duration_s": 300.07,
+     "fps": 30.0,
+     "n_frames_mp4": 9002,
+     "n_frames_scored": 9002,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.5
+      ],
+      [
+       37.5,
+       75.0
+      ],
+      [
+       75.0,
+       112.53
+      ],
+      [
+       112.53,
+       150.03
+      ],
+      [
+       150.03,
+       187.53
+      ],
+      [
+       187.53,
+       225.07
+      ],
+      [
+       225.07,
+       262.57
+      ],
+      [
+       262.57,
+       300.07
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.123615,
+      "1": 0.119757,
+      "2": 0.12336,
+      "3": 0.126134,
+      "4": 0.126919,
+      "5": 0.132023,
+      "6": 0.131742,
+      "7": 0.126119
+     },
+     "max_score": 0.132023,
+     "segments_kept": [
+      3,
+      4,
+      5,
+      6
+     ],
+     "segments_kept_global": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "selected_times_s": [
+      114.87,
+      119.53,
+      128.93,
+      133.6,
+      138.3,
+      147.67,
+      152.37,
+      157.03,
+      166.43,
+      171.1,
+      175.8,
+      185.17,
+      189.87,
+      199.23,
+      203.93,
+      208.63,
+      218.0,
+      222.7,
+      227.4,
+      236.77,
+      241.47,
+      246.13,
+      255.53,
+      260.2
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      2.33,
+      7.0,
+      11.7,
+      16.4,
+      21.07,
+      25.77,
+      30.47,
+      35.13,
+      39.83,
+      44.5,
+      49.2,
+      53.9,
+      58.57,
+      63.27,
+      67.97,
+      72.63,
+      77.33,
+      82.03,
+      86.7,
+      91.4,
+      96.1,
+      100.8,
+      105.47,
+      110.17,
+      114.87,
+      119.53,
+      124.23,
+      128.93,
+      133.6,
+      138.3,
+      143.0,
+      147.67,
+      152.37,
+      157.03,
+      161.73,
+      166.43,
+      171.1,
+      175.8,
+      180.5,
+      185.17,
+      189.87,
+      194.57,
+      199.23,
+      203.93,
+      208.63,
+      213.33,
+      218.0,
+      222.7,
+      227.4,
+      232.07,
+      236.77,
+      241.47,
+      246.13,
+      250.83,
+      255.53,
+      260.2,
+      264.9,
+      269.57,
+      274.27,
+      278.97,
+      283.63,
+      288.33,
+      293.03,
+      297.7
+     ],
+     "n_frames_selected_global": 64,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "A",
+       "camera": "G421",
+       "start_sec": 75.8,
+       "end_sec": 98.47,
+       "end_estimated": false,
+       "activity": "person_purchases",
+       "description": "a person with charcoal hair, wearing a charcoal top and navy pants, dark gray shoes, with a hat purchases",
+       "nearest_frame_gap_s": 16.4
+      }
+     ],
+     "thumb_times_s": [
+      114.87,
+      147.67,
+      171.1,
+      203.93,
+      227.4,
+      260.2
+     ],
+     "thumb_in_window": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    {
+     "slot": 2,
+     "camera": "G424",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-07/11/2018-03-07.11-00.school/2018-03-07.11-00-05.11-05-05.school.G424.r13.mp4",
+     "duration_s": 300.0,
+     "fps": 30.0,
+     "n_frames_mp4": 9000,
+     "n_frames_scored": 9000,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.5
+      ],
+      [
+       37.5,
+       75.0
+      ],
+      [
+       75.0,
+       112.5
+      ],
+      [
+       112.5,
+       150.0
+      ],
+      [
+       150.0,
+       187.5
+      ],
+      [
+       187.5,
+       225.0
+      ],
+      [
+       225.0,
+       262.5
+      ],
+      [
+       262.5,
+       300.0
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.096286,
+      "1": 0.099535,
+      "2": 0.10077,
+      "3": 0.098236,
+      "4": 0.100695,
+      "5": 0.100425,
+      "6": 0.104794,
+      "7": 0.095832
+     },
+     "max_score": 0.104794,
+     "segments_kept": [
+      2,
+      4,
+      5,
+      6
+     ],
+     "segments_kept_global": [
+      2,
+      6
+     ],
+     "selected_times_s": [
+      77.33,
+      82.0,
+      91.4,
+      96.07,
+      100.77,
+      110.13,
+      152.33,
+      157.0,
+      166.4,
+      171.07,
+      175.77,
+      185.13,
+      189.83,
+      199.2,
+      203.9,
+      208.57,
+      217.97,
+      222.63,
+      227.33,
+      236.7,
+      241.4,
+      246.07,
+      255.47,
+      260.13
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      77.33,
+      82.0,
+      86.7,
+      91.4,
+      96.07,
+      100.77,
+      105.47,
+      110.13,
+      227.33,
+      232.0,
+      236.7,
+      241.4,
+      246.07,
+      250.77,
+      255.47,
+      260.13
+     ],
+     "n_frames_selected_global": 16,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "B",
+       "camera": "G424",
+       "start_sec": 99.47,
+       "end_sec": 109.6,
+       "end_estimated": false,
+       "activity": "person_enters_vehicle",
+       "description": "a person with blue hair, wearing a blue top and navy pants, black shoes, with a scarf enters vehicle",
+       "nearest_frame_gap_s": 0.0
+      }
+     ],
+     "thumb_times_s": [
+      100.77,
+      110.13,
+      171.07,
+      203.9,
+      227.33,
+      260.13
+     ],
+     "thumb_in_window": [
+      true,
+      true,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    {
+     "slot": 3,
+     "camera": "G299",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-07/11/2018-03-07.11-00.school/2018-03-07.11-00-00.11-05-00.school.G299.r13.mp4",
+     "duration_s": 300.17,
+     "fps": 30.0,
+     "n_frames_mp4": 9005,
+     "n_frames_scored": 9005,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.53
+      ],
+      [
+       37.53,
+       75.03
+      ],
+      [
+       75.03,
+       112.57
+      ],
+      [
+       112.57,
+       150.07
+      ],
+      [
+       150.07,
+       187.6
+      ],
+      [
+       187.6,
+       225.13
+      ],
+      [
+       225.13,
+       262.63
+      ],
+      [
+       262.63,
+       300.17
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.06139,
+      "1": 0.062016,
+      "2": 0.062237,
+      "3": 0.06234,
+      "4": 0.065692,
+      "5": 0.066337,
+      "6": 0.066035,
+      "7": 0.066199
+     },
+     "max_score": 0.066337,
+     "segments_kept": [
+      4,
+      5,
+      6,
+      7
+     ],
+     "segments_kept_global": [
+      5
+     ],
+     "selected_times_s": [
+      152.4,
+      157.1,
+      166.47,
+      171.17,
+      175.87,
+      185.23,
+      189.93,
+      194.63,
+      204.0,
+      208.7,
+      213.4,
+      222.77,
+      227.47,
+      236.83,
+      241.53,
+      246.2,
+      255.6,
+      260.27,
+      264.97,
+      274.33,
+      279.03,
+      283.73,
+      293.1,
+      297.8
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      189.93,
+      194.63,
+      199.3,
+      204.0,
+      208.7,
+      213.4,
+      218.07,
+      222.77
+     ],
+     "n_frames_selected_global": 8,
+     "evidence": false,
+     "event_windows": [],
+     "thumb_times_s": [
+      152.4,
+      185.23,
+      208.7,
+      241.53,
+      264.97,
+      297.8
+     ],
+     "thumb_in_window": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    {
+     "slot": 4,
+     "camera": "G330",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-07/11/2018-03-07.11-00.school/2018-03-07.11-00-00.11-05-00.school.G330.r13.mp4",
+     "duration_s": 300.27,
+     "fps": 30.0,
+     "n_frames_mp4": 9008,
+     "n_frames_scored": 9008,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.53
+      ],
+      [
+       37.53,
+       75.07
+      ],
+      [
+       75.07,
+       112.6
+      ],
+      [
+       112.6,
+       150.13
+      ],
+      [
+       150.13,
+       187.67
+      ],
+      [
+       187.67,
+       225.2
+      ],
+      [
+       225.2,
+       262.73
+      ],
+      [
+       262.73,
+       300.27
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.051523,
+      "1": 0.052305,
+      "2": 0.053536,
+      "3": 0.051676,
+      "4": 0.0542,
+      "5": 0.05379,
+      "6": 0.053544,
+      "7": 0.053077
+     },
+     "max_score": 0.0542,
+     "segments_kept": [
+      2,
+      4,
+      5,
+      6
+     ],
+     "segments_kept_global": [
+      4
+     ],
+     "selected_times_s": [
+      77.4,
+      82.1,
+      91.47,
+      96.17,
+      100.87,
+      110.23,
+      152.47,
+      157.17,
+      166.53,
+      171.23,
+      175.93,
+      185.3,
+      190.0,
+      199.37,
+      204.07,
+      208.77,
+      218.13,
+      222.83,
+      227.53,
+      236.9,
+      241.6,
+      246.3,
+      255.67,
+      260.37
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      152.47,
+      157.17,
+      161.83,
+      166.53,
+      171.23,
+      175.93,
+      180.6,
+      185.3
+     ],
+     "n_frames_selected_global": 8,
+     "evidence": false,
+     "event_windows": [],
+     "thumb_times_s": [
+      77.4,
+      110.23,
+      171.23,
+      204.07,
+      227.53,
+      260.37
+     ],
+     "thumb_in_window": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    }
+   ],
+   "arms": [
+    {
+     "arm": "blind",
+     "label": "Blind (no video)",
+     "method": "blind",
+     "tag": "demo_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "A",
+     "gold": "A",
+     "correct": true,
+     "latency_s": 0.07302188500761986,
+     "selection_latency_s": null,
+     "input_tokens": 215,
+     "video_tokens": 0,
+     "predictions_all_passes": [
+      "A"
+     ]
+    },
+    {
+     "arm": "native",
+     "label": "All cameras, 96 frames",
+     "method": "cvbench_native",
+     "tag": "demo_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "A",
+     "gold": "A",
+     "correct": true,
+     "latency_s": 4.337799146771431,
+     "selection_latency_s": null,
+     "input_tokens": 25443,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "A"
+     ]
+    },
+    {
+     "arm": "seg_perclip",
+     "label": "SigLIP segments 96 (per-clip)",
+     "method": "segment_select_siglip",
+     "tag": "demo_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "A",
+     "gold": "A",
+     "correct": true,
+     "latency_s": 3.297153316438198,
+     "selection_latency_s": 51.185,
+     "input_tokens": 25328,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "A"
+     ]
+    },
+    {
+     "arm": "seg_global",
+     "label": "SigLIP segments 96 (global)",
+     "method": "segment_select_siglip",
+     "tag": "demo_global_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_global_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "A",
+     "gold": "A",
+     "correct": true,
+     "latency_s": 3.3183468095958233,
+     "selection_latency_s": 51.332,
+     "input_tokens": 25353,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "A"
+     ]
+    },
+    {
+     "arm": "viclip_perclip",
+     "label": "ViCLIP segments 96 (per-clip)",
+     "method": "segment_select_viclip_opt",
+     "tag": "demo_viclip_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_viclip_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "A",
+     "gold": "A",
+     "correct": true,
+     "latency_s": 3.299452628940344,
+     "selection_latency_s": 42.206,
+     "input_tokens": 25328,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "A"
+     ]
+    },
+    {
+     "arm": "viclip_global",
+     "label": "ViCLIP segments 96 (global)",
+     "method": "segment_select_viclip_opt",
+     "tag": "demo_viclip_global_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_viclip_global_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "A",
+     "gold": "A",
+     "correct": true,
+     "latency_s": 3.3092614710330963,
+     "selection_latency_s": 42.443,
+     "input_tokens": 25353,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "A"
+     ]
+    }
+   ],
+   "trace_excerpt": "A",
+   "trace_source": {
+    "method": "segment_select_viclip_opt",
+    "tag": "demo_viclip_direct",
+    "arm": "viclip_perclip",
+    "protocol": "direct"
+   },
+   "trace_is_reasoning": false,
+   "trace_is_blind": false,
+   "trace_full_chars": 1
+  },
+  {
+   "id": 251,
+   "question": "Put the following moments in the order they happened, based on what was seen across the video feeds: I. A person sits down II. A person stands up III. A person with rust hair, wearing a pink top, black pants, and navy shoes, carrying a bag, exits the view through a doorway IV. A person with teal hair, wearing a patterned blue top, navy pants, and navy shoes, sits down Which sequence is correct?",
+   "options": [
+    "A. II -> IV -> I -> III",
+    "B. III -> IV -> I -> II",
+    "C. III -> I -> IV -> II",
+    "D. I -> III -> IV -> II"
+   ],
+   "gold": "C",
+   "question_type": "event_ordering",
+   "task_type": "CrossView-MEVA-Event-Ordering",
+   "orig_id": "2018-03-15.14-50.bus#251",
+   "requires_cameras": [
+    "G331",
+    "G506",
+    "G508",
+    "G509"
+   ],
+   "selection_leg": {
+    "method": "segment_select_viclip_opt",
+    "tag": "demo_viclip_direct",
+    "protocol": "direct",
+    "pass_idx": 1,
+    "scorer": "viclip",
+    "budget": 96,
+    "frames_per_segment": 8,
+    "segments_keep": 4
+   },
+   "global_leg": {
+    "method": "segment_select_viclip_opt",
+    "tag": "demo_viclip_global_direct"
+   },
+   "event_windows": [
+    {
+     "label": "#1",
+     "camera": "G509",
+     "start_sec": 34.27,
+     "end_sec": 36.43,
+     "end_estimated": false,
+     "activity": "person_exits_scene_through_structure",
+     "description": "a person with rust hair, wearing a pink top and black pants, navy shoes, carrying a bag, leaving the camera's view through a doorway"
+    },
+    {
+     "label": "#2",
+     "camera": "G508",
+     "start_sec": 41.83,
+     "end_sec": 44.47,
+     "end_estimated": false,
+     "activity": "person_sits_down",
+     "description": "A person sitting down"
+    },
+    {
+     "label": "#3",
+     "camera": "G506",
+     "start_sec": 48.7,
+     "end_sec": 49.67,
+     "end_estimated": false,
+     "activity": "person_sits_down",
+     "description": "a person with teal hair, wearing a patterned blue top and navy pants, navy shoes, sitting down"
+    },
+    {
+     "label": "#4",
+     "camera": "G331",
+     "start_sec": 55.6,
+     "end_sec": 57.0,
+     "end_estimated": false,
+     "activity": "person_stands_up",
+     "description": "A person standing up"
+    }
+   ],
+   "cameras": [
+    {
+     "slot": 1,
+     "camera": "G331",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-15/14/2018-03-15.14-50.bus/2018-03-15.14-50-00.14-55-00.bus.G331.r13.mp4",
+     "duration_s": 300.27,
+     "fps": 30.0,
+     "n_frames_mp4": 9008,
+     "n_frames_scored": 9008,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.53
+      ],
+      [
+       37.53,
+       75.07
+      ],
+      [
+       75.07,
+       112.6
+      ],
+      [
+       112.6,
+       150.13
+      ],
+      [
+       150.13,
+       187.67
+      ],
+      [
+       187.67,
+       225.2
+      ],
+      [
+       225.2,
+       262.73
+      ],
+      [
+       262.73,
+       300.27
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.113657,
+      "1": 0.111464,
+      "2": 0.1167,
+      "3": 0.11497,
+      "4": 0.115922,
+      "5": 0.113886,
+      "6": 0.116901,
+      "7": 0.1166
+     },
+     "max_score": 0.116901,
+     "segments_kept": [
+      2,
+      4,
+      6,
+      7
+     ],
+     "segments_kept_global": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "selected_times_s": [
+      77.4,
+      82.1,
+      91.47,
+      96.17,
+      100.87,
+      110.23,
+      152.47,
+      157.17,
+      166.53,
+      171.23,
+      175.93,
+      185.3,
+      227.53,
+      236.9,
+      241.6,
+      246.3,
+      255.67,
+      260.37,
+      265.07,
+      274.43,
+      279.13,
+      283.83,
+      293.2,
+      297.9
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      2.33,
+      7.03,
+      11.7,
+      16.4,
+      21.1,
+      25.8,
+      30.47,
+      35.17,
+      39.87,
+      44.57,
+      49.23,
+      53.93,
+      58.63,
+      63.33,
+      68.0,
+      72.7,
+      77.4,
+      82.1,
+      86.77,
+      91.47,
+      96.17,
+      100.87,
+      105.53,
+      110.23,
+      114.93,
+      119.63,
+      124.3,
+      129.0,
+      133.7,
+      138.4,
+      143.07,
+      147.77,
+      152.47,
+      157.17,
+      161.83,
+      166.53,
+      171.23,
+      175.93,
+      180.6,
+      185.3,
+      190.0,
+      194.7,
+      199.37,
+      204.07,
+      208.77,
+      213.47,
+      218.13,
+      222.83,
+      227.53,
+      232.23,
+      236.9,
+      241.6,
+      246.3,
+      251.0,
+      255.67,
+      260.37,
+      265.07,
+      269.77,
+      274.43,
+      279.13,
+      283.83,
+      288.53,
+      293.2,
+      297.9
+     ],
+     "n_frames_selected_global": 64,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "#4",
+       "camera": "G331",
+       "start_sec": 55.6,
+       "end_sec": 57.0,
+       "end_estimated": false,
+       "activity": "person_stands_up",
+       "description": "A person standing up",
+       "nearest_frame_gap_s": 20.4
+      }
+     ],
+     "thumb_times_s": [
+      77.4,
+      110.23,
+      171.23,
+      241.6,
+      265.07,
+      297.9
+     ],
+     "thumb_in_window": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    {
+     "slot": 2,
+     "camera": "G506",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-15/14/2018-03-15.14-50.bus/2018-03-15.14-50-01.14-55-01.bus.G506.r13.mp4",
+     "duration_s": 300.0,
+     "fps": 30.0,
+     "n_frames_mp4": 9000,
+     "n_frames_scored": 9000,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.5
+      ],
+      [
+       37.5,
+       75.0
+      ],
+      [
+       75.0,
+       112.5
+      ],
+      [
+       112.5,
+       150.0
+      ],
+      [
+       150.0,
+       187.5
+      ],
+      [
+       187.5,
+       225.0
+      ],
+      [
+       225.0,
+       262.5
+      ],
+      [
+       262.5,
+       300.0
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.0994,
+      "1": 0.098015,
+      "2": 0.094518,
+      "3": 0.097899,
+      "4": 0.095542,
+      "5": 0.099074,
+      "6": 0.09468,
+      "7": 0.097511
+     },
+     "max_score": 0.0994,
+     "segments_kept": [
+      0,
+      1,
+      3,
+      5
+     ],
+     "segments_kept_global": [
+      0
+     ],
+     "selected_times_s": [
+      2.33,
+      7.0,
+      16.4,
+      21.07,
+      25.77,
+      35.13,
+      39.83,
+      44.5,
+      53.9,
+      58.57,
+      63.27,
+      72.63,
+      114.83,
+      124.2,
+      128.9,
+      133.57,
+      142.97,
+      147.63,
+      189.83,
+      199.2,
+      203.9,
+      208.57,
+      217.97,
+      222.63
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      2.33,
+      7.0,
+      11.7,
+      16.4,
+      21.07,
+      25.77,
+      30.47,
+      35.13
+     ],
+     "n_frames_selected_global": 8,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "#3",
+       "camera": "G506",
+       "start_sec": 48.7,
+       "end_sec": 49.67,
+       "end_estimated": false,
+       "activity": "person_sits_down",
+       "description": "a person with teal hair, wearing a patterned blue top and navy pants, navy shoes, sitting down",
+       "nearest_frame_gap_s": 4.2
+      }
+     ],
+     "thumb_times_s": [
+      2.33,
+      35.13,
+      58.57,
+      128.9,
+      189.83,
+      222.63
+     ],
+     "thumb_in_window": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    {
+     "slot": 3,
+     "camera": "G508",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-15/14/2018-03-15.14-50.bus/2018-03-15.14-50-00.14-55-00.bus.G508.r13.mp4",
+     "duration_s": 300.0,
+     "fps": 30.0,
+     "n_frames_mp4": 9000,
+     "n_frames_scored": 9000,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.5
+      ],
+      [
+       37.5,
+       75.0
+      ],
+      [
+       75.0,
+       112.5
+      ],
+      [
+       112.5,
+       150.0
+      ],
+      [
+       150.0,
+       187.5
+      ],
+      [
+       187.5,
+       225.0
+      ],
+      [
+       225.0,
+       262.5
+      ],
+      [
+       262.5,
+       300.0
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.106913,
+      "1": 0.106322,
+      "2": 0.10504,
+      "3": 0.11439,
+      "4": 0.104863,
+      "5": 0.103905,
+      "6": 0.108862,
+      "7": 0.111904
+     },
+     "max_score": 0.11439,
+     "segments_kept": [
+      0,
+      3,
+      6,
+      7
+     ],
+     "segments_kept_global": [
+      3,
+      7
+     ],
+     "selected_times_s": [
+      2.33,
+      7.0,
+      16.4,
+      21.07,
+      25.77,
+      35.13,
+      114.83,
+      119.5,
+      128.9,
+      133.57,
+      138.27,
+      147.63,
+      227.33,
+      236.7,
+      241.4,
+      246.07,
+      255.47,
+      260.13,
+      264.83,
+      274.2,
+      278.9,
+      283.57,
+      292.97,
+      297.63
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      114.83,
+      119.5,
+      124.2,
+      128.9,
+      133.57,
+      138.27,
+      142.97,
+      147.63,
+      264.83,
+      269.5,
+      274.2,
+      278.9,
+      283.57,
+      288.27,
+      292.97,
+      297.63
+     ],
+     "n_frames_selected_global": 16,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "#2",
+       "camera": "G508",
+       "start_sec": 41.83,
+       "end_sec": 44.47,
+       "end_estimated": false,
+       "activity": "person_sits_down",
+       "description": "A person sitting down",
+       "nearest_frame_gap_s": 6.7
+      }
+     ],
+     "thumb_times_s": [
+      2.33,
+      35.13,
+      133.57,
+      241.4,
+      264.83,
+      297.63
+     ],
+     "thumb_in_window": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    {
+     "slot": 4,
+     "camera": "G509",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-15/14/2018-03-15.14-50.bus/2018-03-15.14-50-00.14-55-00.bus.G509.r13.mp4",
+     "duration_s": 300.0,
+     "fps": 30.0,
+     "n_frames_mp4": 9000,
+     "n_frames_scored": 9000,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.5
+      ],
+      [
+       37.5,
+       75.0
+      ],
+      [
+       75.0,
+       112.5
+      ],
+      [
+       112.5,
+       150.0
+      ],
+      [
+       150.0,
+       187.5
+      ],
+      [
+       187.5,
+       225.0
+      ],
+      [
+       225.0,
+       262.5
+      ],
+      [
+       262.5,
+       300.0
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.09512,
+      "1": 0.100305,
+      "2": 0.084475,
+      "3": 0.082475,
+      "4": 0.089874,
+      "5": 0.08784,
+      "6": 0.09463,
+      "7": 0.084952
+     },
+     "max_score": 0.100305,
+     "segments_kept": [
+      0,
+      1,
+      4,
+      6
+     ],
+     "segments_kept_global": [
+      1
+     ],
+     "selected_times_s": [
+      2.33,
+      7.0,
+      16.4,
+      21.07,
+      25.77,
+      35.13,
+      39.83,
+      44.5,
+      53.9,
+      58.57,
+      63.27,
+      72.63,
+      152.33,
+      161.7,
+      166.4,
+      171.07,
+      180.47,
+      185.13,
+      227.33,
+      236.7,
+      241.4,
+      246.07,
+      255.47,
+      260.13
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      39.83,
+      44.5,
+      49.2,
+      53.9,
+      58.57,
+      63.27,
+      67.97,
+      72.63
+     ],
+     "n_frames_selected_global": 8,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "#1",
+       "camera": "G509",
+       "start_sec": 34.27,
+       "end_sec": 36.43,
+       "end_estimated": false,
+       "activity": "person_exits_scene_through_structure",
+       "description": "a person with rust hair, wearing a pink top and black pants, navy shoes, carrying a bag, leaving the camera's view through a doorway",
+       "nearest_frame_gap_s": 0.0
+      }
+     ],
+     "thumb_times_s": [
+      2.33,
+      35.13,
+      58.57,
+      166.4,
+      227.33,
+      260.13
+     ],
+     "thumb_in_window": [
+      false,
+      true,
+      false,
+      false,
+      false,
+      false
+     ]
+    }
+   ],
+   "arms": [
+    {
+     "arm": "blind",
+     "label": "Blind (no video)",
+     "method": "blind",
+     "tag": "demo_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "C",
+     "gold": "C",
+     "correct": true,
+     "latency_s": 0.07266641408205032,
+     "selection_latency_s": null,
+     "input_tokens": 217,
+     "video_tokens": 0,
+     "predictions_all_passes": [
+      "C"
+     ]
+    },
+    {
+     "arm": "native",
+     "label": "All cameras, 96 frames",
+     "method": "cvbench_native",
+     "tag": "demo_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 0,
+     "prediction": "B",
+     "gold": "C",
+     "correct": false,
+     "latency_s": 3.2929635606706142,
+     "selection_latency_s": null,
+     "input_tokens": 25445,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "B"
+     ]
+    },
+    {
+     "arm": "seg_perclip",
+     "label": "SigLIP segments 96 (per-clip)",
+     "method": "segment_select_siglip",
+     "tag": "demo_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "C",
+     "gold": "C",
+     "correct": true,
+     "latency_s": 3.2881935611367226,
+     "selection_latency_s": 50.707,
+     "input_tokens": 25330,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "C"
+     ]
+    },
+    {
+     "arm": "seg_global",
+     "label": "SigLIP segments 96 (global)",
+     "method": "segment_select_siglip",
+     "tag": "demo_global_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_global_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "C",
+     "gold": "C",
+     "correct": true,
+     "latency_s": 3.306688092648983,
+     "selection_latency_s": 51.353,
+     "input_tokens": 25355,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "C"
+     ]
+    },
+    {
+     "arm": "viclip_perclip",
+     "label": "ViCLIP segments 96 (per-clip)",
+     "method": "segment_select_viclip_opt",
+     "tag": "demo_viclip_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_viclip_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "C",
+     "gold": "C",
+     "correct": true,
+     "latency_s": 3.285078279674053,
+     "selection_latency_s": 43.485,
+     "input_tokens": 25330,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "C"
+     ]
+    },
+    {
+     "arm": "viclip_global",
+     "label": "ViCLIP segments 96 (global)",
+     "method": "segment_select_viclip_opt",
+     "tag": "demo_viclip_global_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_viclip_global_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "C",
+     "gold": "C",
+     "correct": true,
+     "latency_s": 3.2854592204093933,
+     "selection_latency_s": 43.498,
+     "input_tokens": 25355,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "C"
+     ]
+    }
+   ],
+   "trace_excerpt": "C",
+   "trace_source": {
+    "method": "segment_select_viclip_opt",
+    "tag": "demo_viclip_direct",
+    "arm": "viclip_perclip",
+    "protocol": "direct"
+   },
+   "trace_is_reasoning": false,
+   "trace_is_blind": false,
+   "trace_full_chars": 1
+  },
+  {
+   "id": 1,
+   "question": "Put these four moments in the order they happened: I. A black-haired person in a dark green top, indigo pants, and indigo shoes, wearing a scarf, walks into view through a doorway II. A vehicle begins moving III. A black-haired person in an olive top, black pants, and navy shoes, wearing a hat, is texting on a phone IV. A vehicle reverses Which sequence is correct?",
+   "options": [
+    "A. II -> IV -> I -> III",
+    "B. III -> IV -> I -> II",
+    "C. III -> I -> IV -> II",
+    "D. I -> III -> IV -> II"
+   ],
+   "gold": "C",
+   "question_type": "event_ordering",
+   "task_type": "CrossView-MEVA-Event-Ordering",
+   "orig_id": "2018-03-05.13-10.school#1",
+   "requires_cameras": [
+    "G300",
+    "G328",
+    "G420",
+    "G424"
+   ],
+   "selection_leg": {
+    "method": "segment_select_viclip_opt",
+    "tag": "demo_viclip_direct",
+    "protocol": "direct",
+    "pass_idx": 1,
+    "scorer": "viclip",
+    "budget": 96,
+    "frames_per_segment": 8,
+    "segments_keep": 4
+   },
+   "global_leg": {
+    "method": "segment_select_viclip_opt",
+    "tag": "demo_viclip_global_direct"
+   },
+   "event_windows": [
+    {
+     "label": "#1",
+     "camera": "G420",
+     "start_sec": 21.57,
+     "end_sec": 29.27,
+     "end_estimated": false,
+     "activity": "person_texts_on_phone",
+     "description": "a person with black hair, wearing an olive top and black pants, navy shoes, with a hat, texting on phone"
+    },
+    {
+     "label": "#2",
+     "camera": "G300",
+     "start_sec": 33.97,
+     "end_sec": 35.7,
+     "end_estimated": false,
+     "activity": "person_enters_scene_through_structure",
+     "description": "a person with black hair, wearing a dark green top and indigo pants, indigo shoes, with a scarf, entering the camera's view through a doorway"
+    },
+    {
+     "label": "#3",
+     "camera": "G424",
+     "start_sec": 42.47,
+     "end_sec": 48.43,
+     "end_estimated": false,
+     "activity": "vehicle_reverses",
+     "description": "a vehicle, reversing"
+    },
+    {
+     "label": "#4",
+     "camera": "G328",
+     "start_sec": 50.9,
+     "end_sec": 52.6,
+     "end_estimated": false,
+     "activity": "vehicle_starts",
+     "description": "a vehicle, starting to move"
+    }
+   ],
+   "cameras": [
+    {
+     "slot": 1,
+     "camera": "G300",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-05/13/2018-03-05.13-10.school/2018-03-05.13-10-00.13-15-00.school.G300.r13.mp4",
+     "duration_s": 300.23,
+     "fps": 30.0,
+     "n_frames_mp4": 9007,
+     "n_frames_scored": 9007,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.53
+      ],
+      [
+       37.53,
+       75.07
+      ],
+      [
+       75.07,
+       112.6
+      ],
+      [
+       112.6,
+       150.13
+      ],
+      [
+       150.13,
+       187.63
+      ],
+      [
+       187.63,
+       225.17
+      ],
+      [
+       225.17,
+       262.7
+      ],
+      [
+       262.7,
+       300.23
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.130843,
+      "1": 0.127013,
+      "2": 0.12795,
+      "3": 0.128846,
+      "4": 0.127972,
+      "5": 0.127925,
+      "6": 0.127918,
+      "7": 0.13015
+     },
+     "max_score": 0.130843,
+     "segments_kept": [
+      0,
+      3,
+      4,
+      7
+     ],
+     "segments_kept_global": [
+      0,
+      7
+     ],
+     "selected_times_s": [
+      2.33,
+      7.03,
+      16.4,
+      21.1,
+      25.8,
+      35.17,
+      114.93,
+      119.63,
+      129.0,
+      133.7,
+      138.4,
+      147.77,
+      152.47,
+      161.83,
+      166.53,
+      171.2,
+      180.6,
+      185.27,
+      265.03,
+      274.4,
+      279.1,
+      283.8,
+      293.17,
+      297.87
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      2.33,
+      7.03,
+      11.7,
+      16.4,
+      21.1,
+      25.8,
+      30.47,
+      35.17,
+      265.03,
+      269.73,
+      274.4,
+      279.1,
+      283.8,
+      288.5,
+      293.17,
+      297.87
+     ],
+     "n_frames_selected_global": 16,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "#2",
+       "camera": "G300",
+       "start_sec": 33.97,
+       "end_sec": 35.7,
+       "end_estimated": false,
+       "activity": "person_enters_scene_through_structure",
+       "description": "a person with black hair, wearing a dark green top and indigo pants, indigo shoes, with a scarf, entering the camera's view through a doorway",
+       "nearest_frame_gap_s": 0.0
+      }
+     ],
+     "thumb_times_s": [
+      2.33,
+      35.17,
+      133.7,
+      166.53,
+      265.03,
+      297.87
+     ],
+     "thumb_in_window": [
+      false,
+      true,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    {
+     "slot": 2,
+     "camera": "G328",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-05/13/2018-03-05.13-10.school/2018-03-05.13-10-01.13-15-01.school.G328.r13.mp4",
+     "duration_s": 300.07,
+     "fps": 30.0,
+     "n_frames_mp4": 9002,
+     "n_frames_scored": 9002,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.5
+      ],
+      [
+       37.5,
+       75.0
+      ],
+      [
+       75.0,
+       112.53
+      ],
+      [
+       112.53,
+       150.03
+      ],
+      [
+       150.03,
+       187.53
+      ],
+      [
+       187.53,
+       225.07
+      ],
+      [
+       225.07,
+       262.57
+      ],
+      [
+       262.57,
+       300.07
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.109088,
+      "1": 0.108048,
+      "2": 0.108399,
+      "3": 0.108165,
+      "4": 0.107781,
+      "5": 0.107195,
+      "6": 0.105361,
+      "7": 0.109047
+     },
+     "max_score": 0.109088,
+     "segments_kept": [
+      0,
+      2,
+      3,
+      7
+     ],
+     "segments_kept_global": [
+      0
+     ],
+     "selected_times_s": [
+      2.33,
+      7.0,
+      16.4,
+      21.07,
+      25.77,
+      35.13,
+      77.33,
+      82.03,
+      91.4,
+      96.1,
+      100.8,
+      110.17,
+      114.87,
+      124.23,
+      128.93,
+      133.6,
+      143.0,
+      147.67,
+      264.9,
+      274.27,
+      278.97,
+      283.63,
+      293.03,
+      297.7
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      2.33,
+      7.0,
+      11.7,
+      16.4,
+      21.07,
+      25.77,
+      30.47,
+      35.13
+     ],
+     "n_frames_selected_global": 8,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "#4",
+       "camera": "G328",
+       "start_sec": 50.9,
+       "end_sec": 52.6,
+       "end_estimated": false,
+       "activity": "vehicle_starts",
+       "description": "a vehicle, starting to move",
+       "nearest_frame_gap_s": 15.77
+      }
+     ],
+     "thumb_times_s": [
+      2.33,
+      35.13,
+      96.1,
+      128.93,
+      264.9,
+      297.7
+     ],
+     "thumb_in_window": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    {
+     "slot": 3,
+     "camera": "G420",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-05/13/2018-03-05.13-10.school/2018-03-05.13-10-01.13-15-01.school.G420.r13.mp4",
+     "duration_s": 300.0,
+     "fps": 30.0,
+     "n_frames_mp4": 9000,
+     "n_frames_scored": 9000,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.5
+      ],
+      [
+       37.5,
+       75.0
+      ],
+      [
+       75.0,
+       112.5
+      ],
+      [
+       112.5,
+       150.0
+      ],
+      [
+       150.0,
+       187.5
+      ],
+      [
+       187.5,
+       225.0
+      ],
+      [
+       225.0,
+       262.5
+      ],
+      [
+       262.5,
+       300.0
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.129391,
+      "1": 0.134218,
+      "2": 0.133815,
+      "3": 0.133948,
+      "4": 0.133835,
+      "5": 0.133929,
+      "6": 0.134236,
+      "7": 0.134079
+     },
+     "max_score": 0.134236,
+     "segments_kept": [
+      1,
+      3,
+      6,
+      7
+     ],
+     "segments_kept_global": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "selected_times_s": [
+      39.83,
+      44.5,
+      53.9,
+      58.57,
+      63.27,
+      72.63,
+      114.83,
+      119.5,
+      128.9,
+      133.57,
+      138.27,
+      147.63,
+      227.33,
+      236.7,
+      241.4,
+      246.07,
+      255.47,
+      260.13,
+      264.83,
+      274.2,
+      278.9,
+      283.57,
+      292.97,
+      297.63
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      2.33,
+      7.0,
+      11.7,
+      16.4,
+      21.07,
+      25.77,
+      30.47,
+      35.13,
+      39.83,
+      44.5,
+      49.2,
+      53.9,
+      58.57,
+      63.27,
+      67.97,
+      72.63,
+      77.33,
+      82.0,
+      86.7,
+      91.4,
+      96.07,
+      100.77,
+      105.47,
+      110.13,
+      114.83,
+      119.5,
+      124.2,
+      128.9,
+      133.57,
+      138.27,
+      142.97,
+      147.63,
+      152.33,
+      157.0,
+      161.7,
+      166.4,
+      171.07,
+      175.77,
+      180.47,
+      185.13,
+      189.83,
+      194.5,
+      199.2,
+      203.9,
+      208.57,
+      213.27,
+      217.97,
+      222.63,
+      227.33,
+      232.0,
+      236.7,
+      241.4,
+      246.07,
+      250.77,
+      255.47,
+      260.13,
+      264.83,
+      269.5,
+      274.2,
+      278.9,
+      283.57,
+      288.27,
+      292.97,
+      297.63
+     ],
+     "n_frames_selected_global": 64,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "#1",
+       "camera": "G420",
+       "start_sec": 21.57,
+       "end_sec": 29.27,
+       "end_estimated": false,
+       "activity": "person_texts_on_phone",
+       "description": "a person with black hair, wearing an olive top and black pants, navy shoes, with a hat, texting on phone",
+       "nearest_frame_gap_s": 10.56
+      }
+     ],
+     "thumb_times_s": [
+      39.83,
+      72.63,
+      133.57,
+      241.4,
+      264.83,
+      297.63
+     ],
+     "thumb_in_window": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    {
+     "slot": 4,
+     "camera": "G424",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-05/13/2018-03-05.13-10.school/2018-03-05.13-10-00.13-15-00.school.G424.r13.mp4",
+     "duration_s": 300.17,
+     "fps": 30.0,
+     "n_frames_mp4": 9005,
+     "n_frames_scored": 9005,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.53
+      ],
+      [
+       37.53,
+       75.03
+      ],
+      [
+       75.03,
+       112.57
+      ],
+      [
+       112.57,
+       150.07
+      ],
+      [
+       150.07,
+       187.6
+      ],
+      [
+       187.6,
+       225.13
+      ],
+      [
+       225.13,
+       262.63
+      ],
+      [
+       262.63,
+       300.17
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.085352,
+      "1": 0.087657,
+      "2": 0.088713,
+      "3": 0.089611,
+      "4": 0.089469,
+      "5": 0.087813,
+      "6": 0.08561,
+      "7": 0.08809
+     },
+     "max_score": 0.089611,
+     "segments_kept": [
+      2,
+      3,
+      4,
+      7
+     ],
+     "segments_kept_global": [
+      3
+     ],
+     "selected_times_s": [
+      77.37,
+      82.07,
+      91.43,
+      96.13,
+      100.83,
+      110.2,
+      114.9,
+      119.57,
+      128.97,
+      133.63,
+      138.33,
+      147.7,
+      152.4,
+      161.77,
+      166.47,
+      171.17,
+      180.53,
+      185.23,
+      264.97,
+      274.33,
+      279.03,
+      283.73,
+      293.1,
+      297.8
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      114.9,
+      119.57,
+      124.27,
+      128.97,
+      133.63,
+      138.33,
+      143.03,
+      147.7
+     ],
+     "n_frames_selected_global": 8,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "#3",
+       "camera": "G424",
+       "start_sec": 42.47,
+       "end_sec": 48.43,
+       "end_estimated": false,
+       "activity": "vehicle_reverses",
+       "description": "a vehicle, reversing",
+       "nearest_frame_gap_s": 28.94
+      }
+     ],
+     "thumb_times_s": [
+      77.37,
+      110.2,
+      133.63,
+      166.47,
+      264.97,
+      297.8
+     ],
+     "thumb_in_window": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    }
+   ],
+   "arms": [
+    {
+     "arm": "blind",
+     "label": "Blind (no video)",
+     "method": "blind",
+     "tag": "demo_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 0,
+     "prediction": "D",
+     "gold": "C",
+     "correct": false,
+     "latency_s": 0.06162576377391815,
+     "selection_latency_s": null,
+     "input_tokens": 211,
+     "video_tokens": 0,
+     "predictions_all_passes": [
+      "D"
+     ]
+    },
+    {
+     "arm": "native",
+     "label": "All cameras, 96 frames",
+     "method": "cvbench_native",
+     "tag": "demo_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "C",
+     "gold": "C",
+     "correct": true,
+     "latency_s": 3.2920645736157894,
+     "selection_latency_s": null,
+     "input_tokens": 25439,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "C"
+     ]
+    },
+    {
+     "arm": "seg_perclip",
+     "label": "SigLIP segments 96 (per-clip)",
+     "method": "segment_select_siglip",
+     "tag": "demo_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "C",
+     "gold": "C",
+     "correct": true,
+     "latency_s": 3.2942927666008472,
+     "selection_latency_s": 50.825,
+     "input_tokens": 25324,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "C"
+     ]
+    },
+    {
+     "arm": "seg_global",
+     "label": "SigLIP segments 96 (global)",
+     "method": "segment_select_siglip",
+     "tag": "demo_global_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_global_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "C",
+     "gold": "C",
+     "correct": true,
+     "latency_s": 3.321592830121517,
+     "selection_latency_s": 51.139,
+     "input_tokens": 25350,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "C"
+     ]
+    },
+    {
+     "arm": "viclip_perclip",
+     "label": "ViCLIP segments 96 (per-clip)",
+     "method": "segment_select_viclip_opt",
+     "tag": "demo_viclip_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_viclip_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "C",
+     "gold": "C",
+     "correct": true,
+     "latency_s": 3.2907565906643867,
+     "selection_latency_s": 42.995,
+     "input_tokens": 25324,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "C"
+     ]
+    },
+    {
+     "arm": "viclip_global",
+     "label": "ViCLIP segments 96 (global)",
+     "method": "segment_select_viclip_opt",
+     "tag": "demo_viclip_global_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_viclip_global_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 1,
+     "prediction": "C",
+     "gold": "C",
+     "correct": true,
+     "latency_s": 3.2850583158433437,
+     "selection_latency_s": 43.177,
+     "input_tokens": 25349,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "C"
+     ]
+    }
+   ],
+   "trace_excerpt": "C",
+   "trace_source": {
+    "method": "segment_select_viclip_opt",
+    "tag": "demo_viclip_direct",
+    "arm": "viclip_perclip",
+    "protocol": "direct"
+   },
+   "trace_is_reasoning": false,
+   "trace_is_blind": false,
+   "trace_full_chars": 1
+  },
+  {
+   "id": 130,
+   "question": "Put the following observed actions in the order they happened: I. Someone comes into view by walking through a doorway II. Someone opens a facility door III. Someone sets an object down IV. Someone picks an object up Which sequence is correct?",
+   "options": [
+    "A. II -> IV -> I -> III",
+    "B. III -> IV -> I -> II",
+    "C. III -> I -> IV -> II",
+    "D. I -> III -> IV -> II"
+   ],
+   "gold": "C",
+   "question_type": "event_ordering",
+   "task_type": "CrossView-MEVA-Event-Ordering",
+   "orig_id": "2018-03-11.16-15.school#130",
+   "requires_cameras": [
+    "G299",
+    "G328",
+    "G330",
+    "G424"
+   ],
+   "selection_leg": {
+    "method": "segment_select_viclip_opt",
+    "tag": "demo_viclip_direct",
+    "protocol": "direct",
+    "pass_idx": 1,
+    "scorer": "viclip",
+    "budget": 96,
+    "frames_per_segment": 8,
+    "segments_keep": 4
+   },
+   "global_leg": {
+    "method": "segment_select_viclip_opt",
+    "tag": "demo_viclip_global_direct"
+   },
+   "event_windows": [
+    {
+     "label": "#1",
+     "camera": "G299",
+     "start_sec": 5.6,
+     "end_sec": 9.03,
+     "end_estimated": false,
+     "activity": "person_puts_down_object",
+     "description": "A person putting down object"
+    },
+    {
+     "label": "#2",
+     "camera": "G424",
+     "start_sec": 17.73,
+     "end_sec": 19.07,
+     "end_estimated": false,
+     "activity": "person_enters_scene_through_structure",
+     "description": "A person entering the camera's view through a doorway"
+    },
+    {
+     "label": "#3",
+     "camera": "G330",
+     "start_sec": 26.17,
+     "end_sec": 26.7,
+     "end_estimated": false,
+     "activity": "person_picks_up_object",
+     "description": "A person picking up object"
+    },
+    {
+     "label": "#4",
+     "camera": "G328",
+     "start_sec": 36.47,
+     "end_sec": 39.5,
+     "end_estimated": false,
+     "activity": "person_opens_facility_door",
+     "description": "A person opening a facility door"
+    }
+   ],
+   "cameras": [
+    {
+     "slot": 1,
+     "camera": "G299",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-11/16/2018-03-11.16-15.school/2018-03-11.16-15-00.16-20-00.school.G299.r13.mp4",
+     "duration_s": 300.2,
+     "fps": 30.0,
+     "n_frames_mp4": 9006,
+     "n_frames_scored": 9006,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.53
+      ],
+      [
+       37.53,
+       75.07
+      ],
+      [
+       75.07,
+       112.57
+      ],
+      [
+       112.57,
+       150.1
+      ],
+      [
+       150.1,
+       187.63
+      ],
+      [
+       187.63,
+       225.13
+      ],
+      [
+       225.13,
+       262.67
+      ],
+      [
+       262.67,
+       300.2
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.099842,
+      "1": 0.101028,
+      "2": 0.095933,
+      "3": 0.098067,
+      "4": 0.099741,
+      "5": 0.098885,
+      "6": 0.10075,
+      "7": 0.100726
+     },
+     "max_score": 0.101028,
+     "segments_kept": [
+      0,
+      1,
+      6,
+      7
+     ],
+     "segments_kept_global": [
+      1
+     ],
+     "selected_times_s": [
+      2.33,
+      7.03,
+      16.4,
+      21.1,
+      25.8,
+      35.17,
+      39.87,
+      44.57,
+      53.93,
+      58.63,
+      63.33,
+      72.7,
+      227.47,
+      236.83,
+      241.53,
+      246.23,
+      255.6,
+      260.3,
+      265.0,
+      274.37,
+      279.07,
+      283.77,
+      293.13,
+      297.83
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      39.87,
+      44.57,
+      49.23,
+      53.93,
+      58.63,
+      63.33,
+      68.0,
+      72.7
+     ],
+     "n_frames_selected_global": 8,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "#1",
+       "camera": "G299",
+       "start_sec": 5.6,
+       "end_sec": 9.03,
+       "end_estimated": false,
+       "activity": "person_puts_down_object",
+       "description": "A person putting down object",
+       "nearest_frame_gap_s": 0.0
+      }
+     ],
+     "thumb_times_s": [
+      7.03,
+      35.17,
+      58.63,
+      241.53,
+      265.0,
+      297.83
+     ],
+     "thumb_in_window": [
+      true,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    {
+     "slot": 2,
+     "camera": "G328",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-11/16/2018-03-11.16-15.school/2018-03-11.16-15-01.16-20-01.school.G328.r13.mp4",
+     "duration_s": 300.0,
+     "fps": 30.0,
+     "n_frames_mp4": 9000,
+     "n_frames_scored": 9000,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.5
+      ],
+      [
+       37.5,
+       75.0
+      ],
+      [
+       75.0,
+       112.5
+      ],
+      [
+       112.5,
+       150.0
+      ],
+      [
+       150.0,
+       187.5
+      ],
+      [
+       187.5,
+       225.0
+      ],
+      [
+       225.0,
+       262.5
+      ],
+      [
+       262.5,
+       300.0
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.103948,
+      "1": 0.104004,
+      "2": 0.103003,
+      "3": 0.101637,
+      "4": 0.100984,
+      "5": 0.101227,
+      "6": 0.100516,
+      "7": 0.10094
+     },
+     "max_score": 0.104004,
+     "segments_kept": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "segments_kept_global": [
+      0,
+      1
+     ],
+     "selected_times_s": [
+      2.33,
+      7.0,
+      16.4,
+      21.07,
+      25.77,
+      35.13,
+      39.83,
+      44.5,
+      53.9,
+      58.57,
+      63.27,
+      72.63,
+      77.33,
+      86.7,
+      91.4,
+      96.07,
+      105.47,
+      110.13,
+      114.83,
+      124.2,
+      128.9,
+      133.57,
+      142.97,
+      147.63
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      2.33,
+      7.0,
+      11.7,
+      16.4,
+      21.07,
+      25.77,
+      30.47,
+      35.13,
+      39.83,
+      44.5,
+      49.2,
+      53.9,
+      58.57,
+      63.27,
+      67.97,
+      72.63
+     ],
+     "n_frames_selected_global": 16,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "#4",
+       "camera": "G328",
+       "start_sec": 36.47,
+       "end_sec": 39.5,
+       "end_estimated": false,
+       "activity": "person_opens_facility_door",
+       "description": "A person opening a facility door",
+       "nearest_frame_gap_s": 0.33
+      }
+     ],
+     "thumb_times_s": [
+      2.33,
+      35.13,
+      39.83,
+      91.4,
+      114.83,
+      147.63
+     ],
+     "thumb_in_window": [
+      false,
+      true,
+      true,
+      false,
+      false,
+      false
+     ]
+    },
+    {
+     "slot": 3,
+     "camera": "G330",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-11/16/2018-03-11.16-15.school/2018-03-11.16-15-00.16-20-00.school.G330.r13.mp4",
+     "duration_s": 300.23,
+     "fps": 30.0,
+     "n_frames_mp4": 9007,
+     "n_frames_scored": 9007,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.53
+      ],
+      [
+       37.53,
+       75.07
+      ],
+      [
+       75.07,
+       112.6
+      ],
+      [
+       112.6,
+       150.13
+      ],
+      [
+       150.13,
+       187.63
+      ],
+      [
+       187.63,
+       225.17
+      ],
+      [
+       225.17,
+       262.7
+      ],
+      [
+       262.7,
+       300.23
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.106184,
+      "1": 0.107583,
+      "2": 0.109284,
+      "3": 0.106372,
+      "4": 0.108131,
+      "5": 0.105958,
+      "6": 0.108039,
+      "7": 0.113245
+     },
+     "max_score": 0.113245,
+     "segments_kept": [
+      2,
+      4,
+      6,
+      7
+     ],
+     "segments_kept_global": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "selected_times_s": [
+      77.4,
+      82.1,
+      91.47,
+      96.17,
+      100.87,
+      110.23,
+      152.47,
+      157.13,
+      166.53,
+      171.2,
+      175.9,
+      185.27,
+      227.5,
+      236.87,
+      241.57,
+      246.27,
+      255.63,
+      260.33,
+      265.03,
+      274.4,
+      279.1,
+      283.8,
+      293.17,
+      297.87
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      2.33,
+      7.03,
+      11.7,
+      16.4,
+      21.1,
+      25.8,
+      30.47,
+      35.17,
+      39.87,
+      44.57,
+      49.23,
+      53.93,
+      58.63,
+      63.33,
+      68.0,
+      72.7,
+      77.4,
+      82.1,
+      86.77,
+      91.47,
+      96.17,
+      100.87,
+      105.53,
+      110.23,
+      114.93,
+      119.63,
+      124.3,
+      129.0,
+      133.7,
+      138.4,
+      143.07,
+      147.77,
+      152.47,
+      157.13,
+      161.83,
+      166.53,
+      171.2,
+      175.9,
+      180.6,
+      185.27,
+      189.97,
+      194.67,
+      199.33,
+      204.03,
+      208.73,
+      213.43,
+      218.1,
+      222.8,
+      227.5,
+      232.2,
+      236.87,
+      241.57,
+      246.27,
+      250.97,
+      255.63,
+      260.33,
+      265.03,
+      269.73,
+      274.4,
+      279.1,
+      283.8,
+      288.5,
+      293.17,
+      297.87
+     ],
+     "n_frames_selected_global": 64,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "#3",
+       "camera": "G330",
+       "start_sec": 26.17,
+       "end_sec": 26.7,
+       "end_estimated": false,
+       "activity": "person_picks_up_object",
+       "description": "A person picking up object",
+       "nearest_frame_gap_s": 50.7
+      }
+     ],
+     "thumb_times_s": [
+      77.4,
+      110.23,
+      171.2,
+      241.57,
+      265.03,
+      297.87
+     ],
+     "thumb_in_window": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    },
+    {
+     "slot": 4,
+     "camera": "G424",
+     "path": "crossview-release-annotations/crossview-release/videos/meva/mp4_resized/2018-03-11/16/2018-03-11.16-15.school/2018-03-11.16-15-02.16-20-02.school.G424.r13.mp4",
+     "duration_s": 300.0,
+     "fps": 30.0,
+     "n_frames_mp4": 9000,
+     "n_frames_scored": 9000,
+     "n_segments": 8,
+     "segment_bounds_s": [
+      [
+       0.0,
+       37.5
+      ],
+      [
+       37.5,
+       75.0
+      ],
+      [
+       75.0,
+       112.5
+      ],
+      [
+       112.5,
+       150.0
+      ],
+      [
+       150.0,
+       187.5
+      ],
+      [
+       187.5,
+       225.0
+      ],
+      [
+       225.0,
+       262.5
+      ],
+      [
+       262.5,
+       300.0
+      ]
+     ],
+     "segment_scores": {
+      "0": 0.100349,
+      "1": 0.102534,
+      "2": 0.101211,
+      "3": 0.101867,
+      "4": 0.102076,
+      "5": 0.100631,
+      "6": 0.100647,
+      "7": 0.100949
+     },
+     "max_score": 0.102534,
+     "segments_kept": [
+      1,
+      2,
+      3,
+      4
+     ],
+     "segments_kept_global": [
+      1
+     ],
+     "selected_times_s": [
+      39.83,
+      44.5,
+      53.9,
+      58.57,
+      63.27,
+      72.63,
+      77.33,
+      82.0,
+      91.4,
+      96.07,
+      100.77,
+      110.13,
+      114.83,
+      124.2,
+      128.9,
+      133.57,
+      142.97,
+      147.63,
+      152.33,
+      161.7,
+      166.4,
+      171.07,
+      180.47,
+      185.13
+     ],
+     "n_frames_selected": 24,
+     "selected_times_global_s": [
+      39.83,
+      44.5,
+      49.2,
+      53.9,
+      58.57,
+      63.27,
+      67.97,
+      72.63
+     ],
+     "n_frames_selected_global": 8,
+     "evidence": true,
+     "event_windows": [
+      {
+       "label": "#2",
+       "camera": "G424",
+       "start_sec": 17.73,
+       "end_sec": 19.07,
+       "end_estimated": false,
+       "activity": "person_enters_scene_through_structure",
+       "description": "A person entering the camera's view through a doorway",
+       "nearest_frame_gap_s": 20.76
+      }
+     ],
+     "thumb_times_s": [
+      39.83,
+      72.63,
+      96.07,
+      128.9,
+      152.33,
+      185.13
+     ],
+     "thumb_in_window": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+     ]
+    }
+   ],
+   "arms": [
+    {
+     "arm": "blind",
+     "label": "Blind (no video)",
+     "method": "blind",
+     "tag": "demo_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 0,
+     "prediction": "A",
+     "gold": "C",
+     "correct": false,
+     "latency_s": 0.057222697883844376,
+     "selection_latency_s": null,
+     "input_tokens": 174,
+     "video_tokens": 0,
+     "predictions_all_passes": [
+      "A"
+     ]
+    },
+    {
+     "arm": "native",
+     "label": "All cameras, 96 frames",
+     "method": "cvbench_native",
+     "tag": "demo_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 0,
+     "prediction": "D",
+     "gold": "C",
+     "correct": false,
+     "latency_s": 3.280411433428526,
+     "selection_latency_s": null,
+     "input_tokens": 25402,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "D"
+     ]
+    },
+    {
+     "arm": "seg_perclip",
+     "label": "SigLIP segments 96 (per-clip)",
+     "method": "segment_select_siglip",
+     "tag": "demo_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 0,
+     "prediction": "A",
+     "gold": "C",
+     "correct": false,
+     "latency_s": 3.2894906364381313,
+     "selection_latency_s": 48.342,
+     "input_tokens": 25287,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "A"
+     ]
+    },
+    {
+     "arm": "seg_global",
+     "label": "SigLIP segments 96 (global)",
+     "method": "segment_select_siglip",
+     "tag": "demo_global_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_global_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 0,
+     "prediction": "A",
+     "gold": "C",
+     "correct": false,
+     "latency_s": 3.3347977809607983,
+     "selection_latency_s": 48.569,
+     "input_tokens": 25313,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "A"
+     ]
+    },
+    {
+     "arm": "viclip_perclip",
+     "label": "ViCLIP segments 96 (per-clip)",
+     "method": "segment_select_viclip_opt",
+     "tag": "demo_viclip_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_viclip_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 0,
+     "prediction": "A",
+     "gold": "C",
+     "correct": false,
+     "latency_s": 3.2767784856259823,
+     "selection_latency_s": 40.012,
+     "input_tokens": 25287,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "A"
+     ]
+    },
+    {
+     "arm": "viclip_global",
+     "label": "ViCLIP segments 96 (global)",
+     "method": "segment_select_viclip_opt",
+     "tag": "demo_viclip_global_direct",
+     "file": "rows/bench_demo_meva4cam_subset_internvl_demo_viclip_global_direct.jsonl",
+     "protocol": "direct",
+     "temperature": 0.1,
+     "n_passes": 1,
+     "n_correct": 0,
+     "prediction": "A",
+     "gold": "C",
+     "correct": false,
+     "latency_s": 3.2865131348371506,
+     "selection_latency_s": 40.044,
+     "input_tokens": 25312,
+     "video_tokens": 24576,
+     "predictions_all_passes": [
+      "A"
+     ]
+    }
+   ],
+   "trace_excerpt": "A",
+   "trace_source": {
+    "method": "segment_select_viclip_opt",
+    "tag": "demo_viclip_direct",
+    "arm": "viclip_perclip",
+    "protocol": "direct"
+   },
+   "trace_is_reasoning": false,
+   "trace_is_blind": false,
+   "trace_full_chars": 1
+  }
+ ],
+ "figures": [
+  "analysis/figs_demo_viclip/q860_selection.png",
+  "analysis/figs_demo_viclip/q860_answer.png",
+  "analysis/figs_demo_viclip/q749_selection.png",
+  "analysis/figs_demo_viclip/q749_answer.png",
+  "analysis/figs_demo_viclip/q251_selection.png",
+  "analysis/figs_demo_viclip/q251_answer.png",
+  "analysis/figs_demo_viclip/q1_selection.png",
+  "analysis/figs_demo_viclip/q1_answer.png",
+  "analysis/figs_demo_viclip/q130_selection.png",
+  "analysis/figs_demo_viclip/q130_answer.png",
+  "analysis/figs_demo_viclip/summary.png"
+ ],
+ "notes": []
+}

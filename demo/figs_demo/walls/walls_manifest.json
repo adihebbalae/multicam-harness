@@ -1,0 +1,604 @@
+{
+  "generated_by": "analysis/make_demo_walls.py",
+  "manifest": "analysis/figs_demo/manifest.json",
+  "mode": "per_clip",
+  "fps": 30.0,
+  "crf": 20,
+  "target_seconds": 14.0,
+  "max_speed": 4.0,
+  "answer_card_seconds": 3.0,
+  "pad_before_s": 3.0,
+  "pad_after_s": 3.0,
+  "canvas": "1920x1080",
+  "footer": "Selection: SigLIP so400m scores 8 segments per camera against the question; top 4 segments per camera kept (128 frames), thinned to the 96-frame budget, 24 per camera. Cameras share a clip clock; clip starts on this question differ by up to 2 s.",
+  "all_path": "analysis/figs_demo/walls/walls_all.mp4",
+  "all_ids": [
+    860,
+    749,
+    251,
+    1,
+    130
+  ],
+  "rendered_ids": [
+    860,
+    749,
+    251,
+    1,
+    130
+  ],
+  "subset_order": [
+    860,
+    749,
+    251,
+    1,
+    130
+  ],
+  "notes": [],
+  "walls": [
+    {
+      "id": 860,
+      "t0": 165.97,
+      "t1": 181.37,
+      "speed": 1.1,
+      "duration": 17.0,
+      "path": "analysis/figs_demo/walls/q860_wall.mp4",
+      "mode": "per_clip",
+      "footer": "Selection: SigLIP so400m scores 8 segments per camera against the question; top 4 segments per camera kept (128 frames), thinned to the 96-frame budget, 24 per camera. Cameras share a clip clock; clip starts on this question differ by up to 2 s.",
+      "played_span_s": 15.4,
+      "answer_card_s": 3.0,
+      "fps": 30.0,
+      "crf": 20,
+      "n_frames": 510,
+      "snapshot": "analysis/figs_demo/walls/q860_wall_snapshot.png",
+      "snapshot_time_s": 168.97,
+      "size_bytes": 3322441,
+      "question_type": "temporal",
+      "gold": "A",
+      "score_scale": {
+        "vmin": 0.035507,
+        "vmax": 0.117194,
+        "cmap": "viridis"
+      },
+      "tile": {
+        "size": [
+          912,
+          452
+        ],
+        "offset": [
+          24,
+          0
+        ],
+        "canvas_tile": [
+          960,
+          452
+        ]
+      },
+      "cameras": [
+        {
+          "slot": 1,
+          "camera": "G336",
+          "evidence": true,
+          "segments_kept_shown": [
+            0,
+            1,
+            3,
+            7
+          ],
+          "segments_kept_other": [
+            0,
+            1
+          ],
+          "source": "1920x1080",
+          "fit": "crop 11.9% of height, 24 px pillar"
+        },
+        {
+          "slot": 2,
+          "camera": "G424",
+          "evidence": true,
+          "segments_kept_shown": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "segments_kept_other": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "source": "1920x1080",
+          "fit": "crop 11.9% of height, 24 px pillar"
+        },
+        {
+          "slot": 3,
+          "camera": "G299",
+          "evidence": false,
+          "segments_kept_shown": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "segments_kept_other": [
+            7
+          ],
+          "source": "1920x1080",
+          "fit": "crop 11.9% of height, 24 px pillar"
+        },
+        {
+          "slot": 4,
+          "camera": "G330",
+          "evidence": false,
+          "segments_kept_shown": [
+            1,
+            2,
+            6,
+            7
+          ],
+          "segments_kept_other": [
+            7
+          ],
+          "source": "1920x1080",
+          "fit": "crop 11.9% of height, 24 px pillar"
+        }
+      ]
+    },
+    {
+      "id": 749,
+      "t0": 72.8,
+      "t1": 112.6,
+      "speed": 2.8429,
+      "duration": 17.0,
+      "path": "analysis/figs_demo/walls/q749_wall.mp4",
+      "mode": "per_clip",
+      "footer": "Selection: SigLIP so400m scores 8 segments per camera against the question; top 4 segments per camera kept (128 frames), thinned to the 96-frame budget, 24 per camera. Cameras share a clip clock; clip starts on this question differ by up to 5 s.",
+      "played_span_s": 39.8,
+      "answer_card_s": 3.0,
+      "fps": 30.0,
+      "crf": 20,
+      "n_frames": 510,
+      "snapshot": "analysis/figs_demo/walls/q749_wall_snapshot.png",
+      "snapshot_time_s": 75.8,
+      "size_bytes": 6821360,
+      "question_type": "temporal",
+      "gold": "A",
+      "score_scale": {
+        "vmin": 0.013079,
+        "vmax": 0.113085,
+        "cmap": "viridis"
+      },
+      "tile": {
+        "size": [
+          912,
+          452
+        ],
+        "offset": [
+          24,
+          0
+        ],
+        "canvas_tile": [
+          960,
+          452
+        ]
+      },
+      "cameras": [
+        {
+          "slot": 1,
+          "camera": "G421",
+          "evidence": true,
+          "segments_kept_shown": [
+            1,
+            3,
+            6,
+            7
+          ],
+          "segments_kept_other": [
+            0,
+            1,
+            3,
+            6,
+            7
+          ],
+          "source": "1920x1072",
+          "fit": "crop 11.2% of height, 24 px pillar"
+        },
+        {
+          "slot": 2,
+          "camera": "G424",
+          "evidence": true,
+          "segments_kept_shown": [
+            0,
+            2,
+            3,
+            6
+          ],
+          "segments_kept_other": [
+            0,
+            1,
+            2,
+            3,
+            6
+          ],
+          "source": "1920x1080",
+          "fit": "crop 11.9% of height, 24 px pillar"
+        },
+        {
+          "slot": 3,
+          "camera": "G299",
+          "evidence": false,
+          "segments_kept_shown": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "segments_kept_other": [
+            4
+          ],
+          "source": "1920x1080",
+          "fit": "crop 11.9% of height, 24 px pillar"
+        },
+        {
+          "slot": 4,
+          "camera": "G330",
+          "evidence": false,
+          "segments_kept_shown": [
+            1,
+            2,
+            4,
+            5
+          ],
+          "segments_kept_other": [
+            2
+          ],
+          "source": "1920x1080",
+          "fit": "crop 11.9% of height, 24 px pillar"
+        }
+      ]
+    },
+    {
+      "id": 251,
+      "t0": 31.27,
+      "t1": 60.0,
+      "speed": 2.0521,
+      "duration": 17.0,
+      "path": "analysis/figs_demo/walls/q251_wall.mp4",
+      "mode": "per_clip",
+      "footer": "Selection: SigLIP so400m scores 8 segments per camera against the question; top 4 segments per camera kept (128 frames), thinned to the 96-frame budget, 24 per camera. Cameras share a clip clock; clip starts on this question differ by up to 1 s.",
+      "played_span_s": 28.73,
+      "answer_card_s": 3.0,
+      "fps": 30.0,
+      "crf": 20,
+      "n_frames": 510,
+      "snapshot": "analysis/figs_demo/walls/q251_wall_snapshot.png",
+      "snapshot_time_s": 34.27,
+      "size_bytes": 4983378,
+      "question_type": "event_ordering",
+      "gold": "C",
+      "score_scale": {
+        "vmin": 0.035788,
+        "vmax": 0.129936,
+        "cmap": "viridis"
+      },
+      "tile": {
+        "size": [
+          912,
+          452
+        ],
+        "offset": [
+          24,
+          0
+        ],
+        "canvas_tile": [
+          960,
+          452
+        ]
+      },
+      "cameras": [
+        {
+          "slot": 1,
+          "camera": "G331",
+          "evidence": true,
+          "segments_kept_shown": [
+            0,
+            1,
+            6,
+            7
+          ],
+          "segments_kept_other": [
+            0,
+            1,
+            2,
+            6,
+            7
+          ],
+          "source": "1920x1080",
+          "fit": "crop 11.9% of height, 24 px pillar"
+        },
+        {
+          "slot": 2,
+          "camera": "G506",
+          "evidence": true,
+          "segments_kept_shown": [
+            1,
+            2,
+            5,
+            7
+          ],
+          "segments_kept_other": [
+            7
+          ],
+          "source": "1920x1072",
+          "fit": "crop 11.2% of height, 24 px pillar"
+        },
+        {
+          "slot": 3,
+          "camera": "G508",
+          "evidence": true,
+          "segments_kept_shown": [
+            1,
+            3,
+            5,
+            7
+          ],
+          "segments_kept_other": [
+            1,
+            3,
+            5,
+            6,
+            7
+          ],
+          "source": "1920x1072",
+          "fit": "crop 11.2% of height, 24 px pillar"
+        },
+        {
+          "slot": 4,
+          "camera": "G509",
+          "evidence": true,
+          "segments_kept_shown": [
+            0,
+            1,
+            4,
+            6
+          ],
+          "segments_kept_other": [
+            1
+          ],
+          "source": "1920x1072",
+          "fit": "crop 11.2% of height, 24 px pillar"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "t0": 18.57,
+      "t1": 55.6,
+      "speed": 2.645,
+      "duration": 17.0,
+      "path": "analysis/figs_demo/walls/q1_wall.mp4",
+      "mode": "per_clip",
+      "footer": "Selection: SigLIP so400m scores 8 segments per camera against the question; top 4 segments per camera kept (128 frames), thinned to the 96-frame budget, 24 per camera. Cameras share a clip clock; clip starts on this question differ by up to 1 s.",
+      "played_span_s": 37.03,
+      "answer_card_s": 3.0,
+      "fps": 30.0,
+      "crf": 20,
+      "n_frames": 510,
+      "snapshot": "analysis/figs_demo/walls/q1_wall_snapshot.png",
+      "snapshot_time_s": 21.57,
+      "size_bytes": 5917092,
+      "question_type": "event_ordering",
+      "gold": "C",
+      "score_scale": {
+        "vmin": -0.010675,
+        "vmax": 0.095682,
+        "cmap": "viridis"
+      },
+      "tile": {
+        "size": [
+          912,
+          452
+        ],
+        "offset": [
+          24,
+          0
+        ],
+        "canvas_tile": [
+          960,
+          452
+        ]
+      },
+      "cameras": [
+        {
+          "slot": 1,
+          "camera": "G300",
+          "evidence": true,
+          "segments_kept_shown": [
+            0,
+            1,
+            6,
+            7
+          ],
+          "segments_kept_other": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            6,
+            7
+          ],
+          "source": "1920x1080",
+          "fit": "crop 11.9% of height, 24 px pillar"
+        },
+        {
+          "slot": 2,
+          "camera": "G328",
+          "evidence": true,
+          "segments_kept_shown": [
+            0,
+            3,
+            5,
+            6
+          ],
+          "segments_kept_other": [
+            0,
+            6
+          ],
+          "source": "1920x1072",
+          "fit": "crop 11.2% of height, 24 px pillar"
+        },
+        {
+          "slot": 3,
+          "camera": "G420",
+          "evidence": true,
+          "segments_kept_shown": [
+            0,
+            3,
+            6,
+            7
+          ],
+          "segments_kept_other": [
+            0
+          ],
+          "source": "1920x1072",
+          "fit": "crop 11.2% of height, 24 px pillar"
+        },
+        {
+          "slot": 4,
+          "camera": "G424",
+          "evidence": true,
+          "segments_kept_shown": [
+            0,
+            1,
+            5,
+            6
+          ],
+          "segments_kept_other": [
+            0,
+            6
+          ],
+          "source": "1920x1080",
+          "fit": "crop 11.9% of height, 24 px pillar"
+        }
+      ]
+    },
+    {
+      "id": 130,
+      "t0": 2.6,
+      "t1": 42.5,
+      "speed": 2.85,
+      "duration": 17.0,
+      "path": "analysis/figs_demo/walls/q130_wall.mp4",
+      "mode": "per_clip",
+      "footer": "Selection: SigLIP so400m scores 8 segments per camera against the question; top 4 segments per camera kept (128 frames), thinned to the 96-frame budget, 24 per camera. Cameras share a clip clock; clip starts on this question differ by up to 2 s.",
+      "played_span_s": 39.9,
+      "answer_card_s": 3.0,
+      "fps": 30.0,
+      "crf": 20,
+      "n_frames": 510,
+      "snapshot": "analysis/figs_demo/walls/q130_wall_snapshot.png",
+      "snapshot_time_s": 5.6,
+      "size_bytes": 3990417,
+      "question_type": "event_ordering",
+      "gold": "C",
+      "score_scale": {
+        "vmin": 0.052318,
+        "vmax": 0.085211,
+        "cmap": "viridis"
+      },
+      "tile": {
+        "size": [
+          912,
+          452
+        ],
+        "offset": [
+          24,
+          0
+        ],
+        "canvas_tile": [
+          960,
+          452
+        ]
+      },
+      "cameras": [
+        {
+          "slot": 1,
+          "camera": "G299",
+          "evidence": true,
+          "segments_kept_shown": [
+            2,
+            4,
+            6,
+            7
+          ],
+          "segments_kept_other": [
+            2,
+            4,
+            5,
+            6,
+            7
+          ],
+          "source": "1920x1080",
+          "fit": "crop 11.9% of height, 24 px pillar"
+        },
+        {
+          "slot": 2,
+          "camera": "G328",
+          "evidence": true,
+          "segments_kept_shown": [
+            0,
+            1,
+            2,
+            6
+          ],
+          "segments_kept_other": [
+            1,
+            6
+          ],
+          "source": "1920x1072",
+          "fit": "crop 11.2% of height, 24 px pillar"
+        },
+        {
+          "slot": 3,
+          "camera": "G330",
+          "evidence": true,
+          "segments_kept_shown": [
+            1,
+            4,
+            5,
+            7
+          ],
+          "segments_kept_other": [
+            1,
+            4,
+            5,
+            7
+          ],
+          "source": "1920x1080",
+          "fit": "crop 11.9% of height, 24 px pillar"
+        },
+        {
+          "slot": 4,
+          "camera": "G424",
+          "evidence": true,
+          "segments_kept_shown": [
+            0,
+            2,
+            4,
+            6
+          ],
+          "segments_kept_other": [
+            0
+          ],
+          "source": "1920x1080",
+          "fit": "crop 11.9% of height, 24 px pillar"
+        }
+      ]
+    }
+  ]
+}

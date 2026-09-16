@@ -1,0 +1,202 @@
+{
+  "segment_select_viclip_opt/InternVL3-8B": {
+    "n": 5,
+    "overall": {
+      "correct": 2,
+      "total": 5,
+      "acc": 0.4
+    },
+    "by_task_type": {
+      "CrossView-MEVA-Event-Ordering": {
+        "correct": 0,
+        "total": 3,
+        "acc": 0.0
+      },
+      "CrossView-MEVA-Temporal": {
+        "correct": 2,
+        "total": 2,
+        "acc": 1.0
+      }
+    },
+    "by_orig_num_cameras": {
+      "12": {
+        "correct": 1,
+        "total": 2,
+        "acc": 0.5
+      },
+      "14": {
+        "correct": 1,
+        "total": 2,
+        "acc": 0.5
+      },
+      "7": {
+        "correct": 0,
+        "total": 1,
+        "acc": 0.0
+      }
+    },
+    "by_source": {
+      "meva": {
+        "correct": 2,
+        "total": 5,
+        "acc": 0.4
+      }
+    },
+    "by_cap_answer_safe": {
+      "True": {
+        "correct": 2,
+        "total": 5,
+        "acc": 0.4
+      }
+    },
+    "latency_s": {
+      "p50": 13.914984609931707,
+      "p95": 17.426639206707478,
+      "mean": 12.978852449543774,
+      "n": 5
+    },
+    "tokens": {
+      "input_mean": 25390.0,
+      "output_mean": 216.6,
+      "calls_mean": 1.0
+    },
+    "abstain_rate": 0.0,
+    "errors": 0,
+    "overall_passes": {
+      "mean": 0.4,
+      "std": 0.0,
+      "n_passes": 1,
+      "per_pass": [
+        0.4
+      ]
+    },
+    "by_task_type_passes": {
+      "CrossView-MEVA-Event-Ordering": {
+        "mean": 0.0,
+        "std": 0.0,
+        "n_passes": 1,
+        "per_pass": [
+          0.0
+        ]
+      },
+      "CrossView-MEVA-Temporal": {
+        "mean": 1.0,
+        "std": 0.0,
+        "n_passes": 1,
+        "per_pass": [
+          1.0
+        ]
+      }
+    },
+    "by_orig_num_cameras_passes": {
+      "7": {
+        "mean": 0.0,
+        "std": 0.0,
+        "n_passes": 1,
+        "per_pass": [
+          0.0
+        ]
+      },
+      "12": {
+        "mean": 0.5,
+        "std": 0.0,
+        "n_passes": 1,
+        "per_pass": [
+          0.5
+        ]
+      },
+      "14": {
+        "mean": 0.5,
+        "std": 0.0,
+        "n_passes": 1,
+        "per_pass": [
+          0.5
+        ]
+      }
+    },
+    "by_delivered_cameras_passes": {
+      "4": {
+        "mean": 0.4,
+        "std": 0.0,
+        "n_passes": 1,
+        "per_pass": [
+          0.4
+        ]
+      }
+    },
+    "by_task_delivered_camera_passes": {
+      "CrossView-MEVA-Event-Ordering": {
+        "4": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n_passes": 1,
+          "per_pass": [
+            0.0
+          ]
+        }
+      },
+      "CrossView-MEVA-Temporal": {
+        "4": {
+          "mean": 1.0,
+          "std": 0.0,
+          "n_passes": 1,
+          "per_pass": [
+            1.0
+          ]
+        }
+      }
+    },
+    "by_task_camera_passes": {
+      "CrossView-MEVA-Event-Ordering": {
+        "7": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n_passes": 1,
+          "per_pass": [
+            0.0
+          ]
+        },
+        "12": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n_passes": 1,
+          "per_pass": [
+            0.0
+          ]
+        },
+        "14": {
+          "mean": 0.0,
+          "std": 0.0,
+          "n_passes": 1,
+          "per_pass": [
+            0.0
+          ]
+        }
+      },
+      "CrossView-MEVA-Temporal": {
+        "7": {
+          "mean": null,
+          "std": null,
+          "n_passes": 0,
+          "per_pass": []
+        },
+        "12": {
+          "mean": 1.0,
+          "std": 0.0,
+          "n_passes": 1,
+          "per_pass": [
+            1.0
+          ]
+        },
+        "14": {
+          "mean": 1.0,
+          "std": 0.0,
+          "n_passes": 1,
+          "per_pass": [
+            1.0
+          ]
+        }
+      }
+    }
+  }
+}

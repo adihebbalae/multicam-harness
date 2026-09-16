@@ -22,10 +22,18 @@ package has no hooks into the rest of the tree.
 | `OptionUnionFrameSelect` | `harnesses.option_union` | The union of frames passing each answer option's similarity threshold (absolute or per-option quantile), every option guaranteed its best frame | 1 |
 | `OptionUnionClipSelect` | `harnesses.option_union` | Whole clips kept when any option's threshold passes; the `viclip` scorer embeds a clip's frames jointly (video-native) from a local OpenGVLab/ViCLIP download | 1 |
 | `QuerySearchMethod` | `harnesses.option_union` | The backend writes short visual search phrases from the question and options, then the top-budget frames matching any phrase are retrieved before the answer call | 2 |
-| `SegmentSelectMethod` | `harnesses.segment_select` | Each clip split into 8 equal-time segments; the top-K segments per clip kept by relevance (the `viclip` scorer embeds each segment jointly as one 8-frame tube, per answer option under `_opt`; `--segments-keep 0` derives K from the frame budget and stream count), their frames deduped question-wide and thinned evenly to the budget | 1 |
+| `SegmentSelectMethod` | `harnesses.segment_select` | Each clip split into 8 equal-time segments; the top-K segments per clip kept by relevance (the `viclip` scorer embeds each segment jointly as one 8-frame tube, per answer option under `_opt`; `--segments-keep 0` derives K from the frame budget and stream count; `--seg-select global` takes that top-K over every clip at once, `--seg-floor` reserving a minimum per clip first), their frames deduped question-wide and thinned evenly to the budget | 1 |
 
 Montage geometry is `cols = ceil(sqrt(K))`, `rows = ceil(K / cols)` — 2x2 at four
 views, up to 4x4 at the thirteen-slot cap.
+
+The selection mode is a flag, not part of the method name — both modes record
+`segment_select[_<scorer>][_opt]` — so `run.py` stamps `seg_select` and
+`seg_floor` on every row and makes them part of the resume identity: a per_clip
+file cannot be resumed under `global`, nor a global file under a different
+floor, while rows written before the stamp read as per_clip. The floor stamped
+is the CONFIGURED one; the per-record effective floor (capped where the segment
+budget cannot seat one segment per clip) stays in `frame_alloc`.
 
 ## Usage
 

@@ -1,6 +1,7 @@
 # Ported from Wavy-Hec/CVBench bench/methods/clip_select.py @ 7f3e480aa4fc4ce615a4735a593594f8b6e71a93
 # clip_scores' return_image_embs extension additionally ported from
-# @ 8ecae1f0c33cb5dc20b565d9cad49c0089cbfec6.
+# @ 8ecae1f0c33cb5dc20b565d9cad49c0089cbfec6; option_texts' text-cap paragraph
+# additionally ported from @ e9ea59088dd286ab3609a61cfaeb8591d1fe11d6.
 # Deliberate delta vs source: gen_clip_summaries references updated from the
 # fork's `bench/gen_clip_summaries.py` module path to this repo's
 # `scripts/gen_clip_summaries.py` (docstring, comment, and SystemExit hint).
@@ -8,6 +9,9 @@
 # but omits the fork's measured percentages, which are unpublished results.
 # Deliberate delta vs source: clip_scores' docstring cites the archived
 # adaptive-frames writeup by its path rather than the fork's git-show pointer.
+# Deliberate delta vs source: option_texts' text-cap paragraph names the three
+# encoders' caps without the fork's measured share of MVU-Eval options that
+# overflow the smallest, which is unpublished.
 """CLIP-SELECTION harness (D3, the PRIMARY decision): choose WHICH of the K
 independent clips a question actually needs, then spend the whole 64-frame
 budget on the selected clips only. Two selector families, three method arms:
@@ -150,9 +154,10 @@ def option_texts(rec):
     """The answer options as retrieval queries, letter prefix stripped.
 
     Score against EACH option and reduce by max, with the question never used.
-    Each option is embedded on its own, so nothing is lost to the text
-    encoder's 64/77-token cap — unlike one concatenated question+options blob,
-    which is silently truncated.
+    Each option is embedded on its own, so the text encoder's cap (CLIP 77 /
+    SigLIP 64 / ViCLIP 32 tokens, all silently truncating) bites far less than
+    one concatenated question+options blob would — but not never: a minority
+    of MVU-Eval options still exceed ViCLIP's 32.
     """
     return [OPT_PREFIX.sub("", str(o)).strip() for o in rec.get("options", [])]
 

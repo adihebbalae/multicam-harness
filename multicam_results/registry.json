@@ -1,0 +1,4039 @@
+{
+ "note": "One entry per (dataset, backend, method, budget) leg; `file` is the merged row file, `complete` says whether every question ran. Legs with media_ok=false are not shipped; see `excluded`.",
+ "source_repo": "Wavy-Hec/MultiCam",
+ "source_commit": "8b8a04b3f716216fd0772a158ee35d3457591370",
+ "legs": [
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "centralized",
+   "budget": "8 frames/video",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 51.95,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_mvufull_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (90% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_mvufull.jsonl.gz",
+   "leg": "mvueval_qa_internvl_mvufull",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "8 frames/video",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 52.88,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_mvufull_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (90% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_mvufull.jsonl.gz",
+   "leg": "mvueval_qa_internvl_mvufull",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "per_stream",
+   "budget": "8 frames/video",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 43.98,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_mvufull_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (90% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_mvufull.jsonl.gz",
+   "leg": "mvueval_qa_internvl_mvufull",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "centralized",
+   "budget": "8 frames/video",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 40.41,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_cvbench_mvufullq25*_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (91% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_cvbench_mvufullq25.jsonl.gz",
+   "leg": "mvueval_qa_cvbench_mvufullq25",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "cvbench_native",
+   "budget": "8 frames/video",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 50.79,
+   "errors": 92,
+   "glob": "bench_mvueval_qa_cvbench_mvufullq25*_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (91% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_cvbench_mvufullq25.jsonl.gz",
+   "leg": "mvueval_qa_cvbench_mvufullq25",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "per_stream",
+   "budget": "8 frames/video",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 40.53,
+   "errors": 92,
+   "glob": "bench_mvueval_qa_cvbench_mvufullq25*_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (91% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_cvbench_mvufullq25.jsonl.gz",
+   "leg": "mvueval_qa_cvbench_mvufullq25",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "centralized",
+   "budget": "32 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 52.18,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_mvufull32_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (90% traced)",
+    "total_frames": [
+     32
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_mvufull32.jsonl.gz",
+   "leg": "mvueval_qa_internvl_mvufull32",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "32 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 52.54,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_mvufull32_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (90% traced)",
+    "total_frames": [
+     32
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_mvufull32.jsonl.gz",
+   "leg": "mvueval_qa_internvl_mvufull32",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "per_stream",
+   "budget": "32 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 44.68,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_mvufull32_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (90% traced)",
+    "total_frames": [
+     32
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_mvufull32.jsonl.gz",
+   "leg": "mvueval_qa_internvl_mvufull32",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "32 frames/video",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 50.21,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_mvupp32*_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (84% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_mvupp32.jsonl.gz",
+   "leg": "mvueval_qa_internvl_mvupp32",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "per_stream",
+   "budget": "32 frames/video",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 41.37,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_mvupp32*_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (84% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_mvupp32.jsonl.gz",
+   "leg": "mvueval_qa_internvl_mvupp32",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "blind",
+   "budget": "no images",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 30.48,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_mvublind*shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (85% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_mvublindshard.jsonl.gz",
+   "leg": "mvueval_qa_internvl_mvublindshard",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "clip_select_top1",
+   "budget": "64 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 43.75,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_mvufullclip_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (96% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_mvufullclip.jsonl.gz",
+   "leg": "mvueval_qa_internvl_mvufullclip",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "frame_select",
+   "budget": "64 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 52.36,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_mvufullclip_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (96% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_mvufullclip.jsonl.gz",
+   "leg": "mvueval_qa_internvl_mvufullclip",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "temporal_weighted",
+   "budget": "64 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 51.84,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_mvufullclip_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (96% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_mvufullclip.jsonl.gz",
+   "leg": "mvueval_qa_internvl_mvufullclip",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "single_view1",
+   "budget": "8 frames/video, single view",
+   "subset": "mvueval_noview_subset.json",
+   "subset_sha256": "d568a81f0b81f9d0",
+   "subset_questions": 545,
+   "questions_expected": 545,
+   "questions_run": 545,
+   "rows": 2180,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 42.06,
+   "errors": 0,
+   "glob": "bench_mvueval_noview_subset_internvl_mvusv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (98% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_noview_subset_internvl_mvusv.jsonl.gz",
+   "leg": "mvueval_noview_subset_internvl_mvusv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "single_view10",
+   "budget": "8 frames/video, single view",
+   "subset": "mvueval_noview_subset.json",
+   "subset_sha256": "d568a81f0b81f9d0",
+   "subset_questions": 545,
+   "questions_expected": 12,
+   "questions_run": 12,
+   "rows": 48,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 58.33,
+   "errors": 0,
+   "glob": "bench_mvueval_noview_subset_internvl_mvusv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (98% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_noview_subset_internvl_mvusv.jsonl.gz",
+   "leg": "mvueval_noview_subset_internvl_mvusv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "single_view11",
+   "budget": "8 frames/video, single view",
+   "subset": "mvueval_noview_subset.json",
+   "subset_sha256": "d568a81f0b81f9d0",
+   "subset_questions": 545,
+   "questions_expected": 10,
+   "questions_run": 10,
+   "rows": 40,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 40.0,
+   "errors": 0,
+   "glob": "bench_mvueval_noview_subset_internvl_mvusv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (98% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_noview_subset_internvl_mvusv.jsonl.gz",
+   "leg": "mvueval_noview_subset_internvl_mvusv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "single_view12",
+   "budget": "8 frames/video, single view",
+   "subset": "mvueval_noview_subset.json",
+   "subset_sha256": "d568a81f0b81f9d0",
+   "subset_questions": 545,
+   "questions_expected": 3,
+   "questions_run": 3,
+   "rows": 12,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 33.33,
+   "errors": 0,
+   "glob": "bench_mvueval_noview_subset_internvl_mvusv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (98% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_noview_subset_internvl_mvusv.jsonl.gz",
+   "leg": "mvueval_noview_subset_internvl_mvusv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "single_view13",
+   "budget": "8 frames/video, single view",
+   "subset": "mvueval_noview_subset.json",
+   "subset_sha256": "d568a81f0b81f9d0",
+   "subset_questions": 545,
+   "questions_expected": 2,
+   "questions_run": 2,
+   "rows": 8,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 25.0,
+   "errors": 0,
+   "glob": "bench_mvueval_noview_subset_internvl_mvusv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (98% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_noview_subset_internvl_mvusv.jsonl.gz",
+   "leg": "mvueval_noview_subset_internvl_mvusv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "single_view2",
+   "budget": "8 frames/video, single view",
+   "subset": "mvueval_noview_subset.json",
+   "subset_sha256": "d568a81f0b81f9d0",
+   "subset_questions": 545,
+   "questions_expected": 545,
+   "questions_run": 545,
+   "rows": 2180,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 41.33,
+   "errors": 0,
+   "glob": "bench_mvueval_noview_subset_internvl_mvusv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (98% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_noview_subset_internvl_mvusv.jsonl.gz",
+   "leg": "mvueval_noview_subset_internvl_mvusv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "single_view3",
+   "budget": "8 frames/video, single view",
+   "subset": "mvueval_noview_subset.json",
+   "subset_sha256": "d568a81f0b81f9d0",
+   "subset_questions": 545,
+   "questions_expected": 545,
+   "questions_run": 545,
+   "rows": 2180,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 41.88,
+   "errors": 0,
+   "glob": "bench_mvueval_noview_subset_internvl_mvusv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (98% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_noview_subset_internvl_mvusv.jsonl.gz",
+   "leg": "mvueval_noview_subset_internvl_mvusv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "single_view4",
+   "budget": "8 frames/video, single view",
+   "subset": "mvueval_noview_subset.json",
+   "subset_sha256": "d568a81f0b81f9d0",
+   "subset_questions": 545,
+   "questions_expected": 541,
+   "questions_run": 541,
+   "rows": 2164,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 40.76,
+   "errors": 0,
+   "glob": "bench_mvueval_noview_subset_internvl_mvusv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (98% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_noview_subset_internvl_mvusv.jsonl.gz",
+   "leg": "mvueval_noview_subset_internvl_mvusv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "single_view5",
+   "budget": "8 frames/video, single view",
+   "subset": "mvueval_noview_subset.json",
+   "subset_sha256": "d568a81f0b81f9d0",
+   "subset_questions": 545,
+   "questions_expected": 463,
+   "questions_run": 463,
+   "rows": 1852,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 40.01,
+   "errors": 0,
+   "glob": "bench_mvueval_noview_subset_internvl_mvusv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (98% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_noview_subset_internvl_mvusv.jsonl.gz",
+   "leg": "mvueval_noview_subset_internvl_mvusv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "single_view6",
+   "budget": "8 frames/video, single view",
+   "subset": "mvueval_noview_subset.json",
+   "subset_sha256": "d568a81f0b81f9d0",
+   "subset_questions": 545,
+   "questions_expected": 317,
+   "questions_run": 317,
+   "rows": 1268,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 44.24,
+   "errors": 0,
+   "glob": "bench_mvueval_noview_subset_internvl_mvusv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (98% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_noview_subset_internvl_mvusv.jsonl.gz",
+   "leg": "mvueval_noview_subset_internvl_mvusv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "single_view7",
+   "budget": "8 frames/video, single view",
+   "subset": "mvueval_noview_subset.json",
+   "subset_sha256": "d568a81f0b81f9d0",
+   "subset_questions": 545,
+   "questions_expected": 43,
+   "questions_run": 43,
+   "rows": 172,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 62.21,
+   "errors": 0,
+   "glob": "bench_mvueval_noview_subset_internvl_mvusv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (98% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_noview_subset_internvl_mvusv.jsonl.gz",
+   "leg": "mvueval_noview_subset_internvl_mvusv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "single_view8",
+   "budget": "8 frames/video, single view",
+   "subset": "mvueval_noview_subset.json",
+   "subset_sha256": "d568a81f0b81f9d0",
+   "subset_questions": 545,
+   "questions_expected": 33,
+   "questions_run": 33,
+   "rows": 132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 52.27,
+   "errors": 0,
+   "glob": "bench_mvueval_noview_subset_internvl_mvusv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (98% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_noview_subset_internvl_mvusv.jsonl.gz",
+   "leg": "mvueval_noview_subset_internvl_mvusv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "single_view9",
+   "budget": "8 frames/video, single view",
+   "subset": "mvueval_noview_subset.json",
+   "subset_sha256": "d568a81f0b81f9d0",
+   "subset_questions": 545,
+   "questions_expected": 21,
+   "questions_run": 21,
+   "rows": 84,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 61.9,
+   "errors": 0,
+   "glob": "bench_mvueval_noview_subset_internvl_mvusv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (98% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_noview_subset_internvl_mvusv.jsonl.gz",
+   "leg": "mvueval_noview_subset_internvl_mvusv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "All-Angles",
+   "backend": "InternVL3-8B",
+   "method": "centralized",
+   "budget": "stills, cell_px=448",
+   "subset": "allangles_egohumans_qa.json",
+   "subset_sha256": "363a72ea07e6faf7",
+   "subset_questions": 170,
+   "questions_expected": 170,
+   "questions_run": 170,
+   "rows": 680,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 39.26,
+   "errors": 0,
+   "glob": "bench_allangles_egohumans_qa_internvl_aabfull_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/allangles_egohumans_qa_internvl_aabfull.jsonl.gz",
+   "leg": "allangles_egohumans_qa_internvl_aabfull",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "All-Angles",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "stills, cell_px=448",
+   "subset": "allangles_egohumans_qa.json",
+   "subset_sha256": "363a72ea07e6faf7",
+   "subset_questions": 170,
+   "questions_expected": 170,
+   "questions_run": 170,
+   "rows": 680,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 44.12,
+   "errors": 0,
+   "glob": "bench_allangles_egohumans_qa_internvl_aabfull_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/allangles_egohumans_qa_internvl_aabfull.jsonl.gz",
+   "leg": "allangles_egohumans_qa_internvl_aabfull",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "All-Angles",
+   "backend": "InternVL3-8B",
+   "method": "per_stream",
+   "budget": "stills, cell_px=448",
+   "subset": "allangles_egohumans_qa.json",
+   "subset_sha256": "363a72ea07e6faf7",
+   "subset_questions": 170,
+   "questions_expected": 170,
+   "questions_run": 170,
+   "rows": 680,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 46.32,
+   "errors": 0,
+   "glob": "bench_allangles_egohumans_qa_internvl_aabfull_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/allangles_egohumans_qa_internvl_aabfull.jsonl.gz",
+   "leg": "allangles_egohumans_qa_internvl_aabfull",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "All-Angles",
+   "backend": "Qwen3-VL-8B-Thinking",
+   "method": "centralized",
+   "budget": "stills, cell_px=448",
+   "subset": "allangles_egohumans_qa.json",
+   "subset_sha256": "363a72ea07e6faf7",
+   "subset_questions": 170,
+   "questions_expected": 170,
+   "questions_run": 170,
+   "rows": 680,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 39.56,
+   "errors": 0,
+   "glob": "bench_allangles_egohumans_qa_cvbench_aabfull_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/allangles_egohumans_qa_cvbench_aabfull.jsonl.gz",
+   "leg": "allangles_egohumans_qa_cvbench_aabfull",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "All-Angles",
+   "backend": "Qwen3-VL-8B-Thinking",
+   "method": "cvbench_native",
+   "budget": "stills, cell_px=448",
+   "subset": "allangles_egohumans_qa.json",
+   "subset_sha256": "363a72ea07e6faf7",
+   "subset_questions": 170,
+   "questions_expected": 170,
+   "questions_run": 170,
+   "rows": 680,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 46.91,
+   "errors": 0,
+   "glob": "bench_allangles_egohumans_qa_cvbench_aabfull_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/allangles_egohumans_qa_cvbench_aabfull.jsonl.gz",
+   "leg": "allangles_egohumans_qa_cvbench_aabfull",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "All-Angles",
+   "backend": "Qwen3-VL-8B-Thinking",
+   "method": "per_stream",
+   "budget": "stills, cell_px=448",
+   "subset": "allangles_egohumans_qa.json",
+   "subset_sha256": "363a72ea07e6faf7",
+   "subset_questions": 170,
+   "questions_expected": 170,
+   "questions_run": 77,
+   "rows": 292,
+   "passes": 4,
+   "complete": false,
+   "accuracy_pct": 50.0,
+   "errors": 0,
+   "glob": "bench_allangles_egohumans_qa_cvbench_aabfull_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/allangles_egohumans_qa_cvbench_aabfull.jsonl.gz",
+   "leg": "allangles_egohumans_qa_cvbench_aabfull",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "All-Angles",
+   "backend": "InternVL3-8B",
+   "method": "blind",
+   "budget": "no images",
+   "subset": "allangles_egohumans_qa.json",
+   "subset_sha256": "363a72ea07e6faf7",
+   "subset_questions": 170,
+   "questions_expected": 170,
+   "questions_run": 170,
+   "rows": 680,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 33.24,
+   "errors": 0,
+   "glob": "bench_allangles_egohumans_qa_internvl_aabblind*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (67% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/allangles_egohumans_qa_internvl_aabblind.jsonl.gz",
+   "leg": "allangles_egohumans_qa_internvl_aabblind",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "centralized",
+   "budget": "8 frames/video",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 52.11,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_t1iv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_t1iv.jsonl.gz",
+   "leg": "mvueval_qa_internvl_t1iv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "8 frames/video",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 53.23,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_t1iv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_t1iv.jsonl.gz",
+   "leg": "mvueval_qa_internvl_t1iv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "per_stream",
+   "budget": "8 frames/video",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 43.91,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_t1iv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_t1iv.jsonl.gz",
+   "leg": "mvueval_qa_internvl_t1iv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "centralized",
+   "budget": "8 frames/video",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 49.49,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_cvbench_t1q25_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_cvbench_t1q25.jsonl.gz",
+   "leg": "mvueval_qa_cvbench_t1q25",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "cvbench_native",
+   "budget": "8 frames/video",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 53.63,
+   "errors": 92,
+   "glob": "bench_mvueval_qa_cvbench_t1q25_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_cvbench_t1q25.jsonl.gz",
+   "leg": "mvueval_qa_cvbench_t1q25",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "per_stream",
+   "budget": "8 frames/video",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 40.04,
+   "errors": 92,
+   "glob": "bench_mvueval_qa_cvbench_t1q25_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_cvbench_t1q25.jsonl.gz",
+   "leg": "mvueval_qa_cvbench_t1q25",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "InternVL3-8B",
+   "method": "centralized",
+   "budget": "8 frames/video",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 43.5,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_internvl_t1iv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     448
+    ],
+    "max_tiles": [
+     6
+    ],
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_internvl_t1iv.jsonl.gz",
+   "leg": "crossview_egoexo500_internvl_t1iv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "8 frames/video",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 43.25,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_internvl_t1iv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     448
+    ],
+    "max_tiles": [
+     6
+    ],
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_internvl_t1iv.jsonl.gz",
+   "leg": "crossview_egoexo500_internvl_t1iv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "InternVL3-8B",
+   "method": "per_stream",
+   "budget": "8 frames/video",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 29.45,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_internvl_t1iv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     448
+    ],
+    "max_tiles": [
+     6
+    ],
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_internvl_t1iv.jsonl.gz",
+   "leg": "crossview_egoexo500_internvl_t1iv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "centralized",
+   "budget": "8 frames/video",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 46.15,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_cvbench_t1q25_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     448
+    ],
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_cvbench_t1q25.jsonl.gz",
+   "leg": "crossview_egoexo500_cvbench_t1q25",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "cvbench_native",
+   "budget": "8 frames/video",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 45.1,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_cvbench_t1q25_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     448
+    ],
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_cvbench_t1q25.jsonl.gz",
+   "leg": "crossview_egoexo500_cvbench_t1q25",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "per_stream",
+   "budget": "8 frames/video",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 28.0,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_cvbench_t1q25_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     448
+    ],
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_cvbench_t1q25.jsonl.gz",
+   "leg": "crossview_egoexo500_cvbench_t1q25",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "All-Angles",
+   "backend": "InternVL3-8B",
+   "method": "centralized",
+   "budget": "stills, cell_px=448",
+   "subset": "allangles_qa.json",
+   "subset_sha256": "1c74ce3d7374ad51",
+   "subset_questions": 2132,
+   "questions_expected": 2132,
+   "questions_run": 2132,
+   "rows": 8528,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 49.5,
+   "errors": 0,
+   "glob": "bench_allangles_qa_internvl_t1iv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     448
+    ],
+    "max_tiles": [
+     6
+    ],
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/allangles_qa_internvl_t1iv.jsonl.gz",
+   "leg": "allangles_qa_internvl_t1iv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "All-Angles",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "stills, cell_px=448",
+   "subset": "allangles_qa.json",
+   "subset_sha256": "1c74ce3d7374ad51",
+   "subset_questions": 2132,
+   "questions_expected": 2132,
+   "questions_run": 2132,
+   "rows": 8528,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 51.04,
+   "errors": 0,
+   "glob": "bench_allangles_qa_internvl_t1iv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     448
+    ],
+    "max_tiles": [
+     6
+    ],
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/allangles_qa_internvl_t1iv.jsonl.gz",
+   "leg": "allangles_qa_internvl_t1iv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "All-Angles",
+   "backend": "InternVL3-8B",
+   "method": "per_stream",
+   "budget": "stills, cell_px=448",
+   "subset": "allangles_qa.json",
+   "subset_sha256": "1c74ce3d7374ad51",
+   "subset_questions": 2132,
+   "questions_expected": 2132,
+   "questions_run": 2132,
+   "rows": 8528,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 48.55,
+   "errors": 0,
+   "glob": "bench_allangles_qa_internvl_t1iv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     448
+    ],
+    "max_tiles": [
+     6
+    ],
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/allangles_qa_internvl_t1iv.jsonl.gz",
+   "leg": "allangles_qa_internvl_t1iv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "All-Angles",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "centralized",
+   "budget": "stills, cell_px=448",
+   "subset": "allangles_qa.json",
+   "subset_sha256": "1c74ce3d7374ad51",
+   "subset_questions": 2132,
+   "questions_expected": 2132,
+   "questions_run": 2132,
+   "rows": 8528,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 47.14,
+   "errors": 0,
+   "glob": "bench_allangles_qa_cvbench_t1q25_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     576
+    ],
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/allangles_qa_cvbench_t1q25.jsonl.gz",
+   "leg": "allangles_qa_cvbench_t1q25",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "All-Angles",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "cvbench_native",
+   "budget": "stills, cell_px=448",
+   "subset": "allangles_qa.json",
+   "subset_sha256": "1c74ce3d7374ad51",
+   "subset_questions": 2132,
+   "questions_expected": 2132,
+   "questions_run": 2132,
+   "rows": 8528,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 49.53,
+   "errors": 0,
+   "glob": "bench_allangles_qa_cvbench_t1q25_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     576
+    ],
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/allangles_qa_cvbench_t1q25.jsonl.gz",
+   "leg": "allangles_qa_cvbench_t1q25",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "All-Angles",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "per_stream",
+   "budget": "stills, cell_px=448",
+   "subset": "allangles_qa.json",
+   "subset_sha256": "1c74ce3d7374ad51",
+   "subset_questions": 2132,
+   "questions_expected": 2132,
+   "questions_run": 2132,
+   "rows": 8528,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 39.17,
+   "errors": 0,
+   "glob": "bench_allangles_qa_cvbench_t1q25_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     576
+    ],
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/allangles_qa_cvbench_t1q25.jsonl.gz",
+   "leg": "allangles_qa_cvbench_t1q25",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "All-Angles",
+   "backend": "InternVL3-8B",
+   "method": "blind",
+   "budget": "no images",
+   "subset": "allangles_qa.json",
+   "subset_sha256": "1c74ce3d7374ad51",
+   "subset_questions": 2132,
+   "questions_expected": 2132,
+   "questions_run": 2132,
+   "rows": 8528,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 38.59,
+   "errors": 0,
+   "glob": "bench_allangles_qa_internvl_t1iv_blind*.jsonl",
+   "rescored": false,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/allangles_qa_internvl_t1iv_blind.jsonl.gz",
+   "leg": "allangles_qa_internvl_t1iv_blind",
+   "shards_source": "raw"
+  },
+  {
+   "dataset": "All-Angles",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "blind",
+   "budget": "no images",
+   "subset": "allangles_qa.json",
+   "subset_sha256": "1c74ce3d7374ad51",
+   "subset_questions": 2132,
+   "questions_expected": 2132,
+   "questions_run": 2132,
+   "rows": 8528,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 40.57,
+   "errors": 0,
+   "glob": "bench_allangles_qa_cvbench_t1q25_blind*.jsonl",
+   "rescored": false,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/allangles_qa_cvbench_t1q25_blind.jsonl.gz",
+   "leg": "allangles_qa_cvbench_t1q25_blind",
+   "shards_source": "raw"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "blind",
+   "budget": "no images",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 30.99,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_t1iv_blind*.jsonl",
+   "rescored": false,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_t1iv_blind.jsonl.gz",
+   "leg": "mvueval_qa_internvl_t1iv_blind",
+   "shards_source": "raw"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "blind",
+   "budget": "no images",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 33.81,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_cvbench_t1q25_blind*.jsonl",
+   "rescored": false,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_cvbench_t1q25_blind.jsonl.gz",
+   "leg": "mvueval_qa_cvbench_t1q25_blind",
+   "shards_source": "raw"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "32 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 52.6,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_fs32_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": [
+     32
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_fs32.jsonl.gz",
+   "leg": "mvueval_qa_internvl_fs32",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "centralized",
+   "budget": "64 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1592,
+   "rows": 6367,
+   "passes": 4,
+   "complete": false,
+   "accuracy_pct": 49.63,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_fs64_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": [
+     64
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_fs64.jsonl.gz",
+   "leg": "mvueval_qa_internvl_fs64",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "64 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 52.96,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_fs64_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": [
+     64
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_fs64.jsonl.gz",
+   "leg": "mvueval_qa_internvl_fs64",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "per_stream",
+   "budget": "64 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 440,
+   "rows": 1756,
+   "passes": 4,
+   "complete": false,
+   "accuracy_pct": 37.07,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_fs64_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": [
+     64
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_fs64.jsonl.gz",
+   "leg": "mvueval_qa_internvl_fs64",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "centralized",
+   "budget": "96 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 51.6,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_fs96_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": [
+     96
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_fs96.jsonl.gz",
+   "leg": "mvueval_qa_internvl_fs96",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "96 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 51.52,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_fs96_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": [
+     96
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_fs96.jsonl.gz",
+   "leg": "mvueval_qa_internvl_fs96",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "per_stream",
+   "budget": "96 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 289,
+   "rows": 1146,
+   "passes": 4,
+   "complete": false,
+   "accuracy_pct": 34.64,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_fs96_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": [
+     96
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_fs96.jsonl.gz",
+   "leg": "mvueval_qa_internvl_fs96",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "InternVL3-8B",
+   "method": "clip_select_viclip_optu",
+   "budget": "matched, 8xK frames total",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 43.2,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_internvl_optu_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_internvl_optu.jsonl.gz",
+   "leg": "crossview_egoexo500_internvl_optu",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "InternVL3-8B",
+   "method": "frame_select_siglip_optu",
+   "budget": "matched, 8xK frames total",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 40.75,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_internvl_optu_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_internvl_optu.jsonl.gz",
+   "leg": "crossview_egoexo500_internvl_optu",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "InternVL3-8B",
+   "method": "query_search_siglip",
+   "budget": "matched, 8xK frames total",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 43.3,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_internvl_optu_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_internvl_optu.jsonl.gz",
+   "leg": "crossview_egoexo500_internvl_optu",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "clip_select_viclip_optu",
+   "budget": "matched, 8xK frames total",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 44.5,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_cvbench_optu_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_cvbench_optu.jsonl.gz",
+   "leg": "crossview_egoexo500_cvbench_optu",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "frame_select_siglip_optu",
+   "budget": "matched, 8xK frames total",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 45.1,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_cvbench_optu_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_cvbench_optu.jsonl.gz",
+   "leg": "crossview_egoexo500_cvbench_optu",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "query_search_siglip",
+   "budget": "matched, 8xK frames total",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 45.85,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_cvbench_optu_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_cvbench_optu.jsonl.gz",
+   "leg": "crossview_egoexo500_cvbench_optu",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "clip_select_viclip_optu",
+   "budget": "matched, 8xK frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 41.05,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_optu_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_optu.jsonl.gz",
+   "leg": "mvueval_qa_internvl_optu",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "frame_select_siglip_optu",
+   "budget": "matched, 8xK frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 49.48,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_optu_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_optu.jsonl.gz",
+   "leg": "mvueval_qa_internvl_optu",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "query_search_siglip",
+   "budget": "matched, 8xK frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 52.97,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_optu_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_optu.jsonl.gz",
+   "leg": "mvueval_qa_internvl_optu",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "clip_select_viclip_optu",
+   "budget": "matched, 8xK frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 39.76,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_cvbench_optu_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_cvbench_optu.jsonl.gz",
+   "leg": "mvueval_qa_cvbench_optu",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "frame_select_siglip_optu",
+   "budget": "matched, 8xK frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 47.74,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_cvbench_optu_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_cvbench_optu.jsonl.gz",
+   "leg": "mvueval_qa_cvbench_optu",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "query_search_siglip",
+   "budget": "matched, 8xK frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 50.99,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_cvbench_optu_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_cvbench_optu.jsonl.gz",
+   "leg": "mvueval_qa_cvbench_optu",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_siglip",
+   "budget": "32 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 52.85,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_sg32_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_sg32.jsonl.gz",
+   "leg": "mvueval_qa_internvl_sg32",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_siglip",
+   "budget": "64 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 53.02,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_sg64_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_sg64.jsonl.gz",
+   "leg": "mvueval_qa_internvl_sg64",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_siglip",
+   "budget": "96 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 51.36,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_sg96_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_sg96.jsonl.gz",
+   "leg": "mvueval_qa_internvl_sg96",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "32 frames total",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 45.45,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_internvl_fs32_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": [
+     32
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_internvl_fs32.jsonl.gz",
+   "leg": "crossview_egoexo500_internvl_fs32",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "64 frames total",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 43.85,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_internvl_fs64_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": [
+     64
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_internvl_fs64.jsonl.gz",
+   "leg": "crossview_egoexo500_internvl_fs64",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "96 frames total",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 43.95,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_internvl_fs96_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": [
+     96
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_internvl_fs96.jsonl.gz",
+   "leg": "crossview_egoexo500_internvl_fs96",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_siglip",
+   "budget": "32 frames total",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 38.65,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_internvl_sg32_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_internvl_sg32.jsonl.gz",
+   "leg": "crossview_egoexo500_internvl_sg32",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_siglip",
+   "budget": "64 frames total",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 40.65,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_internvl_sg64_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_internvl_sg64.jsonl.gz",
+   "leg": "crossview_egoexo500_internvl_sg64",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_siglip",
+   "budget": "96 frames total",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 40.8,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_internvl_sg96_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_internvl_sg96.jsonl.gz",
+   "leg": "crossview_egoexo500_internvl_sg96",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_viclip_opt",
+   "budget": "32 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 52.28,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_sgv32_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_sgv32.jsonl.gz",
+   "leg": "mvueval_qa_internvl_sgv32",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_viclip_opt",
+   "budget": "64 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 51.22,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_sgv64_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_sgv64.jsonl.gz",
+   "leg": "mvueval_qa_internvl_sgv64",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_viclip_opt",
+   "budget": "96 frames total",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 49.92,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_sgv96_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_sgv96.jsonl.gz",
+   "leg": "mvueval_qa_internvl_sgv96",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_viclip_opt",
+   "budget": "32 frames total, auto K",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 52.17,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_sgva32_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_sgva32.jsonl.gz",
+   "leg": "mvueval_qa_internvl_sgva32",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_viclip_opt",
+   "budget": "64 frames total, auto K",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 51.84,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_sgva64_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_sgva64.jsonl.gz",
+   "leg": "mvueval_qa_internvl_sgva64",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "MVU-Eval",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_viclip_opt",
+   "budget": "96 frames total, auto K",
+   "subset": "mvueval_qa.json",
+   "subset_sha256": "5030c22aa9102692",
+   "subset_questions": 1824,
+   "questions_expected": 1824,
+   "questions_run": 1824,
+   "rows": 7296,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 49.89,
+   "errors": 0,
+   "glob": "bench_mvueval_qa_internvl_sgva96_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/mvueval_qa_internvl_sgva96.jsonl.gz",
+   "leg": "mvueval_qa_internvl_sgva96",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_viclip_opt",
+   "budget": "32 frames total, auto K",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 42.4,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_internvl_sgva32_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_internvl_sgva32.jsonl.gz",
+   "leg": "crossview_egoexo500_internvl_sgva32",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_viclip_opt",
+   "budget": "64 frames total, auto K",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 42.25,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_internvl_sgva64_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_internvl_sgva64.jsonl.gz",
+   "leg": "crossview_egoexo500_internvl_sgva64",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-EgoExo",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_viclip_opt",
+   "budget": "96 frames total, auto K",
+   "subset": "crossview_egoexo500.json",
+   "subset_sha256": "93bca245f9217875",
+   "subset_questions": 500,
+   "questions_expected": 500,
+   "questions_run": 500,
+   "rows": 2000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 43.3,
+   "errors": 0,
+   "glob": "bench_crossview_egoexo500_internvl_sgva96_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_egoexo500_internvl_sgva96.jsonl.gz",
+   "leg": "crossview_egoexo500_internvl_sgva96",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "32 frames total",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb8832140",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 42.88,
+   "errors": 0,
+   "glob": "bench_crossview_meva1033_subset_internvl_mp4fs32_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": [
+     32
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva1033_subset_internvl_mp4fs32.jsonl.gz",
+   "leg": "crossview_meva1033_subset_internvl_mp4fs32",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "64 frames total",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb8832140",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 45.18,
+   "errors": 0,
+   "glob": "bench_crossview_meva1033_subset_internvl_mp4fs64_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": [
+     64
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva1033_subset_internvl_mp4fs64.jsonl.gz",
+   "leg": "crossview_meva1033_subset_internvl_mp4fs64",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "96 frames total",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb8832140",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 43.85,
+   "errors": 0,
+   "glob": "bench_crossview_meva1033_subset_internvl_mp4fs96_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": [
+     96
+    ],
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva1033_subset_internvl_mp4fs96.jsonl.gz",
+   "leg": "crossview_meva1033_subset_internvl_mp4fs96",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_siglip",
+   "budget": "32 frames total",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb8832140",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 44.17,
+   "errors": 0,
+   "glob": "bench_crossview_meva1033_subset_internvl_mp4sg32_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva1033_subset_internvl_mp4sg32.jsonl.gz",
+   "leg": "crossview_meva1033_subset_internvl_mp4sg32",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_siglip",
+   "budget": "64 frames total",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb8832140",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 47.75,
+   "errors": 0,
+   "glob": "bench_crossview_meva1033_subset_internvl_mp4sg64_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva1033_subset_internvl_mp4sg64.jsonl.gz",
+   "leg": "crossview_meva1033_subset_internvl_mp4sg64",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_siglip",
+   "budget": "96 frames total",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb8832140",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 49.1,
+   "errors": 0,
+   "glob": "bench_crossview_meva1033_subset_internvl_mp4sg96_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva1033_subset_internvl_mp4sg96.jsonl.gz",
+   "leg": "crossview_meva1033_subset_internvl_mp4sg96",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_viclip_opt",
+   "budget": "32 frames total, auto K",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb8832140",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 43.56,
+   "errors": 0,
+   "glob": "bench_crossview_meva1033_subset_internvl_mp4sgva32_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva1033_subset_internvl_mp4sgva32.jsonl.gz",
+   "leg": "crossview_meva1033_subset_internvl_mp4sgva32",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_viclip_opt",
+   "budget": "64 frames total, auto K",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb8832140",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 47.97,
+   "errors": 0,
+   "glob": "bench_crossview_meva1033_subset_internvl_mp4sgva64_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva1033_subset_internvl_mp4sgva64.jsonl.gz",
+   "leg": "crossview_meva1033_subset_internvl_mp4sgva64",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_viclip_opt",
+   "budget": "96 frames total, auto K",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb8832140",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 48.31,
+   "errors": 0,
+   "glob": "bench_crossview_meva1033_subset_internvl_mp4sgva96_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva1033_subset_internvl_mp4sgva96.jsonl.gz",
+   "leg": "crossview_meva1033_subset_internvl_mp4sgva96",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "centralized",
+   "budget": "8 frames/video",
+   "subset": "crossview_meva_cap13.json",
+   "subset_sha256": "d35c9770929cc47a",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 47.19,
+   "errors": 0,
+   "glob": "bench_crossview_meva_cap13_internvl_mp4t1iv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     448
+    ],
+    "max_tiles": [
+     6
+    ],
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva_cap13_internvl_mp4t1iv.jsonl.gz",
+   "leg": "crossview_meva_cap13_internvl_mp4t1iv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "cvbench_native",
+   "budget": "8 frames/video",
+   "subset": "crossview_meva_cap13.json",
+   "subset_sha256": "d35c9770929cc47a",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 44.92,
+   "errors": 0,
+   "glob": "bench_crossview_meva_cap13_internvl_mp4t1iv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     448
+    ],
+    "max_tiles": [
+     6
+    ],
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva_cap13_internvl_mp4t1iv.jsonl.gz",
+   "leg": "crossview_meva_cap13_internvl_mp4t1iv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "per_stream",
+   "budget": "8 frames/video",
+   "subset": "crossview_meva_cap13.json",
+   "subset_sha256": "d35c9770929cc47a",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 39.06,
+   "errors": 0,
+   "glob": "bench_crossview_meva_cap13_internvl_mp4t1iv_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     448
+    ],
+    "max_tiles": [
+     6
+    ],
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva_cap13_internvl_mp4t1iv.jsonl.gz",
+   "leg": "crossview_meva_cap13_internvl_mp4t1iv",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "centralized",
+   "budget": "8 frames/video",
+   "subset": "crossview_meva_cap13.json",
+   "subset_sha256": "d35c9770929cc47a",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 47.99,
+   "errors": 0,
+   "glob": "bench_crossview_meva_cap13_cvbench_mp4t1q25_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     448
+    ],
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva_cap13_cvbench_mp4t1q25.jsonl.gz",
+   "leg": "crossview_meva_cap13_cvbench_mp4t1q25",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "cvbench_native",
+   "budget": "8 frames/video",
+   "subset": "crossview_meva_cap13.json",
+   "subset_sha256": "d35c9770929cc47a",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 41.36,
+   "errors": 0,
+   "glob": "bench_crossview_meva_cap13_cvbench_mp4t1q25_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     448
+    ],
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva_cap13_cvbench_mp4t1q25.jsonl.gz",
+   "leg": "crossview_meva_cap13_cvbench_mp4t1q25",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "method": "per_stream",
+   "budget": "8 frames/video",
+   "subset": "crossview_meva_cap13.json",
+   "subset_sha256": "d35c9770929cc47a",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 24.95,
+   "errors": 0,
+   "glob": "bench_crossview_meva_cap13_cvbench_mp4t1q25_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.1
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": [
+     448
+    ],
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva_cap13_cvbench_mp4t1q25.jsonl.gz",
+   "leg": "crossview_meva_cap13_cvbench_mp4t1q25",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "blind",
+   "budget": "no images",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb8832140",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 34.75,
+   "errors": 0,
+   "glob": "bench_crossview_meva1033_subset_internvl_mp4bd_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (87% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva1033_subset_internvl_mp4bd.jsonl.gz",
+   "leg": "crossview_meva1033_subset_internvl_mp4bd",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "single_view1",
+   "budget": "8 frames/view, single view",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb8832140",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 37.73,
+   "errors": 0,
+   "glob": "bench_crossview_meva1033_subset_internvl_mp4sv8_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (97% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva1033_subset_internvl_mp4sv8.jsonl.gz",
+   "leg": "crossview_meva1033_subset_internvl_mp4sv8",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "single_view2",
+   "budget": "8 frames/view, single view",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb8832140",
+   "subset_questions": 1033,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 35.67,
+   "errors": 0,
+   "glob": "bench_crossview_meva1033_subset_internvl_mp4sv8_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (97% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva1033_subset_internvl_mp4sv8.jsonl.gz",
+   "leg": "crossview_meva1033_subset_internvl_mp4sv8",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "single_view3",
+   "budget": "8 frames/view, single view",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb8832140",
+   "subset_questions": 1033,
+   "questions_expected": 958,
+   "questions_run": 958,
+   "rows": 3832,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 31.73,
+   "errors": 0,
+   "glob": "bench_crossview_meva1033_subset_internvl_mp4sv8_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (97% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva1033_subset_internvl_mp4sv8.jsonl.gz",
+   "leg": "crossview_meva1033_subset_internvl_mp4sv8",
+   "shards_source": "rescored"
+  },
+  {
+   "dataset": "CrossView-MEVA",
+   "backend": "InternVL3-8B",
+   "method": "single_view4",
+   "budget": "8 frames/view, single view",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb8832140",
+   "subset_questions": 1033,
+   "questions_expected": 955,
+   "questions_run": 955,
+   "rows": 3820,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 29.58,
+   "errors": 0,
+   "glob": "bench_crossview_meva1033_subset_internvl_mp4sv8_shard*.jsonl",
+   "rescored": true,
+   "protocol": {
+    "temperature": [
+     0.7
+    ],
+    "reasoning": "mixed (97% traced)",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": [
+     "avi->mp4"
+    ]
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/crossview_meva1033_subset_internvl_mp4sv8.jsonl.gz",
+   "leg": "crossview_meva1033_subset_internvl_mp4sv8",
+   "shards_source": "rescored"
+  }
+ ],
+ "excluded": [
+  {
+   "leg": "crossview_meva_cap13_internvl_cvmeva",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva_cap13.json",
+   "backend": "InternVL3-8B",
+   "glob": "bench_crossview_meva_cap13_internvl_cvmeva_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva_cap13_cvbench_cvmevaq25",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva_cap13.json",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "glob": "bench_crossview_meva_cap13_cvbench_cvmevaq25_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva_cap13_internvl_t1iv",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva_cap13.json",
+   "backend": "InternVL3-8B",
+   "glob": "bench_crossview_meva_cap13_internvl_t1iv_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva_cap13_cvbench_t1q25",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva_cap13.json",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "glob": "bench_crossview_meva_cap13_cvbench_t1q25_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva_cap13_internvl_fs32",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva_cap13.json",
+   "backend": "InternVL3-8B",
+   "glob": "bench_crossview_meva_cap13_internvl_fs32_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva_cap13_internvl_fs64",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva_cap13.json",
+   "backend": "InternVL3-8B",
+   "glob": "bench_crossview_meva_cap13_internvl_fs64_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva_cap13_internvl_fs96",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva_cap13.json",
+   "backend": "InternVL3-8B",
+   "glob": "bench_crossview_meva_cap13_internvl_fs96_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva_cap13_internvl_optu",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva_cap13.json",
+   "backend": "InternVL3-8B",
+   "glob": "bench_crossview_meva_cap13_internvl_optu_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva_cap13_cvbench_optu",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva_cap13.json",
+   "backend": "Qwen2.5-VL-7B-Instruct",
+   "glob": "bench_crossview_meva_cap13_cvbench_optu_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva1033_subset_internvl_fs32",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva1033_subset.json",
+   "backend": "InternVL3-8B",
+   "glob": "bench_crossview_meva1033_subset_internvl_fs32_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva1033_subset_internvl_fs64",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva1033_subset.json",
+   "backend": "InternVL3-8B",
+   "glob": "bench_crossview_meva1033_subset_internvl_fs64_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva1033_subset_internvl_fs96",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva1033_subset.json",
+   "backend": "InternVL3-8B",
+   "glob": "bench_crossview_meva1033_subset_internvl_fs96_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva1033_subset_internvl_sg32",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva1033_subset.json",
+   "backend": "InternVL3-8B",
+   "glob": "bench_crossview_meva1033_subset_internvl_sg32_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva1033_subset_internvl_sg64",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva1033_subset.json",
+   "backend": "InternVL3-8B",
+   "glob": "bench_crossview_meva1033_subset_internvl_sg64_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva1033_subset_internvl_sg96",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva1033_subset.json",
+   "backend": "InternVL3-8B",
+   "glob": "bench_crossview_meva1033_subset_internvl_sg96_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva1033_subset_internvl_sgva32",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva1033_subset.json",
+   "backend": "InternVL3-8B",
+   "glob": "bench_crossview_meva1033_subset_internvl_sgva32_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva1033_subset_internvl_sgva64",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva1033_subset.json",
+   "backend": "InternVL3-8B",
+   "glob": "bench_crossview_meva1033_subset_internvl_sgva64_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  },
+  {
+   "leg": "crossview_meva1033_subset_internvl_sgva96",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva1033_subset.json",
+   "backend": "InternVL3-8B",
+   "glob": "bench_crossview_meva1033_subset_internvl_sgva96_shard*.jsonl",
+   "reason": "pre-remux MEVA media: decoder returned the first seconds of every clip (see README)"
+  }
+ ]
+}

@@ -37,15 +37,21 @@ CLASSES = ("C2", "C4")
 
 
 def class_map(labels, alias):
-    """{record_id: evidence_class} for one subset alias."""
+    """({record_id: evidence_class}, {record_id: task_type}) for one subset
+    alias. The task_type map lets the join refuse a row whose id coincides
+    with a label's id but which was not what that label was written for
+    (rows from a foreign pool, e.g. All-Angles or MVU-Eval, that happen to
+    share a bare integer id with a MEVA record)."""
     cmap = {}
+    task_types = {}
     for row in labels["labels"]:
         rid = row["ids"].get(alias)
         if rid is not None:
             cmap[rid] = row["evidence_class"]
+            task_types[rid] = row["task_type"]
     if not cmap:
         raise SystemExit(f"no ids for subset alias {alias!r} in the labels file")
-    return cmap
+    return cmap, task_types
 
 
 def loo_floor(records, restrict_ids=None):
@@ -88,17 +94,28 @@ def read_rows(paths):
     return rows
 
 
-def split(rows, cmap):
+def split(rows, cmap, task_types):
     """{class: (mean_pct, std_pct, n_q)} over passes, plus pooled overall."""
     per = defaultdict(lambda: defaultdict(lambda: [0, 0]))  # cls -> pass -> [hit, tot]
     pooled = [0, 0]
     for r in rows:
         if r.get("error"):
             continue
-        cls = cmap.get(r.get("id"))
+        rid = r.get("id")
+        cls = cmap.get(rid)
         pi = r.get("pass_idx")
         if cls is None:
-            raise SystemExit(f"row id={r.get('id')} has no label — labels stale?")
+            raise SystemExit(f"row id={rid} has no label — labels stale?")
+        label_task_type = task_types.get(rid)
+        row_task_type = r.get("task_type")
+        if row_task_type != label_task_type:
+            raise SystemExit(
+                f"row id={rid} has task_type {row_task_type!r}, but the "
+                f"evidence-class labels for id={rid} were written for "
+                f"task_type {label_task_type!r} (the MEVA pool) — this id "
+                f"collides with a row from a different pool and cannot be "
+                f"scored against MEVA floors"
+            )
         per[cls][pi][1] += 1
         per[cls][pi][0] += bool(r.get("correct"))
         pooled[1] += 1
@@ -124,7 +141,7 @@ def main():
     args = ap.parse_args()
 
     labels = json.load(open(args.labels))
-    cmap = class_map(labels, args.alias)
+    cmap, label_task_types = class_map(labels, args.alias)
     recs = json.load(open(args.subset))
     floors = {cls: loo_floor(recs, {i for i, c in cmap.items() if c == cls})
               for cls in CLASSES}
@@ -143,7 +160,7 @@ def main():
              "| method | backend | C2 acc | C4 acc | overall | rows |",
              "|---|---|---|---|---|---|"]
     for (method, backend), rows in sorted(groups.items(), key=lambda kv: str(kv[0])):
-        cls, overall = split(rows, cmap)
+        cls, overall = split(rows, cmap, label_task_types)
         lines.append(f"| {method} | {backend} | {fmt(cls.get('C2'))} "
                      f"| {fmt(cls.get('C4'))} | {overall:.2f} | {len(rows)} |")
     text = "\n".join(lines) + "\n"

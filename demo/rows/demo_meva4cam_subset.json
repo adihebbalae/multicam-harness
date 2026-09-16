@@ -1,0 +1,112 @@
+[
+ {
+  "id": 860,
+  "task_type": "CrossView-MEVA-Temporal",
+  "video_1": "videos/meva/mp4_resized/2018-03-11/14/2018-03-11.14-10.school/2018-03-11.14-10-01.14-15-01.school.G336.r13.avi",
+  "video_2": "videos/meva/mp4_resized/2018-03-11/14/2018-03-11.14-10.school/2018-03-11.14-10-02.14-15-02.school.G424.r13.avi",
+  "video_3": "videos/meva/mp4_resized/2018-03-11/14/2018-03-11.14-10.school/2018-03-11.14-10-00.14-15-00.school.G299.r13.avi",
+  "video_4": "videos/meva/mp4_resized/2018-03-11/14/2018-03-11.14-10.school/2018-03-11.14-10-00.14-15-00.school.G330.r13.avi",
+  "question": "Between these two events, which happened first: a vehicle starting or a vehicle turning right?",
+  "options": [
+   "A. The vehicle starting occurred first",
+   "B. The vehicle turning right occurred first",
+   "C. They occurred simultaneously",
+   "D. Cannot be determined"
+  ],
+  "answer": "A",
+  "source": "meva",
+  "question_type": "temporal",
+  "orig_num_cameras": 14,
+  "dropped_cameras": 10,
+  "cap_answer_safe": true,
+  "orig_id": "2018-03-11.14-10.school#132"
+ },
+ {
+  "id": 749,
+  "task_type": "CrossView-MEVA-Temporal",
+  "video_1": "videos/meva/mp4_resized/2018-03-07/11/2018-03-07.11-00.school/2018-03-07.11-00-01.11-05-01.school.G421.r13.avi",
+  "video_2": "videos/meva/mp4_resized/2018-03-07/11/2018-03-07.11-00.school/2018-03-07.11-00-05.11-05-05.school.G424.r13.avi",
+  "video_3": "videos/meva/mp4_resized/2018-03-07/11/2018-03-07.11-00.school/2018-03-07.11-00-00.11-05-00.school.G299.r13.avi",
+  "video_4": "videos/meva/mp4_resized/2018-03-07/11/2018-03-07.11-00.school/2018-03-07.11-00-00.11-05-00.school.G330.r13.avi",
+  "question": "Between these two moments, which happened first: the person with charcoal hair in a charcoal top and navy pants, wearing dark gray shoes and a hat, making a purchase, or the person with blue hair in a blue top and navy pants, wearing black shoes and a scarf, getting into a vehicle?",
+  "options": [
+   "A. The person with charcoal hair, wearing a charcoal top and navy pants, dark gray shoes, with a hat, purchasing occurred first",
+   "B. The person with blue hair, wearing a blue top and navy pants, black shoes, with a scarf, entering a vehicle occurred first",
+   "C. They occurred simultaneously",
+   "D. Cannot be determined"
+  ],
+  "answer": "A",
+  "source": "meva",
+  "question_type": "temporal",
+  "orig_num_cameras": 12,
+  "dropped_cameras": 8,
+  "cap_answer_safe": true,
+  "orig_id": "2018-03-07.11-00.school#21"
+ },
+ {
+  "id": 251,
+  "task_type": "CrossView-MEVA-Event-Ordering",
+  "video_1": "videos/meva/mp4_resized/2018-03-15/14/2018-03-15.14-50.bus/2018-03-15.14-50-00.14-55-00.bus.G331.r13.avi",
+  "video_2": "videos/meva/mp4_resized/2018-03-15/14/2018-03-15.14-50.bus/2018-03-15.14-50-01.14-55-01.bus.G506.r13.avi",
+  "video_3": "videos/meva/mp4_resized/2018-03-15/14/2018-03-15.14-50.bus/2018-03-15.14-50-00.14-55-00.bus.G508.r13.avi",
+  "video_4": "videos/meva/mp4_resized/2018-03-15/14/2018-03-15.14-50.bus/2018-03-15.14-50-00.14-55-00.bus.G509.r13.avi",
+  "question": "Put the following moments in the order they happened, based on what was seen across the video feeds: I. A person sits down II. A person stands up III. A person with rust hair, wearing a pink top, black pants, and navy shoes, carrying a bag, exits the view through a doorway IV. A person with teal hair, wearing a patterned blue top, navy pants, and navy shoes, sits down Which sequence is correct?",
+  "options": [
+   "A. II -> IV -> I -> III",
+   "B. III -> IV -> I -> II",
+   "C. III -> I -> IV -> II",
+   "D. I -> III -> IV -> II"
+  ],
+  "answer": "C",
+  "source": "meva",
+  "question_type": "event_ordering",
+  "orig_num_cameras": 7,
+  "dropped_cameras": 3,
+  "cap_answer_safe": true,
+  "orig_id": "2018-03-15.14-50.bus#251"
+ },
+ {
+  "id": 1,
+  "task_type": "CrossView-MEVA-Event-Ordering",
+  "video_1": "videos/meva/mp4_resized/2018-03-05/13/2018-03-05.13-10.school/2018-03-05.13-10-00.13-15-00.school.G300.r13.avi",
+  "video_2": "videos/meva/mp4_resized/2018-03-05/13/2018-03-05.13-10.school/2018-03-05.13-10-01.13-15-01.school.G328.r13.avi",
+  "video_3": "videos/meva/mp4_resized/2018-03-05/13/2018-03-05.13-10.school/2018-03-05.13-10-01.13-15-01.school.G420.r13.avi",
+  "video_4": "videos/meva/mp4_resized/2018-03-05/13/2018-03-05.13-10.school/2018-03-05.13-10-00.13-15-00.school.G424.r13.avi",
+  "question": "Put these four moments in the order they happened: I. A black-haired person in a dark green top, indigo pants, and indigo shoes, wearing a scarf, walks into view through a doorway II. A vehicle begins moving III. A black-haired person in an olive top, black pants, and navy shoes, wearing a hat, is texting on a phone IV. A vehicle reverses Which sequence is correct?",
+  "options": [
+   "A. II -> IV -> I -> III",
+   "B. III -> IV -> I -> II",
+   "C. III -> I -> IV -> II",
+   "D. I -> III -> IV -> II"
+  ],
+  "answer": "C",
+  "source": "meva",
+  "question_type": "event_ordering",
+  "orig_num_cameras": 12,
+  "dropped_cameras": 8,
+  "cap_answer_safe": true,
+  "orig_id": "2018-03-05.13-10.school#1"
+ },
+ {
+  "id": 130,
+  "task_type": "CrossView-MEVA-Event-Ordering",
+  "video_1": "videos/meva/mp4_resized/2018-03-11/16/2018-03-11.16-15.school/2018-03-11.16-15-00.16-20-00.school.G299.r13.avi",
+  "video_2": "videos/meva/mp4_resized/2018-03-11/16/2018-03-11.16-15.school/2018-03-11.16-15-01.16-20-01.school.G328.r13.avi",
+  "video_3": "videos/meva/mp4_resized/2018-03-11/16/2018-03-11.16-15.school/2018-03-11.16-15-00.16-20-00.school.G330.r13.avi",
+  "video_4": "videos/meva/mp4_resized/2018-03-11/16/2018-03-11.16-15.school/2018-03-11.16-15-02.16-20-02.school.G424.r13.avi",
+  "question": "Put the following observed actions in the order they happened: I. Someone comes into view by walking through a doorway II. Someone opens a facility door III. Someone sets an object down IV. Someone picks an object up Which sequence is correct?",
+  "options": [
+   "A. II -> IV -> I -> III",
+   "B. III -> IV -> I -> II",
+   "C. III -> I -> IV -> II",
+   "D. I -> III -> IV -> II"
+  ],
+  "answer": "C",
+  "source": "meva",
+  "question_type": "event_ordering",
+  "orig_num_cameras": 14,
+  "dropped_cameras": 10,
+  "cap_answer_safe": true,
+  "orig_id": "2018-03-11.16-15.school#130"
+ }
+]

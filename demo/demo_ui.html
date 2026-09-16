@@ -1,0 +1,1553 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Multi-camera question answering demo</title>
+<style>
+/* ------------------------------------------------------------------ *
+ * tokens: one ground, one surface, one accent, one orange, ok/bad     *
+ * ------------------------------------------------------------------ */
+:root{
+  /* colour */
+  --bg:#0b0d10;             /* near-black ground                        */
+  --surface:#15181d;        /* the single surface tone                  */
+  --line:#232830;           /* hairline                                 */
+  --line-2:#343b46;         /* hairline, hover                          */
+  --fg:#e7eaef;
+  --fg-2:#a1a9b5;
+  --fg-3:#8a919c;
+  --accent:#4a7fb5;         /* active state only                        */
+  --accent-ink:#0a0c0f;     /* text on a filled accent                  */
+  --accent-soft:rgba(74,127,181,.14);
+  --accent-line:rgba(74,127,181,.55);
+  --amber:#d79a3f;          /* evidence / gold, and the fallback lines  */
+  --amber-soft:rgba(215,154,63,.10);
+  --ok:#5aa972;             /* correct only                             */
+  --bad:#d4756f;            /* wrong only                               */
+
+  /* type */
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono",monospace;
+  --fs-head:18px;           /* the one heading size                     */
+  --fs-stage:18px;          /* everything on the stage                  */
+  --fs-rail:15px;           /* rail floor                               */
+  --fs-meta:13px;           /* paths, hints                             */
+  --fs-label:11.5px;        /* uppercase eyebrows and tags              */
+
+  /* metrics */
+  --r:3px;
+  --gap:16px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--fg);overflow:hidden;
+  font:var(--fs-rail)/1.45 var(--sans);
+  -webkit-font-smoothing:antialiased;
+}
+button{font:inherit;color:inherit}
+.app{display:flex;flex-direction:column;height:100vh;min-height:0}
+
+.label{
+  font-size:var(--fs-label);letter-spacing:.09em;text-transform:uppercase;
+  color:var(--fg-3);font-weight:600;
+}
+
+/* ------------------------------------------------------------------ *
+ * 1. top bar                                                          *
+ * ------------------------------------------------------------------ */
+.top{
+  flex:0 0 auto;display:flex;align-items:center;gap:28px;height:52px;
+  padding:0 var(--gap);border-bottom:1px solid var(--line);background:var(--surface);
+}
+.brand{display:flex;align-items:baseline;gap:10px;flex:0 0 auto;white-space:nowrap}
+.brand h1{margin:0;font-size:var(--fs-head);font-weight:650;letter-spacing:.01em}
+.brand .sub{font-size:var(--fs-meta);color:var(--fg-3)}
+
+.scorer{display:flex;align-items:center;gap:12px;flex:0 0 auto;white-space:nowrap}
+.seg{display:flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.seg button{
+  padding:5px 15px;background:transparent;border:0;cursor:pointer;color:var(--fg-2);
+  font-size:var(--fs-rail);font-weight:600;line-height:1.5;
+}
+.seg button + button{border-left:1px solid var(--line)}
+.seg button:hover:not(:disabled):not(.on){color:var(--fg)}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+.seg button:disabled{color:var(--fg-3);cursor:not-allowed}
+.scorer .now{font-size:var(--fs-rail);color:var(--fg-2)}
+.scorer .now b{color:var(--fg);font-weight:600}
+.scorer .now .q{color:var(--fg-3)}
+
+.banner{
+  margin-left:auto;flex:0 1 auto;font-size:var(--fs-meta);color:var(--fg-3);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;
+}
+.banner b{color:var(--fg-2);font-weight:600}
+
+/* ------------------------------------------------------------------ *
+ * 2. main split                                                       *
+ * ------------------------------------------------------------------ */
+.main{flex:1 1 auto;display:flex;min-height:0}
+
+/* ---- left rail ---- */
+.rail{
+  width:400px;flex:0 0 auto;display:flex;flex-direction:column;min-height:0;
+  border-right:1px solid var(--line);background:var(--surface);
+}
+.rail-sec{display:flex;flex-direction:column;min-height:0}
+.rail-sec > h2{
+  margin:0;padding:11px var(--gap) 9px;font-size:var(--fs-label);letter-spacing:.09em;
+  text-transform:uppercase;color:var(--fg-3);font-weight:600;
+  border-bottom:1px solid var(--line);
+}
+
+.qlist{flex:0 0 auto;display:flex;flex-direction:column}
+.qbtn{
+  display:block;width:100%;text-align:left;background:transparent;border:0;
+  border-left:2px solid transparent;border-bottom:1px solid var(--line);
+  padding:9px var(--gap) 10px;cursor:pointer;line-height:1.3;
+}
+.qbtn:hover{background:rgba(255,255,255,.025)}
+.qbtn.on{background:var(--accent-soft);border-left-color:var(--accent)}
+.qbtn .h{display:flex;gap:10px;align-items:baseline;font-size:var(--fs-rail)}
+.qbtn .id{font-weight:650;color:var(--fg-2);font-variant-numeric:tabular-nums}
+.qbtn.on .id{color:var(--fg)}
+.qbtn .ty{color:var(--fg-3)}
+.qbtn .t{
+  display:block;color:var(--fg-3);font-size:var(--fs-rail);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.qbtn.on .t{color:var(--fg-2)}
+
+.qdetail{padding:14px var(--gap) 16px;overflow:auto;flex:1 1 auto;min-height:0}
+.qdetail .qtext{font-size:var(--fs-rail);line-height:1.5;margin:0 0 14px;color:var(--fg)}
+.qdetail ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
+.qdetail li{
+  display:flex;gap:10px;align-items:flex-start;font-size:var(--fs-rail);line-height:1.4;
+  color:var(--fg-2);padding:7px 0;border-top:1px solid var(--line);
+}
+.qdetail li .ol{flex:0 0 auto;width:16px;color:var(--fg-3);font-weight:650}
+.qdetail li .ot{flex:1 1 auto;min-width:0}
+.qdetail li.gold{color:var(--fg)}
+.qdetail li.gold .ol{color:var(--amber)}
+.tag{
+  display:inline-block;margin-left:8px;padding:1px 6px;border:1px solid var(--amber);
+  color:var(--amber);font-size:var(--fs-label);letter-spacing:.09em;text-transform:uppercase;
+  font-weight:600;border-radius:var(--r);vertical-align:1px;white-space:nowrap;
+}
+.meta{
+  margin-top:16px;padding-top:12px;border-top:1px solid var(--line);
+  font-size:var(--fs-rail);color:var(--fg-3);line-height:1.6;
+}
+.meta .ev{color:var(--amber)}
+.meta .row{display:block}
+
+/* ---- right work area ---- */
+.work{flex:1 1 auto;display:flex;flex-direction:column;min-width:0;min-height:0;padding:var(--gap)}
+
+/* caption strip: what is on the stage, and where it came from */
+.caption{
+  flex:0 0 auto;display:flex;align-items:center;gap:10px;height:30px;
+  font-size:var(--fs-rail);color:var(--fg-2);
+  border-bottom:1px solid var(--line);padding:0 2px;
+  white-space:nowrap;overflow:hidden;
+}
+.caption .dot{
+  width:7px;height:7px;border-radius:50%;background:var(--fg-3);flex:0 0 auto;
+}
+.caption.live .dot{background:var(--ok)}
+.caption #statusText{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.caption .src{color:var(--fg-3);font-family:var(--mono);font-size:var(--fs-meta)}
+
+/* stage */
+.stage{
+  flex:1 1 auto;min-height:0;position:relative;background:var(--surface);
+  border:1px solid var(--line);border-top:0;overflow:hidden;
+  display:flex;align-items:stretch;justify-content:stretch;padding:14px;
+  font-size:var(--fs-stage);
+}
+.view{width:100%;height:100%;display:flex;flex-direction:column;min-height:0}
+.view[hidden]{display:none !important}
+
+/* empty stage: the wall's still, dimmed, exactly where the clip will play, with
+   the hint over it. Without a still the hint stands alone on the surface. */
+.empty{position:relative;align-items:center;justify-content:center;text-align:center;color:var(--fg-3)}
+.empty .snap{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  opacity:.4;pointer-events:none;
+}
+.empty .snap[hidden]{display:none !important}
+.empty .etxt{position:relative;display:flex;flex-direction:column;gap:8px;align-items:center}
+.empty .big{font-size:var(--fs-stage);color:var(--fg-2)}
+.empty #emptySub{font-size:var(--fs-rail)}
+.empty #emptySub[hidden]{display:none !important}
+.empty.snapped .etxt{
+  padding:12px 24px;background:rgba(11,13,16,.78);border:1px solid var(--line);
+}
+.empty.snapped .big{color:var(--fg)}
+
+/* the one amber line: a fallback or a missing asset, never hidden away */
+.amber{
+  flex:0 0 auto;font-size:var(--fs-rail);color:var(--amber);background:var(--amber-soft);
+  border-left:2px solid var(--amber);padding:7px 12px;margin-bottom:12px;line-height:1.4;
+}
+
+.errbox{
+  margin:auto;max-width:70ch;text-align:left;font-size:var(--fs-stage);color:var(--fg);
+  border-left:2px solid var(--bad);background:rgba(196,99,95,.08);padding:14px 18px;line-height:1.5;
+}
+.errbox .t{color:var(--bad);font-weight:600}
+.errbox code{font-size:var(--fs-meta);font-family:var(--mono);color:var(--fg-2);word-break:break-all}
+
+/* ---- video ---- */
+.vwrap{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center}
+.vwrap video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
+.vwrap video[hidden]{display:none !important}
+
+/* ---- selection figure ---- */
+.zoom{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.zoom img{max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-in}
+.zoom.on{overflow:auto;align-items:flex-start;justify-content:flex-start}
+.zoom.on img{max-width:none;max-height:none;width:auto;height:auto;cursor:zoom-out}
+.hint{flex:0 0 auto;font-size:var(--fs-meta);color:var(--fg-3);text-align:center;padding-top:8px}
+
+/* ---- answer card ----
+   Two columns on a wide screen: the verdict (title, letter, mark, gold) on the
+   left, the arms table on the right, the pair centred as one block. The auto
+   margins collapse to zero when the card is taller than the stage, so it scrolls
+   from the top instead of clipping. Narrow screens stack it (see the media rule). */
+.ans{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:auto}
+.card{
+  margin:auto;width:100%;max-width:1560px;
+  display:grid;grid-template-columns:minmax(280px,360px) minmax(0,1fr);
+  column-gap:56px;row-gap:24px;align-items:center;padding:12px 24px;
+}
+.card .lead{display:flex;flex-direction:column;gap:28px;min-width:0}
+.card .body{display:flex;flex-direction:column;gap:14px;min-width:0}
+.ans .h1{font-size:var(--fs-head);font-weight:650;color:var(--fg);line-height:1.3}
+.ans .h2{font-size:var(--fs-rail);color:var(--fg-3);margin-top:6px;line-height:1.5}
+.ans .h2 .bit{display:block}
+.verdict{display:flex;align-items:center;gap:24px}
+.letter{
+  font-size:120px;line-height:.9;font-weight:650;letter-spacing:.01em;
+  font-variant-numeric:tabular-nums;
+}
+.letter.ok{color:var(--ok)} .letter.bad{color:var(--bad)}
+.letter.none{color:var(--fg-3);font-size:32px;font-weight:600;line-height:1.2}
+.verdict .vr{display:flex;flex-direction:column;gap:6px}
+.mark{font-size:var(--fs-stage);font-weight:650}
+.mark.ok{color:var(--ok)} .mark.bad{color:var(--bad)}
+.gold{font-size:var(--fs-stage);color:var(--fg-3)}
+.gold b{color:var(--fg);font-weight:650}
+
+table.arms{
+  width:100%;border-collapse:collapse;
+  font-size:var(--fs-stage);font-variant-numeric:tabular-nums;
+}
+table.arms th{
+  text-align:left;font-weight:600;color:var(--fg-3);
+  font-size:var(--fs-label);letter-spacing:.09em;text-transform:uppercase;
+  padding:0 12px 8px;border-bottom:1px solid var(--line);white-space:nowrap;
+}
+table.arms th.num{text-align:right}
+table.arms tbody tr{height:52px}
+table.arms td{
+  padding:5px 12px;border-bottom:1px solid var(--line);color:var(--fg-2);
+  vertical-align:middle;
+}
+table.arms td.arm{color:var(--fg-2)}
+table.arms td.arm .nm{display:block;line-height:1.25;white-space:nowrap}
+table.arms td.arm .ds{
+  display:block;font-size:var(--fs-meta);color:var(--fg-3);line-height:1.3;
+  margin-top:3px;white-space:nowrap;
+}
+table.arms tr.sel td{background:var(--accent-soft);color:var(--fg)}
+table.arms tr.sel td.arm{box-shadow:inset 2px 0 0 var(--accent)}
+table.arms tr.sel td.arm .nm{font-weight:600}
+table.arms td.l{font-weight:650;color:var(--fg)}
+table.arms td.m{width:1%;white-space:nowrap}
+table.arms td.m.ok{color:var(--ok)}
+table.arms td.m.bad{color:var(--bad)}
+table.arms td.num{text-align:right;white-space:nowrap}
+table.arms td .dag{color:var(--fg-3);font-size:var(--fs-meta);vertical-align:2px;margin-left:2px}
+.cmp{
+  display:inline-block;margin-left:10px;padding:1px 6px;border:1px solid var(--line-2);
+  color:var(--fg-3);font-size:var(--fs-label);letter-spacing:.09em;text-transform:uppercase;
+  font-weight:600;border-radius:var(--r);vertical-align:2px;white-space:nowrap;
+}
+.foot{font-size:var(--fs-rail);color:var(--fg-3);line-height:1.5;max-width:110ch}
+.foot + .foot{margin-top:-6px}
+.foot code{font-family:var(--mono);font-size:var(--fs-meta);color:var(--fg-2)}
+
+/* ---- reasoning ---- */
+.rhead{flex:0 0 auto;margin-bottom:12px}
+.rhead .l1{font-size:var(--fs-head);line-height:1.4;color:var(--fg-2)}
+.rhead .l1 b{color:var(--fg);font-weight:650}
+.rhead .l1 .ok{color:var(--ok);font-weight:650}
+.rhead .l1 .bad{color:var(--bad);font-weight:650}
+.rhead .l1 .cap{color:var(--amber);font-weight:650}
+.rhead .l2{font-size:var(--fs-rail);color:var(--fg-3);margin-top:6px;line-height:1.5}
+pre.trace{
+  flex:1 1 auto;min-height:0;overflow:auto;margin:0;padding:14px 16px;
+  background:var(--bg);border:1px solid var(--line);
+  font:var(--fs-rail)/1.6 var(--mono);
+  color:var(--fg-2);white-space:pre-wrap;word-break:break-word;
+}
+
+/* ------------------------------------------------------------------ *
+ * 3. stepper                                                          *
+ * ------------------------------------------------------------------ */
+.steps{
+  flex:0 0 auto;display:flex;align-items:center;gap:8px;padding-top:var(--gap);
+}
+.step{
+  display:flex;align-items:center;gap:10px;padding:8px 14px;cursor:pointer;
+  background:transparent;border:1px solid var(--line);border-radius:var(--r);
+  color:var(--fg-2);font-size:var(--fs-rail);line-height:1.4;white-space:nowrap;
+}
+.step:hover:not(:disabled):not(.on){border-color:var(--line-2);color:var(--fg)}
+.step .n{
+  font-variant-numeric:tabular-nums;font-weight:650;color:var(--fg-3);
+  min-width:9px;text-align:center;
+}
+.step.done{border-color:var(--accent-line);color:var(--fg)}
+.step.done .n{color:var(--accent)}
+.step.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.step.on .n{color:var(--accent-ink)}
+.step:disabled{color:var(--fg-3);border-color:var(--line);cursor:not-allowed}
+.step:disabled .n{color:var(--fg-3)}
+.steps .khint{margin-left:auto;font-size:var(--fs-meta);color:var(--fg-3);white-space:nowrap}
+
+/* ------------------------------------------------------------------ *
+ * 4. narrower screens (1440 and below)                                *
+ * ------------------------------------------------------------------ */
+@media (max-width:1600px){
+  /* the claim never collapses: below this width the banner wraps onto a second
+     line inside the 52px bar instead of losing its tail */
+  .banner{white-space:normal;line-height:1.3;text-overflow:clip}
+  .banner .b2{white-space:nowrap}   /* the claim moves to line two whole, never split */
+
+  /* the answer card stacks: verdict row above, table below */
+  .card{grid-template-columns:minmax(0,1fr);max-width:1180px;row-gap:20px;padding:8px 16px}
+  .card .lead{flex-direction:row;align-items:center;justify-content:space-between;gap:40px}
+  .card .lead .ttl{flex:1 1 auto;min-width:0}
+  .ans .h2 .bit{display:inline}
+  .ans .h2 .bit + .bit{margin-left:.55em}
+  .ans .h2 .bit + .bit::before{content:"\00b7";margin-right:.55em}
+  .letter{font-size:96px}
+}
+@media (max-width:1500px){
+  :root{--gap:12px}
+  .rail{width:340px;--fs-rail:14px}    /* the rail only; the stage keeps its size */
+  .qbtn{padding:7px var(--gap) 8px}
+  .qdetail{padding:12px var(--gap) 14px}
+  .qdetail li{padding:6px 0}
+  .meta{margin-top:12px;padding-top:10px;line-height:1.5}
+  .top{gap:18px}
+  .step{padding:8px 11px;gap:8px}
+}
+@media (max-width:1280px){
+  .letter{font-size:76px}
+  table.arms{font-size:var(--fs-rail)}
+  .scorer .now .q{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ---------------- top bar ---------------- -->
+  <div class="top">
+    <div class="brand">
+      <h1>MultiCam</h1>
+      <span class="sub">four-camera question answering</span>
+    </div>
+
+    <div class="scorer">
+      <span class="label">Scorer</span>
+      <div class="seg">
+        <button id="swSiglip" class="on" type="button">SigLIP</button>
+        <button id="swViclip" type="button" disabled title="not rendered yet">ViCLIP</button>
+      </div>
+      <span class="now" id="scorerNow"></span>
+    </div>
+
+    <div class="banner" id="banner">
+      <b>Replay of a recorded run</b>
+      <span class="b1">&middot; 2026-09-16 &middot; InternVL3-8B &middot; direct answers</span>
+      <span class="b2">&middot; nothing is computed live</span>
+    </div>
+  </div>
+
+  <!-- ---------------- main ---------------- -->
+  <div class="main">
+
+    <!-- left rail -->
+    <div class="rail">
+      <div class="rail-sec" style="flex:0 0 auto">
+        <h2>Questions</h2>
+        <div class="qlist" id="qlist"></div>
+      </div>
+      <div class="rail-sec" style="flex:1 1 auto">
+        <h2 id="qdetailHead">Selected question</h2>
+        <div class="qdetail" id="qdetail"></div>
+      </div>
+    </div>
+
+    <!-- stage -->
+    <div class="work">
+
+      <div class="caption" id="status">
+        <span class="dot"></span><span id="statusText">Loading&hellip;</span>
+      </div>
+
+      <div class="stage" id="stage">
+
+        <div class="view empty" id="viewEmpty">
+          <img class="snap" id="emptySnap" alt="" fetchpriority="high" hidden>
+          <div class="etxt">
+            <div class="big" id="emptyBig">Loading the recorded run&hellip;</div>
+            <div id="emptySub">manifest, walls and reasoning rows are read from disk</div>
+          </div>
+        </div>
+
+        <div class="view" id="viewVideo" hidden>
+          <div class="amber" id="videoNote" hidden></div>
+          <div class="vwrap" id="vwrap"></div>
+        </div>
+
+        <div class="view" id="viewSel" hidden>
+          <div class="amber" id="selNote" hidden></div>
+          <div class="zoom" id="zoomBox"><img id="selImg" alt="what the selector kept"></div>
+          <div class="hint">click the image to zoom 1:1, click again to fit</div>
+        </div>
+
+        <div class="view" id="viewAns" hidden></div>
+
+        <div class="view" id="viewReason" hidden>
+          <div class="rhead" id="rhead"></div>
+          <pre class="trace" id="rtrace"></pre>
+        </div>
+
+        <div class="view" id="viewErr" hidden><div class="errbox" id="errBox"></div></div>
+      </div>
+
+      <div class="steps" id="bar">
+        <button class="step" id="act1" type="button"><span class="n">1</span><span class="lab">Play streams</span></button>
+        <button class="step" id="act2" type="button"><span class="n">2</span><span class="lab">Kept segments</span></button>
+        <button class="step" id="act3" type="button"><span class="n">3</span><span class="lab">Answer</span></button>
+        <button class="step" id="act4" type="button"><span class="n">4</span><span class="lab">Reasoning</span></button>
+        <button class="step" id="act5" type="button"><span class="n">5</span><span class="lab">Reset</span></button>
+        <span class="khint">keys 1&ndash;5, arrows switch question</span>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ------------------------------------------------------------------ *
+   * constants                                                           *
+   * ------------------------------------------------------------------ */
+  var ROOT_SIGLIP = "figs_demo/";
+  var ROOT_VICLIP = "figs_demo_viclip/";
+  var REASON_FILE = "rows/bench_demo_meva4cam_subset_internvl_demo_reason.jsonl";
+  var GLOBAL_FILE = "rows/bench_demo_meva4cam_subset_internvl_demo_global.jsonl";
+  var REASON_FILE_V = "rows/bench_demo_meva4cam_subset_internvl_demo_viclip_reason.jsonl";
+  var GLOBAL_FILE_V = "rows/bench_demo_meva4cam_subset_internvl_demo_viclip_global_reason.jsonl";
+  /* per scorer: the selection method name in the rows, its reasoning files, and
+     which manifest its display name must be read out of. No scorer word is
+     spelled out here — every one of them comes from a manifest at render time. */
+  var SCORER = {
+    siglip: { key: "siglip", method: "segment_select_siglip",
+              reasonFile: REASON_FILE, globalFile: GLOBAL_FILE },
+    viclip: { key: "viclip", method: "segment_select_viclip_opt",
+              reasonFile: REASON_FILE_V, globalFile: GLOBAL_FILE_V }
+  };
+  var SEL_ARM = "seg_perclip";           /* the arm the demo is about */
+  var TOKEN_CAP = 8192;                  /* max_new_tokens of the reasoning run */
+  var NOTE_NOT_YET = "wall clip not rendered yet";
+  var NOTE_BROKEN = "wall clip could not be loaded";
+  var ARM_LABEL = {
+    blind: "Blind, no video",
+    cvbench_native: "All cameras, 96 frames"
+  };
+  var PER_CAM = "segments, per camera";
+  var GLOBAL_SEL = "segments, global across cameras";
+
+  var S = {
+    root: ROOT_SIGLIP,
+    scorer: "siglip",
+    man: { siglip: null, viclip: null },
+    reason: [],
+    global: [],
+    reasonV: [],
+    globalV: [],
+    qi: 0,
+    view: "empty",          /* empty | video | sel | ans | reason | err */
+    done: {},               /* steps already shown for the current question    */
+    vids: {},               /* "root|id" -> {el, err, fallback, url, note}     */
+    vidp: {},               /* "root|id" -> the promise building that record   */
+    imgErr: {},             /* selection png url -> failed attempts so far     */
+    dirCache: {},
+    snapSeq: 0,             /* bumps on every reset; a late still is ignored   */
+    ready: false
+  };
+  var HINT_PLAY = "press 1 to play the four camera streams";
+  var IDLE_CAPTION = "Idle, a still of the wall at the first annotated moment, dimmed";
+
+  /* ------------------------------------------------------------------ *
+   * small helpers                                                       *
+   * ------------------------------------------------------------------ */
+  function $(id) { return document.getElementById(id); }
+  function txt(el, s) { el.textContent = s == null ? "" : String(s); }
+  function num(n, d) {
+    return (typeof n === "number" && isFinite(n)) ? n.toFixed(d == null ? 2 : d) : "—";
+  }
+  function thou(n) {
+    return (typeof n === "number" && isFinite(n)) ? n.toLocaleString("en-US") : "—";
+  }
+  function trunc(s, n) {
+    s = String(s || "").replace(/\s+/g, " ").trim();
+    return s.length > n ? s.slice(0, n - 1).replace(/\s+\S*$/, "") + "…" : s;
+  }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = String(text);
+    return e;
+  }
+  function pred(r) { return String((r && r.prediction) || "").trim(); }
+
+  /* fetch JSON, never throws */
+  function getJSON(url) {
+    return fetch(url, { cache: "no-store" }).then(function (r) {
+      if (!r.ok) return { ok: false, err: "HTTP " + r.status, url: url };
+      return r.json().then(function (j) { return { ok: true, data: j, url: url }; },
+        function (e) { return { ok: false, err: "bad JSON (" + e.message + ")", url: url }; });
+    }, function (e) { return { ok: false, err: String(e && e.message || e), url: url }; });
+  }
+
+  /* fetch JSONL, never throws */
+  function getJSONL(url) {
+    return fetch(url, { cache: "no-store" }).then(function (r) {
+      if (!r.ok) return { ok: false, err: "HTTP " + r.status, url: url };
+      return r.text().then(function (t) {
+        var out = [], lines = t.split("\n"), i, s;
+        for (i = 0; i < lines.length; i++) {
+          s = lines[i].trim();
+          if (!s) continue;
+          try { out.push(JSON.parse(s)); } catch (e) { /* skip a torn line */ }
+        }
+        return { ok: true, data: out, url: url };
+      }, function (e) { return { ok: false, err: String(e && e.message || e), url: url }; });
+    }, function (e) { return { ok: false, err: String(e && e.message || e), url: url }; });
+  }
+
+  /* directory listing (python -m http.server), used so that probing for an
+     optional asset set never has to fire a request that 404s. */
+  function dirList(path, fresh) {
+    if (!fresh && Object.prototype.hasOwnProperty.call(S.dirCache, path)) {
+      return Promise.resolve(S.dirCache[path]);
+    }
+    return fetch(path, { cache: "no-store" }).then(function (r) {
+      if (!r.ok) { S.dirCache[path] = null; return null; }
+      return r.text().then(function (t) {
+        if (t.indexOf("Directory listing for") < 0) { S.dirCache[path] = null; return null; }
+        var names = {}, re = /href="([^"?#]+)"/g, m, n;
+        while ((m = re.exec(t))) {
+          n = m[1].replace(/\/$/, "");
+          try { n = decodeURIComponent(n); } catch (e) { /* keep raw */ }
+          if (n && n !== ".." && n.indexOf("/") < 0) names[n] = true;
+        }
+        S.dirCache[path] = names;
+        return names;
+      }, function () { S.dirCache[path] = null; return null; });
+    }, function () { S.dirCache[path] = null; return null; });
+  }
+
+  /* ------------------------------------------------------------------ *
+   * scorer naming                                                       *
+   *                                                                     *
+   * Every scorer word on screen is produced here, out of a string that   *
+   * came from a manifest (selection_leg.scorer, or an arm's method), so  *
+   * no label can drift away from the assets it describes.                *
+   * ------------------------------------------------------------------ */
+  function scorerWord(raw) {
+    var s = String(raw == null ? "" : raw).toLowerCase();
+    if (s.indexOf("siglip") >= 0) return "SigLIP";
+    if (s.indexOf("viclip") >= 0) return "ViCLIP";
+    s = String(raw == null ? "" : raw).split("/").pop();
+    return s || "scorer";
+  }
+  /* SigLIP scores segments against the question text; the ViCLIP "_opt" leg
+     scores them against the four answer options. Read off the method name. */
+  function scorerQuery(raw) {
+    return String(raw == null ? "" : raw).toLowerCase().indexOf("_opt") >= 0
+      ? "segments scored against the four answer options"
+      : "segments scored against the question text";
+  }
+  /* the selection_leg of a manifest (they are identical across its questions) */
+  function manLeg(m) {
+    var qs = (m && m.questions) || [], i;
+    for (i = 0; i < qs.length; i++) if (qs[i].selection_leg) return qs[i].selection_leg;
+    return null;
+  }
+  function manScorerWord(m, fallback) {
+    var leg = manLeg(m);
+    return leg && leg.scorer ? scorerWord(leg.scorer) : (fallback || "scorer");
+  }
+
+  function isSelectorArm(a) {
+    return !!(a && a.method && String(a.method).indexOf("segment_select") === 0);
+  }
+  function isGlobalArm(q, a) {
+    if (!a) return false;
+    if (String(a.arm || "").indexOf("global") >= 0) return true;
+    return !!(q && q.global_leg && q.global_leg.tag && a.tag === q.global_leg.tag);
+  }
+  /* an arm of the scorer this manifest is NOT about: shown for comparison */
+  function isComparisonArm(q, a) {
+    var leg = q && q.selection_leg;
+    return !!(isSelectorArm(a) && leg && leg.method && a.method !== leg.method);
+  }
+  /* the arm's name in words; its scorer word comes from selection_leg.scorer
+     for the leg this manifest is about, and from the arm's own method for the
+     comparison arms of the other scorer. */
+  function armScorerWord(q, a) {
+    var leg = q && q.selection_leg, raw = a.method;
+    if (leg && leg.method === a.method && leg.scorer) raw = leg.scorer;
+    return scorerWord(raw);
+  }
+  function armWords(q, a) {
+    if (!a) return "—";
+    if (isSelectorArm(a)) {
+      return armScorerWord(q, a) + " " + (isGlobalArm(q, a) ? GLOBAL_SEL : PER_CAM);
+    }
+    if (ARM_LABEL[a.method]) return ARM_LABEL[a.method];
+    return a.label || a.arm || "—";
+  }
+  /* the table's name line: each arm's tail moves to the description line under
+     it, so the name column stays narrow enough for seven columns */
+  function armName(q, a) {
+    if (!a) return "—";
+    if (a.method === "blind") return "Blind";
+    if (a.method === "cvbench_native") return "All cameras";
+    if (isSelectorArm(a) && isGlobalArm(q, a)) return armScorerWord(q, a) + " segments, global";
+    return armWords(q, a);
+  }
+  /* The manifest question that describes an arm's own selection: this one when
+     the arm is the manifest's scorer, otherwise the same question in the other
+     scorer's manifest (the comparison arms are that manifest's arms verbatim). */
+  function homeQ(q, a) {
+    if (!q || !a) return null;
+    if (q.selection_leg && q.selection_leg.method === a.method) return q;
+    var ks = ["siglip", "viclip"], i, k, qs, j;
+    for (i = 0; i < ks.length; i++) {
+      qs = (S.man[ks[i]] && S.man[ks[i]].questions) || [];
+      for (j = 0; j < qs.length; j++) {
+        k = qs[j];
+        if (String(k.id) === String(q.id) && k.selection_leg && k.selection_leg.method === a.method) return k;
+      }
+    }
+    return null;
+  }
+  function sum(arr) { var t = 0, i; for (i = 0; i < arr.length; i++) t += arr[i]; return t; }
+  /* one line under the arm name, every number read off a manifest; a number
+     that cannot be read is left out rather than guessed */
+  function armDesc(q, a) {
+    if (!a) return "";
+    if (a.method === "blind") return "no video";
+    if (a.method === "cvbench_native") {
+      var m = String(a.label || "").match(/(\d+)\s*frames/i);
+      var n = m ? m[1] : (q && q.selection_leg && q.selection_leg.budget);
+      return n ? n + " frames, no selection" : "no selection";
+    }
+    if (!isSelectorArm(a)) return "";
+    var h = homeQ(q, a), leg = h && h.selection_leg, cams = (h && h.cameras) || [];
+    var nseg = cams.length ? Math.max.apply(null, cams.map(function (c) { return c.n_segments || 0; })) : 0;
+    if (isGlobalArm(q, a)) {
+      var total = sum(cams.map(function (c) { return c.n_segments || 0; }));
+      var haveKept = cams.length && cams.every(function (c) { return Array.isArray(c.segments_kept_global); });
+      var kept = haveKept ? sum(cams.map(function (c) { return c.segments_kept_global.length; }))
+        : (leg && leg.budget && leg.frames_per_segment ? Math.round(leg.budget / leg.frames_per_segment) : 0);
+      return (kept && total) ? "best " + kept + " of " + total + " segments across cameras"
+                             : "best segments across cameras";
+    }
+    var keep = leg && leg.segments_keep;
+    return (keep && nseg) ? "top " + keep + " of " + nseg + " segments per camera" : "top segments per camera";
+  }
+  /* The Selection column. The manifest arm carries selection_latency_s (null for
+     the arms that select nothing). A manifest written before the field existed
+     has no key at all; then the reasoning run's row for the same arm, already
+     fetched, supplies it and the cell is marked, or the cell is a dash. */
+  function selLatency(q, a) {
+    if (!a) return { v: null, src: null };
+    if (Object.prototype.hasOwnProperty.call(a, "selection_latency_s")) {
+      return { v: a.selection_latency_s, src: "manifest" };
+    }
+    if (!isSelectorArm(a)) return { v: null, src: null };
+    var isV = /viclip/i.test(String(a.method || ""));
+    var rows = isGlobalArm(q, a) ? (isV ? S.globalV : S.global) : (isV ? S.reasonV : S.reason);
+    var r = rowFor(rows, q.id, a.method, false), fa = r && r.frame_alloc;
+    if (fa && typeof fa.selection_latency_s === "number") return { v: fa.selection_latency_s, src: "row" };
+    return { v: null, src: null };
+  }
+
+  /* ------------------------------------------------------------------ *
+   * data accessors                                                      *
+   * ------------------------------------------------------------------ */
+  function man(sk) { return S.man[sk || S.scorer] || S.man.siglip; }
+  function questions(sk) { var m = man(sk); return (m && m.questions) || []; }
+  function Q() { return questions()[S.qi] || null; }
+
+  function armOf(q, name) {
+    var a = (q && q.arms) || [], i;
+    for (i = 0; i < a.length; i++) if (a[i].arm === name) return a[i];
+    return null;
+  }
+  /* The arm the demo is about: whatever the active manifest ran the selector as
+     (SigLIP -> seg_perclip, ViCLIP -> viclip_perclip), matched by method+tag. */
+  function selArm(q, sk) {
+    sk = sk || S.scorer;
+    var arms = (q && q.arms) || [], leg = q && q.selection_leg, i, a;
+    if (leg) {
+      for (i = 0; i < arms.length; i++) {
+        if (arms[i].method === leg.method && arms[i].tag === leg.tag) return arms[i];
+      }
+    }
+    var want = (sk === "viclip")
+      ? ["viclip_perclip", "viclip_global", SEL_ARM]
+      : [SEL_ARM, "seg_global"];
+    for (i = 0; i < want.length; i++) { a = armOf(q, want[i]); if (a) return a; }
+    return arms[0] || null;
+  }
+
+  function rowFor(rows, id, method, needPred) {
+    var i, r;
+    for (i = 0; i < rows.length; i++) {
+      r = rows[i];
+      if (String(r.id) !== String(id)) continue;
+      if (method && r.method !== method) continue;
+      if (needPred && !pred(r)) continue;
+      return r;
+    }
+    return null;
+  }
+
+  /* rows of the active scorer's reasoning run; ViCLIP falls back to SigLIP when absent */
+  function traceRows(sk) {
+    sk = sk || S.scorer;
+    if (sk === "viclip" && (S.reasonV.length || S.globalV.length)) {
+      return { reason: S.reasonV, global: S.globalV, sc: SCORER.viclip, fallback: false };
+    }
+    return { reason: S.reason, global: S.global, sc: SCORER.siglip, fallback: sk === "viclip" };
+  }
+  /* per-camera seg_select row with a letter, else the global row, else all-cameras */
+  function pickTrace(id, sk) {
+    var t = traceRows(sk), sc = t.sc, r;
+    /* the word for the scorer whose rows these are, read from that scorer's manifest */
+    var word = manScorerWord(S.man[sc.key], scorerWord(sc.method));
+    function hit(row, kind, file) {
+      return { row: row, arm: kind === "native" ? ARM_LABEL.cvbench_native
+                                                : word + " " + (kind === "global" ? GLOBAL_SEL : PER_CAM),
+               file: file, fallback: t.fallback };
+    }
+    r = rowFor(t.reason, id, sc.method, true);
+    if (r) return hit(r, "perclip", sc.reasonFile);
+    r = rowFor(t.global, id, null, true);
+    if (r) return hit(r, "global", sc.globalFile);
+    r = rowFor(t.reason, id, "cvbench_native", false);
+    if (r) return hit(r, "native", sc.reasonFile);
+    r = rowFor(t.reason, id, sc.method, false);
+    if (r) return hit(r, "perclip", sc.reasonFile);
+    r = rowFor(t.global, id, null, false);
+    if (r) return hit(r, "global", sc.globalFile);
+    return null;
+  }
+
+  /* ------------------------------------------------------------------ *
+   * caption strip                                                       *
+   * ------------------------------------------------------------------ */
+  function setStatus(what, src, live) {
+    var t = $("statusText");
+    t.textContent = "";
+    t.appendChild(document.createTextNode(what));
+    if (src) {
+      t.appendChild(document.createTextNode("  ·  "));
+      t.appendChild(el("span", "src", src));
+    }
+    $("status").classList.toggle("live", !!live);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * top bar                                                             *
+   * ------------------------------------------------------------------ */
+  function renderTopBar() {
+    var sw = $("swSiglip"), vw = $("swViclip");
+    if (S.man.siglip) sw.textContent = manScorerWord(S.man.siglip, "SigLIP");
+    if (S.man.viclip) vw.textContent = manScorerWord(S.man.viclip, "ViCLIP");
+
+    var n = $("scorerNow"), leg = manLeg(man());
+    n.textContent = "";
+    n.appendChild(el("b", null, manScorerWord(man(), scorerWord(S.scorer))));
+    n.appendChild(el("span", "q", " · " + scorerQuery(leg && leg.method)));
+  }
+
+  /* ------------------------------------------------------------------ *
+   * left rail                                                           *
+   * ------------------------------------------------------------------ */
+  function buildQuestionList() {
+    var list = $("qlist"), qs = questions();
+    list.textContent = "";
+    qs.forEach(function (q, i) {
+      var b = el("button", "qbtn" + (i === S.qi ? " on" : ""));
+      b.type = "button";
+      var h = el("div", "h");
+      h.appendChild(el("span", "id", "q" + q.id));
+      h.appendChild(el("span", "ty", String(q.question_type || "").replace(/_/g, " ")));
+      b.appendChild(h);
+      b.appendChild(el("span", "t", trunc(q.question, 52)));
+      b.addEventListener("click", function () { selectQuestion(i); });
+      list.appendChild(b);
+    });
+  }
+
+  function renderQuestionDetail() {
+    var q = Q(), d = $("qdetail");
+    d.textContent = "";
+    if (!q) { d.appendChild(el("div", "meta", "No question loaded.")); return; }
+    $("qdetailHead").textContent = "Question " + q.id + " · " +
+      String(q.question_type || "").replace(/_/g, " ");
+    d.appendChild(el("p", "qtext", q.question));
+
+    var ol = el("ol");
+    (q.options || []).forEach(function (o) {
+      var s = String(o), m = s.match(/^\s*([A-Za-z])[.)]\s*/);
+      var letter = m ? m[1] : s.trim().charAt(0);
+      var body = m ? s.slice(m[0].length) : s;
+      var li = el("li", letter === q.gold ? "gold" : "");
+      li.appendChild(el("span", "ol", letter + "."));
+      var t = el("span", "ot", body);
+      if (letter === q.gold) {
+        /* a real space, so the text layer reads "… first gold", not "…firstgold" */
+        t.appendChild(document.createTextNode(" "));
+        t.appendChild(el("span", "tag", "gold"));
+      }
+      li.appendChild(t);
+      ol.appendChild(li);
+    });
+    d.appendChild(ol);
+
+    var cams = (q.cameras || []).map(function (c) { return c.camera; }).join(", ");
+    var meta = el("div", "meta");
+    meta.appendChild(el("span", "row", "Cameras " + cams));
+    var r2 = el("span", "row");
+    r2.appendChild(document.createTextNode("Evidence in "));
+    r2.appendChild(el("span", "ev", (q.requires_cameras || []).join(", ")));
+    r2.appendChild(document.createTextNode(" · gold "));
+    r2.appendChild(el("span", "ev", q.gold));
+    meta.appendChild(r2);
+    d.appendChild(meta);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * stage plumbing                                                      *
+   * ------------------------------------------------------------------ */
+  var VIEWS = { empty: "viewEmpty", video: "viewVideo", sel: "viewSel",
+                ans: "viewAns", reason: "viewReason", err: "viewErr" };
+  var STEP_OF = { video: 1, sel: 2, ans: 3, reason: 4 };
+
+  function paintSteps(active) {
+    [1, 2, 3, 4, 5].forEach(function (n) {
+      var b = $("act" + n);
+      b.classList.toggle("on", n === active);
+      b.classList.toggle("done", n !== active && !!S.done[n]);
+    });
+  }
+
+  function showView(name) {
+    Object.keys(VIEWS).forEach(function (k) { $(VIEWS[k]).hidden = (k !== name); });
+    S.view = name;
+    var step = STEP_OF[name] || 0;
+    if (step) S.done[step] = true;
+    paintSteps(step);
+    if (name !== "video") pauseAllVideos();
+  }
+
+  function showError(title, detail, srcLabel) {
+    var b = $("errBox");
+    b.textContent = "";
+    b.appendChild(el("div", "t", title));
+    if (detail) {
+      var c = el("div");
+      c.style.marginTop = "10px";
+      c.appendChild(el("code", null, detail));
+      b.appendChild(c);
+    }
+    showView("err");
+    setStatus(title, srcLabel || detail || "", false);
+  }
+
+  function resetStage() {
+    S.done = {};
+    showView("empty");
+    paintSteps(0);
+    $("viewEmpty").classList.remove("snapped");
+    $("emptySnap").hidden = true;
+    $("emptySub").hidden = false;
+    $("emptyBig").textContent = S.ready ? "Stage is empty" : "Loading the recorded run…";
+    $("emptySub").textContent = S.ready ? HINT_PLAY : "manifest, walls and reasoning rows are read from disk";
+    setStatus(S.ready ? "Nothing on stage" : "Loading…", "", false);
+    showSnapshot();
+  }
+
+  /* The wall's still under the hint, so the recording has a first frame. It is
+     looked up in the directory listing first (no 404 when a set is half
+     rendered); a still that lands later is picked up on the next reset. */
+  function snapPath(root, id) { return root + "walls/q" + id + "_wall_snapshot.png"; }
+  function showSnapshot() {
+    var q = Q(), img = $("emptySnap"), view = $("viewEmpty"), seq = ++S.snapSeq;
+    if (!q || !S.ready) return;
+    var root = S.root, url = snapPath(root, q.id), name = "q" + q.id + "_wall_snapshot.png";
+    dirList(root + "walls/", root !== ROOT_SIGLIP).then(function (names) {
+      if (seq !== S.snapSeq || S.view !== "empty") return;
+      if (names && !names[name]) return;          /* not rendered: the plain hint stays */
+      img.onload = function () {
+        if (seq !== S.snapSeq || S.view !== "empty") return;
+        img.hidden = false;
+        view.classList.add("snapped");
+        $("emptyBig").textContent = HINT_PLAY;
+        $("emptySub").hidden = true;
+        setStatus(IDLE_CAPTION, url, false);
+      };
+      img.onerror = function () {
+        img.hidden = true;
+        view.classList.remove("snapped");
+      };
+      if (img.getAttribute("src") === url && img.complete && img.naturalWidth > 0) img.onload();
+      else img.src = url;
+    });
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 1. camera wall video                                                *
+   * ------------------------------------------------------------------ */
+  function wallPath(root, id) { return root + "walls/q" + id + "_wall.mp4"; }
+
+  /* the amber line for a clip that had to fall back to the other scorer's wall;
+     both scorer words come out of their own manifests, never out of the toggle */
+  function fallbackNote(tail) {
+    return manScorerWord(S.man.viclip, "ViCLIP") + " " + tail +
+      " — showing the " + manScorerWord(S.man.siglip, "SigLIP") + " clip.";
+  }
+
+  /* Resolve the wall clip for a root. The ViCLIP walls may not be rendered yet,
+     so look them up in a directory listing (200) instead of probing the file
+     itself (404, which the browser logs as a console error). Listings are read
+     fresh, so walls that land later are picked up on the next press. */
+  function resolveWall(root, id) {
+    if (root === ROOT_SIGLIP) {
+      return Promise.resolve({ url: wallPath(ROOT_SIGLIP, id), fallback: false, alt: null });
+    }
+    var mine = wallPath(root, id), back = wallPath(ROOT_SIGLIP, id);
+    return dirList(root, true).then(function (names) {
+      if (names && !names.walls) {
+        return { url: back, fallback: true, alt: null, note: fallbackNote(NOTE_NOT_YET) };
+      }
+      return dirList(root + "walls/", true).then(function (inner) {
+        if (inner) {
+          /* listed but half-written is possible while the renderer runs, so the
+             SigLIP clip stays on hand as a fallback either way */
+          return inner["q" + id + "_wall.mp4"]
+            ? { url: mine, fallback: false, alt: back }
+            : { url: back, fallback: true, alt: null, note: fallbackNote(NOTE_NOT_YET) };
+        }
+        /* no listing to read: try the ViCLIP clip and fall back if it errors */
+        return { url: mine, fallback: false, alt: back };
+      });
+    });
+  }
+
+  function videoKey(root, id) { return root + "|" + id; }
+
+  /* Read a clip to the end and hand back an object URL. A <video> given the
+     network URL keeps its connection open once it has buffered enough (the
+     browser defers the rest of the load but holds the socket), and the ten walls
+     of the two roots then exhaust its six connections per host: every later
+     fetch and image on the page waits until a clip is torn down. Read as a blob,
+     the socket comes back at once and the element decodes from memory. */
+  function fetchClip(url) {
+    return fetch(url, { cache: "no-store" }).then(function (r) {
+      if (!r.ok) return { ok: false, err: "HTTP " + r.status };
+      return r.blob().then(function (b) {
+        if (!b.size) return { ok: false, err: "empty file" };
+        return { ok: true, obj: URL.createObjectURL(b) };
+      }, function (e) { return { ok: false, err: String(e && e.message || e) }; });
+    }, function (e) { return { ok: false, err: String(e && e.message || e) }; });
+  }
+
+  function dropVideo(key) {
+    var rec = S.vids[key];
+    if (rec && rec.el && rec.el.parentNode) rec.el.parentNode.removeChild(rec.el);
+    if (rec && rec.obj) { try { URL.revokeObjectURL(rec.obj); } catch (e) { /* ignore */ } }
+    delete S.vids[key];
+    delete S.vidp[key];
+  }
+
+  function makeVideo(root, id) {
+    var key = videoKey(root, id);
+    /* the promise is what is cached: a press that lands mid-load waits for the
+       finished record instead of seeing one with no clip yet */
+    if (S.vidp[key]) return S.vidp[key];
+    var p = resolveWall(root, id).then(function (res) {
+      var rec = { el: null, err: false, fallback: !!res.fallback, url: res.url,
+                  alt: res.alt || null, usedAlt: false, obj: null,
+                  note: res.note || fallbackNote(NOTE_NOT_YET) };
+      var v = document.createElement("video");
+      v.preload = "auto";
+      v.muted = true;
+      v.controls = true;
+      v.playsInline = true;
+      v.setAttribute("playsinline", "");
+      v.hidden = true;
+      rec.el = v;
+      S.vids[key] = rec;
+      $("vwrap").appendChild(v);
+
+      /* swap to the other scorer's clip: the ViCLIP one is absent or half-written */
+      function useAlt() {
+        rec.usedAlt = true; rec.fallback = true; rec.url = rec.alt; rec.alt = null;
+        rec.note = fallbackNote(NOTE_BROKEN);
+        return fetchClip(rec.url).then(attach);
+      }
+      function attach(c) {
+        if (c.ok) {
+          rec.obj = c.obj;
+          v.src = c.obj;
+          if (rec.usedAlt && S.view === "video" && !v.hidden) showWall(rec);
+          return;
+        }
+        if (rec.alt && !rec.usedAlt) return useAlt();
+        rec.err = true;
+        if (S.view === "video" && !v.hidden) {
+          showError("The camera wall clip could not be loaded.", rec.url, rec.url);
+        }
+      }
+      /* the bytes arrived but do not decode: a clip caught mid-write */
+      v.addEventListener("error", function () {
+        if (rec.alt && !rec.usedAlt) { useAlt(); return; }
+        rec.err = true;
+        if (S.view === "video" && !v.hidden) {
+          showError("The camera wall clip could not be loaded.", rec.url, rec.url);
+        }
+      });
+      return fetchClip(res.url).then(attach).then(function () { return rec; });
+    });
+    S.vidp[key] = p;
+    return p;
+  }
+
+  function pauseAllVideos() {
+    var v = $("vwrap").querySelectorAll("video"), i;
+    for (i = 0; i < v.length; i++) { try { v[i].pause(); } catch (e) { /* ignore */ } }
+  }
+
+  /* put one prepared clip on the stage */
+  function showWall(rec) {
+    var all = $("vwrap").querySelectorAll("video"), i;
+    for (i = 0; i < all.length; i++) { all[i].hidden = (all[i] !== rec.el); }
+    var note = $("videoNote");
+    if (rec.fallback) {
+      note.hidden = false;
+      note.textContent = rec.note || fallbackNote(NOTE_NOT_YET);
+    } else { note.hidden = true; }
+    showView("video");
+    try { rec.el.currentTime = 0; } catch (e) { /* not seekable yet */ }
+    rec.el.play().catch(function () { /* the controls are there if autoplay is blocked */ });
+    setStatus("Four camera streams on a shared clock", rec.url, true);
+  }
+
+  function actVideo() {
+    var q = Q();
+    if (!q) return;
+    var key = videoKey(S.root, q.id), rec = S.vids[key];
+
+    /* a clip that failed, or fell back earlier: drop it so this press loads it
+       again — the file may have been mid-write, or the real ViCLIP clip may
+       have landed since. Without this a single bad load sticks until a reload. */
+    if (rec && (rec.err || (rec.fallback && S.view !== "video"))) {
+      dropVideo(key);
+      rec = null;
+    }
+
+    /* second press on an already-playing clip: pause / resume */
+    if (S.view === "video" && rec && rec.el && !rec.err) {
+      if (rec.el.paused) {
+        rec.el.play().catch(function () { /* autoplay guard */ });
+        setStatus("Four camera streams, playing", rec.url, true);
+      } else {
+        rec.el.pause();
+        setStatus("Four camera streams, paused", rec.url, false);
+      }
+      return;
+    }
+
+    if (!rec || !rec.obj) setStatus("Loading the camera wall clip…", wallPath(S.root, q.id), false);
+    makeVideo(S.root, q.id).then(function (r) {
+      if (r.err) {
+        showError("The camera wall clip could not be loaded.", r.url, r.url);
+        return;
+      }
+      showWall(r);
+    });
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 2. what the selector kept                                           *
+   * ------------------------------------------------------------------ */
+  function actSelection() {
+    var q = Q();
+    if (!q) return;
+    var url = S.root + "q" + q.id + "_selection.png";
+    var img = $("selImg"), box = $("zoomBox"), note = $("selNote");
+    box.classList.remove("on");
+    note.hidden = true;
+    img.onerror = function () {
+      S.imgErr[url] = (S.imgErr[url] || 0) + 1;   /* next press asks for it again */
+      showError("The selection figure could not be loaded.", url, url);
+    };
+    img.onload = function () {
+      showView("sel");
+      setStatus(manScorerWord(man(), scorerWord(S.scorer)) +
+        " timeline, the kept segments and the frames actually sent", url, false);
+    };
+    if (img.getAttribute("data-key") === url && img.complete && img.naturalWidth > 0) {
+      img.onload();
+    } else {
+      img.setAttribute("data-key", url);
+      /* a URL that failed before is re-requested rather than left broken */
+      img.setAttribute("src", S.imgErr[url] ? url + "?retry=" + S.imgErr[url] : url);
+    }
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 3. the answer card                                                  *
+   * ------------------------------------------------------------------ */
+  function ansSubtitle(q, a) {
+    var leg = q && q.selection_leg, bits = [];
+    bits.push((a.protocol || "direct") + " answer, T=" +
+      (typeof a.temperature === "number" ? a.temperature : 0.1));
+    if (isSelectorArm(a) && leg && leg.method === a.method && leg.budget) {
+      bits.push(leg.budget + " frames, " + leg.frames_per_segment +
+        " per segment, " + leg.segments_keep + " segments kept");
+    }
+    bits.push("tag " + (a.tag || "—"));
+    return bits;
+  }
+  var LATENCY_NOTE =
+    "Answer call is the model's generation only, the same call for every arm. " +
+    "Selection is the segment scoring timed separately in the same row, mostly frame " +
+    "decoding; the all-cameras arm's frame decode is not timed. Selection buys accuracy, not speed.";
+
+  function actAnswer() {
+    var q = Q(), v = $("viewAns");
+    if (!q) return;
+    var a = selArm(q);
+    v.textContent = "";
+    if (!a) {
+      showError("The manifest has no arms for this question.", "q" + q.id, S.root + "manifest.json");
+      return;
+    }
+
+    var wrap = el("div", "ans"), card = el("div", "card");
+    var lead = el("div", "lead"), body = el("div", "body");
+
+    /* title: the active scorer's arm, in words */
+    var head = el("div", "ttl");
+    head.appendChild(el("div", "h1", armWords(q, a)));
+    var h2 = el("div", "h2");
+    ansSubtitle(q, a).forEach(function (b) { h2.appendChild(el("span", "bit", b)); });
+    head.appendChild(h2);
+    lead.appendChild(head);
+
+    /* the letter, with the mark and the gold beside it */
+    var letter = pred(a);
+    var vd = el("div", "verdict");
+    vd.appendChild(el("div", "letter " + (letter ? (a.correct ? "ok" : "bad") : "none"),
+      letter || "no letter parsed"));
+    var vr = el("div", "vr");
+    vr.appendChild(el("div", "mark " + (a.correct ? "ok" : "bad"), a.correct ? "correct" : "wrong"));
+    var g = el("div", "gold");
+    g.appendChild(document.createTextNode("gold "));
+    g.appendChild(el("b", null, q.gold));
+    vr.appendChild(g);
+    vd.appendChild(vr);
+    lead.appendChild(vd);
+
+    /* every arm in the manifest */
+    var t = el("table", "arms"), thead = el("thead"), tbody = el("tbody");
+    var hr = el("tr"), fromRow = false;
+    [["Arm", ""], ["Letter", ""], ["", ""], ["Answer call", "num"], ["Selection", "num"],
+     ["Input tokens", "num"], ["Video tokens", "num"]].forEach(function (h) {
+      hr.appendChild(el("th", h[1], h[0]));
+    });
+    thead.appendChild(hr);
+    t.appendChild(thead);
+    (q.arms || []).forEach(function (arm) {
+      var tr = el("tr", arm.arm === a.arm ? "sel" : "");
+      var c = el("td", "arm"), nm = el("span", "nm", armName(q, arm)), ds = armDesc(q, arm);
+      if (isComparisonArm(q, arm)) {
+        nm.appendChild(document.createTextNode(" "));
+        nm.appendChild(el("span", "cmp", "comparison"));
+      }
+      c.appendChild(nm);
+      if (ds) c.appendChild(el("span", "ds", ds));
+      tr.appendChild(c);
+      tr.appendChild(el("td", "l", pred(arm) || "—"));
+      tr.appendChild(el("td", "m " + (arm.correct ? "ok" : "bad"), arm.correct ? "✓" : "✗"));
+      tr.appendChild(el("td", "num", num(arm.latency_s, 1) + " s"));
+      var sl = selLatency(q, arm), sc = el("td", "num");
+      sc.appendChild(document.createTextNode(typeof sl.v === "number" ? num(sl.v, 1) + " s" : "—"));
+      if (sl.src === "row") { fromRow = true; sc.appendChild(el("span", "dag", "†")); }
+      tr.appendChild(sc);
+      tr.appendChild(el("td", "num", thou(arm.input_tokens)));
+      tr.appendChild(el("td", "num", thou(arm.video_tokens)));
+      tbody.appendChild(tr);
+    });
+    t.appendChild(tbody);
+    body.appendChild(t);
+
+    body.appendChild(el("div", "foot", LATENCY_NOTE));
+    if (fromRow) {
+      body.appendChild(el("div", "foot",
+        "† this manifest carries no selection time for the arm; the value is the " +
+        "reasoning run's row for the same arm, the same scoring timed in another process."));
+    }
+
+    card.appendChild(lead);
+    card.appendChild(body);
+    wrap.appendChild(card);
+    v.appendChild(wrap);
+    showView("ans");
+    setStatus("Answer card, " + armWords(q, a),
+      S.root + "manifest.json" + (a.file ? "  ·  " + a.file : ""), false);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * 4. the reasoning trace                                              *
+   * ------------------------------------------------------------------ */
+  /* the header line, in words, as one string per part */
+  function traceHeadParts(q, pick) {
+    var r = pick.row, letter = pred(r), out = [];
+    out.push({ t: pick.arm, b: true });
+    out.push({ t: "reasoning run" });
+    if (letter) {
+      out.push({ t: "answered", suffix: letter, b2: true });
+      out.push({ t: r.correct ? "correct" : "wrong", cls: r.correct ? "ok" : "bad" });
+    } else {
+      var hitCap = typeof r.output_tokens === "number" && r.output_tokens >= TOKEN_CAP;
+      out.push({ t: hitCap
+        ? "ran to the " + thou(r.output_tokens) + "-token cap without an answer"
+        : "the row carries no parsed letter", cls: "cap" });
+    }
+    out.push({ t: "gold " + (r.gold == null ? q.gold : r.gold) });
+    out.push({ t: num(r.latency_s, 1) + " s" });
+    out.push({ t: thou(r.output_tokens) + " tokens" });
+    return out;
+  }
+
+  function actReason() {
+    var q = Q();
+    if (!q) return;
+    var tr = traceRows();
+    var shown = tr.sc.reasonFile.replace(/^\.\.\//, "");
+    if (!tr.reason.length && !tr.global.length) {
+      showError("No reasoning rows were loaded.", shown, shown);
+      return;
+    }
+    var pick = pickTrace(q.id);
+    if (!pick) {
+      showError("No reasoning row for question " + q.id + ".", shown, shown);
+      return;
+    }
+    var r = pick.row;
+
+    var h = $("rhead");
+    h.textContent = "";
+    var l1 = el("div", "l1");
+    traceHeadParts(q, pick).forEach(function (p, i) {
+      if (i) l1.appendChild(document.createTextNode(", "));
+      if (p.b) { l1.appendChild(el("b", null, p.t)); return; }
+      if (p.b2) {
+        l1.appendChild(document.createTextNode(p.t + " "));
+        l1.appendChild(el("b", null, p.suffix));
+        return;
+      }
+      l1.appendChild(el("span", p.cls || null, p.t));
+    });
+    h.appendChild(l1);
+
+    /* the fallback, if any, is its own amber line and is never folded away */
+    if (pick.fallback) {
+      var amber = el("div", "amber",
+        "No " + manScorerWord(S.man.viclip, "ViCLIP") + " reasoning rows are on disk yet, so the " +
+        manScorerWord(S.man.siglip, "SigLIP") + " trace is shown here.");
+      amber.style.marginTop = "10px";
+      amber.style.marginBottom = "0";
+      h.appendChild(amber);
+    }
+
+    h.appendChild(el("div", "l2",
+      "The scored answer came from the direct-answer run; this trace is an illustration " +
+      "from the reasoning run at T=" +
+      (typeof r.temperature === "number" ? r.temperature : 0.1) + "."));
+
+    txt($("rtrace"), r.response_text || "(the row carries no response_text)");
+    $("rtrace").scrollTop = 0;
+    showView("reason");
+    setStatus("Reasoning trace, " + pick.arm, pick.file.replace(/^\.\.\//, ""), false);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * question switching                                                  *
+   * ------------------------------------------------------------------ */
+  function selectQuestion(i) {
+    var qs = questions();
+    if (!qs.length) return;
+    S.qi = ((i % qs.length) + qs.length) % qs.length;
+    var btns = $("qlist").querySelectorAll(".qbtn"), k;
+    for (k = 0; k < btns.length; k++) btns[k].classList.toggle("on", k === S.qi);
+    renderQuestionDetail();
+    resetStage();
+  }
+
+  /* ------------------------------------------------------------------ *
+   * scorer toggle                                                       *
+   * ------------------------------------------------------------------ */
+  function setScorer(which) {
+    if (which === "viclip" && !S.man.viclip) return;
+    if (S.scorer === which) return;
+    var id = Q() ? Q().id : null;
+    S.scorer = which;
+    S.root = (which === "viclip") ? ROOT_VICLIP : ROOT_SIGLIP;
+    $("swSiglip").classList.toggle("on", which === "siglip");
+    $("swViclip").classList.toggle("on", which === "viclip");
+    renderTopBar();
+    buildQuestionList();
+    /* keep the same question id if the other manifest has it */
+    if (id != null) {
+      var qs = questions(), k;
+      for (k = 0; k < qs.length; k++) if (String(qs[k].id) === String(id)) { S.qi = k; break; }
+    }
+    selectQuestion(S.qi);
+    preloadWalls();
+    preloadImages();
+  }
+
+  /* ------------------------------------------------------------------ *
+   * preloading                                                          *
+   * ------------------------------------------------------------------ */
+  /* Every wall is still preloaded — but one at a time, starting with the one on
+     screen. A clip's record resolves once its bytes are in memory, so at most one
+     clip download is in flight and the connection pool stays free for the still,
+     the figures and the listings. */
+  function preloadWalls() {
+    var root = S.root, qs = questions(), order = [], i = 0, k;
+    for (k = 0; k < qs.length; k++) order.push(qs[(S.qi + k) % qs.length]);
+    function next() {
+      if (root !== S.root) return;          /* a scorer switch owns preloading now */
+      if (i >= order.length) return;
+      makeVideo(root, order[i++].id).then(next, next);
+    }
+    next();
+  }
+  /* the selection figures are large; one at a time keeps the browser's per-host
+     connections free for the still on the stage and the clip being played */
+  function preloadImages() {
+    var root = S.root, qs = questions(), i = 0;
+    function next() {
+      if (root !== S.root || i >= qs.length) return;
+      var img = new Image();
+      img.onload = next;
+      img.onerror = next;
+      img.src = root + "q" + qs[i++].id + "_selection.png";
+    }
+    next();
+  }
+
+  /* ------------------------------------------------------------------ *
+   * load-time self-check on the scorer labels                           *
+   *                                                                     *
+   * Builds every label the ViCLIP toggle would show and warns if one of  *
+   * them names SigLIP. Two places are allowed to: the comparison rows of *
+   * the arms table, and the reasoning header when the fallback amber     *
+   * line says the SigLIP trace is standing in. The segmented control is  *
+   * the switch itself, so it names both scorers by design.               *
+   * ------------------------------------------------------------------ */
+  function selfCheck() {
+    var m = S.man.viclip;
+    var res = { ran: false, checked: 0, offenders: [] };
+    if (!m || !m.questions) { window.__demoSelfCheck = res; return res; }
+    res.ran = true;
+
+    var labels = [];
+    labels.push(["top bar scorer", manScorerWord(m, "ViCLIP")]);
+    labels.push(["top bar query mode", scorerQuery((manLeg(m) || {}).method)]);
+    m.questions.forEach(function (q) {
+      var a = selArm(q, "viclip");
+      labels.push(["q" + q.id + " answer title", armWords(q, a)]);
+      labels.push(["q" + q.id + " answer caption", "Answer card, " + armWords(q, a)]);
+      labels.push(["q" + q.id + " selector caption",
+        manScorerWord(m, "ViCLIP") + " timeline, the kept segments and the frames actually sent"]);
+      (q.arms || []).forEach(function (arm) {
+        if (isComparisonArm(q, arm)) return;      /* allowed: comparison rows */
+        labels.push(["q" + q.id + " arm row " + arm.arm, armWords(q, arm)]);
+        labels.push(["q" + q.id + " arm row name " + arm.arm, armName(q, arm)]);
+        labels.push(["q" + q.id + " arm row description " + arm.arm, armDesc(q, arm)]);
+      });
+      labels.push(["q" + q.id + " idle caption", IDLE_CAPTION + " " + snapPath(ROOT_VICLIP, q.id)]);
+      labels.push(["q" + q.id + " latency note", LATENCY_NOTE]);
+      var pick = pickTrace(q.id, "viclip");
+      if (pick && !pick.fallback) {               /* allowed: the fallback trace */
+        labels.push(["q" + q.id + " reasoning header", pick.arm]);
+      }
+    });
+
+    res.checked = labels.length;
+    labels.forEach(function (p) {
+      if (/siglip/i.test(p[1])) res.offenders.push(p[0] + ": " + p[1]);
+    });
+    if (res.offenders.length) {
+      console.warn("demo_ui self-check: ViCLIP labels naming SigLIP outside the " +
+        "comparison table and the fallback note:", res.offenders);
+    }
+    window.__demoSelfCheck = res;
+    return res;
+  }
+
+  /* ------------------------------------------------------------------ *
+   * wiring                                                              *
+   * ------------------------------------------------------------------ */
+  function wire() {
+    $("act1").addEventListener("click", actVideo);
+    $("act2").addEventListener("click", actSelection);
+    $("act3").addEventListener("click", actAnswer);
+    $("act4").addEventListener("click", actReason);
+    $("act5").addEventListener("click", resetStage);
+    $("swSiglip").addEventListener("click", function () { setScorer("siglip"); });
+    $("swViclip").addEventListener("click", function () { setScorer("viclip"); });
+
+    $("zoomBox").addEventListener("click", function () {
+      var box = $("zoomBox"), on = box.classList.toggle("on");
+      if (!on) { box.scrollTop = 0; box.scrollLeft = 0; }
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      var tag = (e.target && e.target.tagName) || "";
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      var acts = { "1": actVideo, "2": actSelection, "3": actAnswer, "4": actReason, "5": resetStage };
+      if (acts[e.key]) {
+        if (!S.ready) return;
+        e.preventDefault();
+        acts[e.key]();
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault(); selectQuestion(S.qi - 1);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault(); selectQuestion(S.qi + 1);
+      }
+    });
+  }
+
+  function setButtonsEnabled(on) {
+    [1, 2, 3, 4, 5].forEach(function (n) { $("act" + n).disabled = !on; });
+  }
+
+  /* ------------------------------------------------------------------ *
+   * boot                                                                *
+   * ------------------------------------------------------------------ */
+  function boot() {
+    wire();
+    setButtonsEnabled(false);
+
+    /* the ViCLIP set is optional: look for it in a directory listing so that
+       its absence never costs a 404 (which the browser logs as an error). */
+    var viclip = dirList("./").then(function (names) {
+      if (names && !names["figs_demo_viclip"]) return { ok: false, err: "not rendered yet" };
+      if (names) {
+        return dirList(ROOT_VICLIP).then(function (inner) {
+          if (inner && !inner["manifest.json"]) return { ok: false, err: "not rendered yet" };
+          return getJSON(ROOT_VICLIP + "manifest.json");
+        });
+      }
+      /* no directory listing available: ask for the manifest directly */
+      return getJSON(ROOT_VICLIP + "manifest.json");
+    });
+
+    Promise.all([
+      getJSON(ROOT_SIGLIP + "manifest.json"),
+      getJSONL(REASON_FILE),
+      getJSONL(GLOBAL_FILE),
+      viclip,
+      getJSONL(REASON_FILE_V),
+      getJSONL(GLOBAL_FILE_V)
+    ]).then(function (res) {
+      var mS = res[0], rr = res[1], gg = res[2], mV = res[3];
+      S.reasonV = (res[4] && res[4].ok && res[4].data) ? res[4].data : [];
+      S.globalV = (res[5] && res[5].ok && res[5].data) ? res[5].data : [];
+
+      if (!mS.ok || !mS.data || !mS.data.questions || !mS.data.questions.length) {
+        S.ready = false;
+        showError("The demo manifest could not be loaded, so nothing can be shown.",
+          ROOT_SIGLIP + "manifest.json  —  " + (mS.err || "no questions"),
+          ROOT_SIGLIP + "manifest.json");
+        $("qdetail").textContent = "";
+        $("qdetail").appendChild(el("div", "meta",
+          "manifest.json did not load. Serve the page from the repo root: " +
+          "python3 -m http.server 8765 --bind 127.0.0.1"));
+        return;
+      }
+
+      S.man.siglip = mS.data;
+      S.man.viclip = (mV && mV.ok && mV.data && mV.data.questions) ? mV.data : null;
+      S.reason = (rr.ok && rr.data) ? rr.data : [];
+      S.global = (gg.ok && gg.data) ? gg.data : [];
+
+      var sw = $("swViclip");
+      if (S.man.viclip) {
+        sw.disabled = false;
+        sw.title = manScorerWord(S.man.viclip, "ViCLIP") + " scorer assets";
+      } else {
+        sw.disabled = true;
+        sw.title = "not rendered yet";
+      }
+
+      if (!S.reason.length && !S.global.length) {
+        $("act4").title = "reasoning rows did not load";
+      }
+
+      S.ready = true;
+      setButtonsEnabled(true);
+      renderTopBar();
+      buildQuestionList();
+      selectQuestion(0);
+      preloadWalls();
+      preloadImages();
+      selfCheck();
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else { boot(); }
+})();
+</script>
+</body>
+</html>

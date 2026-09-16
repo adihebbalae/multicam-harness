@@ -38,3 +38,9 @@ venv/
 # Secrets
 .env
 *.key
+
+# demo showcase: the rendered camera-wall clips are part of the deliverable
+# (so are the figures and the wall snapshots, against the blanket *.png rule)
+!/demo/**/*.png
+!/demo/figs_demo/walls/*.mp4
+!/demo/figs_demo_viclip/walls/*.mp4

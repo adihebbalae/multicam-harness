@@ -44,3 +44,6 @@ venv/
 !/demo/**/*.png
 !/demo/figs_demo/walls/*.mp4
 !/demo/figs_demo_viclip/walls/*.mp4
+!/demo/figs_case/*.mp4
+# the case renderer also writes a 6 MB gif per clip for the deck; never track it here
+/demo/figs_case/*.gif

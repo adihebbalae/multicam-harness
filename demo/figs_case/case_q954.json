@@ -1,0 +1,1004 @@
+{
+ "id": 954,
+ "pool": "crossview_meva1033_subset",
+ "orig_id": "2018-03-13.17-05.school#226",
+ "task_type": "CrossView-MEVA-Temporal",
+ "protocol": "InternVL3-8B \u00b7 direct answer, T = 0.1 \u00b7 4 passes",
+ "question": "Between these two moments, which happened first: a person with navy hair in a dark indigo top and dark indigo pants with navy shoes interacting with someone, or a person with indigo hair wearing a dark indigo top, black pants, navy shoes, and a hat, carrying a bag, talking to someone?",
+ "options": [
+  "A. The person with navy hair, wearing a dark indigo top and dark indigo pants, navy shoes, interacting with a person occurred first",
+  "B. The person with indigo hair, wearing a dark indigo top and black pants, navy shoes, with a hat, carrying a bag, talking to a person occurred first",
+  "C. They occurred simultaneously",
+  "D. Cannot be determined"
+ ],
+ "gold": "B",
+ "release_reasoning": "The person with navy hair interacting with someone occurs before the indigo-haired person with a hat and bag starts talking to someone.",
+ "requires_cameras": [
+  "G419",
+  "G638"
+ ],
+ "cameras": [
+  {
+   "slot": 1,
+   "camera": "G419",
+   "file": "2018-03-13.17-05-01.17-10-01.school.G419.r13.mp4",
+   "clip_start_s": 61501,
+   "clip_start": "17:05:01.0",
+   "n_frames": 9000,
+   "fps": 30.0,
+   "events": [
+    {
+     "camera": "G419",
+     "activity": "person_talks_to_person",
+     "description": "a person with indigo hair, wearing a dark indigo top and black pants, navy shoes, with a hat, carrying a bag talks to person",
+     "start_s": 220.87,
+     "end_s": 240.1,
+     "label": "E1",
+     "delivered": true,
+     "wall_start_s": 61721.87,
+     "wall_end_s": 61741.1,
+     "wall_start": "17:08:41.9",
+     "wall_end": "17:09:01.1"
+    }
+   ],
+   "single": {
+    "answers": [
+     "A",
+     "A",
+     "A",
+     "A"
+    ],
+    "predictions": [
+     "A",
+     "A",
+     "A",
+     "A"
+    ],
+    "right": [
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_right": 0,
+    "frame_indices": [
+     562,
+     1687,
+     2812,
+     3937,
+     5062,
+     6186,
+     7311,
+     8436
+    ],
+    "times_s": [
+     18.73,
+     56.23,
+     93.73,
+     131.23,
+     168.73,
+     206.2,
+     243.7,
+     281.2
+    ],
+    "in_window": [
+     [],
+     [],
+     [],
+     [],
+     [],
+     [],
+     [],
+     []
+    ],
+    "evidence": "event E1 on this camera but not in the sampled frames",
+    "reading": "The talking event is on this camera but falls between the sampled frames; the interaction event is on another camera (G638).",
+    "reading_short": "talking event on this camera; interaction event on camera G638"
+   },
+   "single_reasoning": {
+    "leg": "crossview_meva1033_subset_internvl_mp4sv8",
+    "temperature": 0.7,
+    "n_right": 0,
+    "predictions": [
+     "A",
+     "A",
+     "A",
+     "A"
+    ]
+   }
+  },
+  {
+   "slot": 2,
+   "camera": "G638",
+   "file": "2018-03-13.17-05-00.17-10-00.school.G638.r13.mp4",
+   "clip_start_s": 61500,
+   "clip_start": "17:05:00.0",
+   "n_frames": 9002,
+   "fps": 30.0,
+   "events": [
+    {
+     "camera": "G638",
+     "activity": "hand_interacts_with_person",
+     "description": "a person with navy hair, wearing a dark indigo top and dark indigo pants, navy shoes physically interacts with another person in the area near the school",
+     "start_s": 241.6,
+     "end_s": 253.4,
+     "label": "E2",
+     "delivered": true,
+     "wall_start_s": 61741.6,
+     "wall_end_s": 61753.4,
+     "wall_start": "17:09:01.6",
+     "wall_end": "17:09:13.4"
+    }
+   ],
+   "single": {
+    "answers": [
+     "A",
+     "A",
+     "A",
+     "A"
+    ],
+    "predictions": [
+     "A",
+     "A",
+     "A",
+     "A"
+    ],
+    "right": [
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_right": 0,
+    "frame_indices": [
+     562,
+     1687,
+     2812,
+     3937,
+     5062,
+     6188,
+     7313,
+     8438
+    ],
+    "times_s": [
+     18.73,
+     56.23,
+     93.73,
+     131.23,
+     168.73,
+     206.27,
+     243.77,
+     281.27
+    ],
+    "in_window": [
+     [],
+     [],
+     [],
+     [],
+     [],
+     [],
+     [
+      "E2"
+     ],
+     []
+    ],
+    "evidence": "event E2 on this camera and in the sampled frames",
+    "reading": "The interaction event is on this camera and inside a sampled frame; the talking event is on another camera (G419).",
+    "reading_short": "interaction event on this camera; talking event on camera G419"
+   },
+   "single_reasoning": {
+    "leg": "crossview_meva1033_subset_internvl_mp4sv8",
+    "temperature": 0.7,
+    "n_right": 0,
+    "predictions": [
+     "A",
+     "A",
+     "A",
+     "A"
+    ]
+   }
+  },
+  {
+   "slot": 3,
+   "camera": "G299",
+   "file": "2018-03-13.17-05-00.17-10-00.school.G299.r13.mp4",
+   "clip_start_s": 61500,
+   "clip_start": "17:05:00.0",
+   "n_frames": 9008,
+   "fps": 30.0,
+   "events": [],
+   "single": {
+    "answers": [
+     "A",
+     "D. Cannot be determined",
+     "D. Cannot be determined",
+     "D. Cannot be determined"
+    ],
+    "predictions": [
+     "A",
+     "D",
+     "D",
+     "D"
+    ],
+    "right": [
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_right": 0,
+    "frame_indices": [
+     562,
+     1688,
+     2814,
+     3940,
+     5066,
+     6191,
+     7317,
+     8443
+    ],
+    "times_s": [
+     18.73,
+     56.27,
+     93.8,
+     131.33,
+     168.87,
+     206.37,
+     243.9,
+     281.43
+    ],
+    "in_window": [
+     [],
+     [],
+     [],
+     [],
+     [],
+     [],
+     [],
+     []
+    ],
+    "evidence": "no annotated event on this camera",
+    "reading": "No annotated event on this camera.",
+    "reading_short": "no annotated event on this camera"
+   },
+   "single_reasoning": {
+    "leg": "crossview_meva1033_subset_internvl_mp4sv8",
+    "temperature": 0.7,
+    "n_right": 0,
+    "predictions": [
+     "A",
+     "A",
+     "D",
+     "A"
+    ]
+   }
+  },
+  {
+   "slot": 4,
+   "camera": "G328",
+   "file": "2018-03-13.17-05-00.17-10-00.school.G328.r13.mp4",
+   "clip_start_s": 61500,
+   "clip_start": "17:05:00.0",
+   "n_frames": 9000,
+   "fps": 30.0,
+   "events": [],
+   "single": {
+    "answers": [
+     "A",
+     "A",
+     "A",
+     "A"
+    ],
+    "predictions": [
+     "A",
+     "A",
+     "A",
+     "A"
+    ],
+    "right": [
+     false,
+     false,
+     false,
+     false
+    ],
+    "n_right": 0,
+    "frame_indices": [
+     562,
+     1687,
+     2812,
+     3937,
+     5062,
+     6186,
+     7311,
+     8436
+    ],
+    "times_s": [
+     18.73,
+     56.23,
+     93.73,
+     131.23,
+     168.73,
+     206.2,
+     243.7,
+     281.2
+    ],
+    "in_window": [
+     [],
+     [],
+     [],
+     [],
+     [],
+     [],
+     [],
+     []
+    ],
+    "evidence": "no annotated event on this camera",
+    "reading": "No annotated event on this camera.",
+    "reading_short": "no annotated event on this camera"
+   },
+   "single_reasoning": {
+    "leg": "crossview_meva1033_subset_internvl_mp4sv8",
+    "temperature": 0.7,
+    "n_right": 0,
+    "predictions": [
+     "A",
+     "A",
+     "A",
+     "A"
+    ]
+   }
+  }
+ ],
+ "events": [
+  {
+   "camera": "G419",
+   "activity": "person_talks_to_person",
+   "description": "a person with indigo hair, wearing a dark indigo top and black pants, navy shoes, with a hat, carrying a bag talks to person",
+   "clip_file": "2018-03-13.17-05-01.17-10-01.school.G419.r13.mp4",
+   "start_s": 220.87,
+   "end_s": 240.1,
+   "label": "E1",
+   "delivered": true,
+   "wall_start_s": 61721.87,
+   "wall_end_s": 61741.1,
+   "wall_start": "17:08:41.9",
+   "wall_end": "17:09:01.1"
+  },
+  {
+   "camera": "G638",
+   "activity": "hand_interacts_with_person",
+   "description": "a person with navy hair, wearing a dark indigo top and dark indigo pants, navy shoes physically interacts with another person in the area near the school",
+   "clip_file": "2018-03-13.17-05-00.17-10-00.school.G638.r13.mp4",
+   "start_s": 241.6,
+   "end_s": 253.4,
+   "label": "E2",
+   "delivered": true,
+   "wall_start_s": 61741.6,
+   "wall_end_s": 61753.4,
+   "wall_start": "17:09:01.6",
+   "wall_end": "17:09:13.4"
+  }
+ ],
+ "gold_order_wall_clock": {
+  "gaps": [
+   {
+    "from": "E1",
+    "to": "E2",
+    "clip_relative_start_gap_s": 20.73,
+    "wall_start_gap_s": 19.73,
+    "wall_gap_after_end_s": 0.5
+   }
+  ],
+  "min_wall_start_gap_s": 19.73,
+  "holds_in_wall_clock": true,
+  "robust": true,
+  "overlap_in_wall_clock": false
+ },
+ "blind": {
+  "answers": [
+   "D",
+   "D",
+   "D",
+   "D"
+  ],
+  "n_right": 0
+ },
+ "arms": {
+  "mp4sg96": {
+   "label": "SigLIP selection, 96 frames",
+   "answers": [
+    "B",
+    "B",
+    "B",
+    "B"
+   ],
+   "predictions": [
+    "B",
+    "B",
+    "B",
+    "B"
+   ],
+   "n_right": 4,
+   "scorer": "google/siglip-so400m-patch14-384",
+   "frame_source": "frame_alloc.selected_times_s",
+   "times_s": {
+    "1": [
+     114.83,
+     119.5,
+     128.9,
+     133.57,
+     138.27,
+     147.63,
+     152.33,
+     157.0,
+     166.4,
+     171.07,
+     175.77,
+     185.13,
+     189.83,
+     199.2,
+     203.9,
+     208.57,
+     217.97,
+     222.63,
+     227.33,
+     236.7,
+     241.4,
+     246.07,
+     255.47,
+     260.13
+    ],
+    "2": [
+     2.33,
+     7.0,
+     16.4,
+     21.07,
+     25.77,
+     35.13,
+     189.87,
+     194.57,
+     203.93,
+     208.63,
+     213.33,
+     222.7,
+     227.4,
+     236.77,
+     241.47,
+     246.13,
+     255.53,
+     260.2,
+     264.9,
+     274.27,
+     278.97,
+     283.63,
+     293.03,
+     297.7
+    ],
+    "3": [
+     2.33,
+     7.03,
+     16.4,
+     21.1,
+     25.8,
+     35.17,
+     39.87,
+     44.57,
+     53.93,
+     58.63,
+     63.33,
+     72.7,
+     190.0,
+     199.37,
+     204.07,
+     208.77,
+     218.13,
+     222.83,
+     265.07,
+     274.43,
+     279.13,
+     283.83,
+     293.2,
+     297.9
+    ],
+    "4": [
+     2.33,
+     7.0,
+     16.4,
+     21.07,
+     25.77,
+     35.13,
+     114.83,
+     119.5,
+     128.9,
+     133.57,
+     138.27,
+     147.63,
+     152.33,
+     161.7,
+     166.4,
+     171.07,
+     180.47,
+     185.13,
+     189.83,
+     199.2,
+     203.9,
+     208.57,
+     217.97,
+     222.63
+    ]
+   },
+   "frames_in_window": {
+    "E1": 3,
+    "E2": 1
+   },
+   "windows_reached": 2
+  },
+  "mp4sgva96": {
+   "label": "ViCLIP selection, 96 frames",
+   "answers": [
+    "B",
+    "B",
+    "B",
+    "B"
+   ],
+   "predictions": [
+    "B",
+    "B",
+    "B",
+    "B"
+   ],
+   "n_right": 4,
+   "scorer": "viclip",
+   "frame_source": "frame_alloc.selected_times_s",
+   "times_s": {
+    "1": [
+     114.83,
+     119.5,
+     128.9,
+     133.57,
+     138.27,
+     147.63,
+     152.33,
+     157.0,
+     166.4,
+     171.07,
+     175.77,
+     185.13,
+     189.83,
+     199.2,
+     203.9,
+     208.57,
+     217.97,
+     222.63,
+     227.33,
+     236.7,
+     241.4,
+     246.07,
+     255.47,
+     260.13
+    ],
+    "2": [
+     2.33,
+     7.0,
+     16.4,
+     21.07,
+     25.77,
+     35.13,
+     189.87,
+     194.57,
+     203.93,
+     208.63,
+     213.33,
+     222.7,
+     227.4,
+     236.77,
+     241.47,
+     246.13,
+     255.53,
+     260.2,
+     264.9,
+     274.27,
+     278.97,
+     283.63,
+     293.03,
+     297.7
+    ],
+    "3": [
+     2.33,
+     7.03,
+     16.4,
+     21.1,
+     25.8,
+     35.17,
+     39.87,
+     44.57,
+     53.93,
+     58.63,
+     63.33,
+     72.7,
+     114.93,
+     124.3,
+     129.0,
+     133.7,
+     143.07,
+     147.77,
+     152.47,
+     161.83,
+     166.53,
+     171.23,
+     180.6,
+     185.3
+    ],
+    "4": [
+     114.83,
+     119.5,
+     128.9,
+     133.57,
+     138.27,
+     147.63,
+     152.33,
+     157.0,
+     166.4,
+     171.07,
+     175.77,
+     185.13,
+     227.33,
+     236.7,
+     241.4,
+     246.07,
+     255.47,
+     260.13,
+     264.83,
+     274.2,
+     278.9,
+     283.57,
+     292.97,
+     297.63
+    ]
+   },
+   "frames_in_window": {
+    "E1": 3,
+    "E2": 1
+   },
+   "windows_reached": 2
+  },
+  "mp4fs96": {
+   "label": "all four cameras, 24 frames each",
+   "answers": [
+    "B",
+    "A",
+    "A",
+    "B"
+   ],
+   "predictions": [
+    "B",
+    "A",
+    "A",
+    "B"
+   ],
+   "n_right": 2,
+   "frame_source": "uniform grid (InternVL get_index)",
+   "times_s": {
+    "1": [
+     6.23,
+     18.73,
+     31.23,
+     43.73,
+     56.23,
+     68.73,
+     81.23,
+     93.73,
+     106.23,
+     118.73,
+     131.23,
+     143.73,
+     156.23,
+     168.7,
+     181.2,
+     193.7,
+     206.2,
+     218.7,
+     231.2,
+     243.7,
+     256.2,
+     268.7,
+     281.2,
+     293.7
+    ],
+    "2": [
+     6.23,
+     18.73,
+     31.23,
+     43.73,
+     56.23,
+     68.73,
+     81.23,
+     93.73,
+     106.23,
+     118.73,
+     131.23,
+     143.73,
+     156.23,
+     168.77,
+     181.27,
+     193.77,
+     206.27,
+     218.77,
+     231.27,
+     243.77,
+     256.27,
+     268.77,
+     281.27,
+     293.77
+    ],
+    "3": [
+     6.23,
+     18.73,
+     31.27,
+     43.77,
+     56.27,
+     68.77,
+     81.3,
+     93.8,
+     106.3,
+     118.83,
+     131.33,
+     143.83,
+     156.37,
+     168.87,
+     181.37,
+     193.87,
+     206.4,
+     218.9,
+     231.4,
+     243.93,
+     256.43,
+     268.93,
+     281.43,
+     293.97
+    ],
+    "4": [
+     6.23,
+     18.73,
+     31.23,
+     43.73,
+     56.23,
+     68.73,
+     81.23,
+     93.73,
+     106.23,
+     118.73,
+     131.23,
+     143.73,
+     156.23,
+     168.7,
+     181.2,
+     193.7,
+     206.2,
+     218.7,
+     231.2,
+     243.7,
+     256.2,
+     268.7,
+     281.2,
+     293.7
+    ]
+   },
+   "frames_in_window": {
+    "E1": 1,
+    "E2": 1
+   },
+   "windows_reached": 2
+  },
+  "mp4fs64": {
+   "label": "all four cameras, 16 frames each",
+   "answers": [
+    "A",
+    "A",
+    "A",
+    "A"
+   ],
+   "predictions": [
+    "A",
+    "A",
+    "A",
+    "A"
+   ],
+   "n_right": 0,
+   "frame_source": "uniform grid (InternVL get_index)",
+   "times_s": {
+    "1": [
+     9.37,
+     28.1,
+     46.87,
+     65.6,
+     84.37,
+     103.1,
+     121.87,
+     140.6,
+     159.37,
+     178.1,
+     196.83,
+     215.6,
+     234.33,
+     253.1,
+     271.83,
+     290.6
+    ],
+    "2": [
+     9.37,
+     28.13,
+     46.87,
+     65.63,
+     84.37,
+     103.13,
+     121.87,
+     140.63,
+     159.37,
+     178.13,
+     196.9,
+     215.63,
+     234.4,
+     253.13,
+     271.9,
+     290.63
+    ],
+    "3": [
+     9.37,
+     28.13,
+     46.9,
+     65.67,
+     84.43,
+     103.2,
+     121.97,
+     140.73,
+     159.5,
+     178.23,
+     197.0,
+     215.77,
+     234.53,
+     253.3,
+     272.07,
+     290.83
+    ],
+    "4": [
+     9.37,
+     28.1,
+     46.87,
+     65.6,
+     84.37,
+     103.1,
+     121.87,
+     140.6,
+     159.37,
+     178.1,
+     196.83,
+     215.6,
+     234.33,
+     253.1,
+     271.83,
+     290.6
+    ]
+   },
+   "frames_in_window": {
+    "E1": 1,
+    "E2": 1
+   },
+   "windows_reached": 2
+  },
+  "mp4fs32": {
+   "label": "all four cameras, 8 frames each",
+   "answers": [
+    "A",
+    "A",
+    "A",
+    "A"
+   ],
+   "predictions": [
+    "A",
+    "A",
+    "A",
+    "A"
+   ],
+   "n_right": 0,
+   "frame_source": "uniform grid (InternVL get_index)",
+   "times_s": {
+    "1": [
+     18.73,
+     56.23,
+     93.73,
+     131.23,
+     168.73,
+     206.2,
+     243.7,
+     281.2
+    ],
+    "2": [
+     18.73,
+     56.23,
+     93.73,
+     131.23,
+     168.73,
+     206.27,
+     243.77,
+     281.27
+    ],
+    "3": [
+     18.73,
+     56.27,
+     93.8,
+     131.33,
+     168.87,
+     206.37,
+     243.9,
+     281.43
+    ],
+    "4": [
+     18.73,
+     56.23,
+     93.73,
+     131.23,
+     168.73,
+     206.2,
+     243.7,
+     281.2
+    ]
+   },
+   "frames_in_window": {
+    "E1": 0,
+    "E2": 1
+   },
+   "windows_reached": 1
+  }
+ },
+ "arms_right_on_all_passes": [
+  "mp4sg96",
+  "mp4sgva96"
+ ],
+ "case2_arm": "mp4sg96",
+ "short": {
+  "question": "Which happened first: one person physically interacting with someone, or another person (hat, bag) talking to someone?",
+  "options": {
+   "A": "the interaction first",
+   "B": "the talking first",
+   "C": "simultaneous",
+   "D": "cannot be determined"
+  },
+  "events": {
+   "E1": "talking",
+   "E2": "interaction"
+  },
+  "abbreviated": true
+ },
+ "counter_evidence": "Counter-evidence, other runs on this question: Frames inside both event windows, still not right: all four cameras, 24 frames each (2 of 4); all four cameras, 16 frames each (0 of 4).",
+ "disclosure": "Chosen example: 27 of the 602 multi-camera questions behave like this in at least one of 5 runs; an always-right single-camera answer turning always-wrong is more common (98).",
+ "disclosure_counts": {
+  "source": "docs/figs/demo_2026-09-22/motivation.json",
+  "n_multi_camera_questions": 602,
+  "n_runs": 5,
+  "fixes": 27,
+  "breaks": 156,
+  "breaks_and_no_video_not_4of4": 98
+ },
+ "in_disclosed_set": true,
+ "behaviour_counts": {
+  "n": 1033,
+  "needs_all_cameras": 34,
+  "one_camera_right_all_96_wrong": 166
+ },
+ "in_needs_all_cameras_set": true,
+ "letter_habit": {
+  "n_questions_of_type": 305,
+  "answer_key_share": 45.9,
+  "single_camera_answer_share": 27.5,
+  "case2_arm_answer_share": 38.0
+ },
+ "vetting": {
+  "order": 2,
+  "windows_reached_by_case2_arm": "2 of 2",
+  "largest_share_of_events_on_one_camera": 0.5,
+  "single_cameras_that_sampled_an_event_frame": 1,
+  "every_event_camera_delivered": true,
+  "total": 7.08
+ }
+}

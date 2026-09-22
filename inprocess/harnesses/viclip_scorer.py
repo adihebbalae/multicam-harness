@@ -1,4 +1,9 @@
-# Ported from Wavy-Hec/CVBench bench/methods/viclip_scorer.py @ 967fe27
+# Ported from Wavy-Hec/CVBench bench/methods/viclip_scorer.py @ 967fe27;
+# the preprocessing-departure and text-cap notes additionally ported from
+# @ e9ea59088dd286ab3609a61cfaeb8591d1fe11d6.
+# Deliberate delta vs source: the two departures are stated as mechanisms
+# without the fork's measured score delta or its dated internal audit
+# reference, and without naming the fork's registered legs — both unpublished.
 """ViCLIP (video-native CLIP) as a clip-level scorer for the selection arms.
 
 Unlike CLIP/SigLIP — which embed each thumbnail independently — ViCLIP embeds
@@ -20,7 +25,15 @@ Preprocessing is done here, NOT via the repo's `frames2tensor`: that helper
 expects cv2-style BGR arrays and flips them, while every frame in this harness
 is RGB (decord/PIL). Feeding RGB through it would swap channels silently and
 degrade every score with no error. Verified against the InternVideo reference:
-resize to 224, ImageNet mean/std, stack to [1, T, C, H, W], T == 8.
+resize to 224, ImageNet mean/std, stack to [1, T, C, H, W], T == 8. Two
+deliberate departures, neither of which changes a ranking (and changing them
+now would make already-scored ViCLIP legs unpoolable): the resize filter is
+PIL's default (bicubic, antialiased) rather than cv2 INTER_LINEAR (a small,
+common offset on every score), and the callers sample the 8 tube frames at
+centred positions with repeat-padding instead of the demo's front-anchored
+step=len//8 (closer to the model's training-time sampler).
+The text encoder's context is 32 tokens (max_txt_l), silently truncated —
+not CLIP's 77.
 """
 import importlib.util
 import os

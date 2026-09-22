@@ -1,7 +1,11 @@
 # Ported from Wavy-Hec/CVBench bench/methods/segment_select.py @ 8b4fbd117b6084dafb743eb30b5298e9a1ba91e3;
 # the global (cross-clip) selection mode (select_segments, --seg-select /
 # --seg-floor, SEGMENT_SELECT_GLOBAL_PREFIX) additionally ported from
-# @ a8e995dd0c069911c1c99acbc5854cc22337d34c.
+# @ a8e995dd0c069911c1c99acbc5854cc22337d34c; the Qwen-timing guard, the
+# image-tower skip under ViCLIP and the selection-provenance stamps
+# (image_tower_ran, options_are_clip_refs, segments_keep_effective,
+# selection_noop, qwen_timing_unsafe, 6-dp segment scores) additionally ported
+# from @ e9ea59088dd286ab3609a61cfaeb8591d1fe11d6.
 # Deliberate delta vs source: the docstring's dedup-collapse caveat and its
 # ordering paragraph state the failure mode and rationale but omit the fork's
 # measured figures and internal review/audit references, which are
@@ -13,6 +17,11 @@
 # neither the fork's relevance-free control arm nor its coverage reduce (this
 # port carries neither), and state the sampling-density confound without the
 # fork's unpublished measured figures.
+# Deliberate delta vs source: the image-tower skip, the Qwen-timing guard and
+# the clip-reference stamp keep the fork's mechanism but drop its measured cost
+# and prevalence figures and its dated internal audit references, which are
+# unpublished. segments_keep_effective follows the fork's later global-aware
+# form (this port carries global mode, which the fork added after e9ea590).
 """SEGMENT selection: split each clip into temporal segments, keep each clip's
 most question-relevant segments, pool their frames, drop near-duplicates, and
 answer from an evenly-thinned subset of the unique pool.
@@ -101,11 +110,15 @@ answer from an evenly-thinned subset of the unique pool.
   passes, so the std isolates the answer stage. Under the ``viclip`` tag the
   tube scorer replaces only the segment-RELEVANCE signal; the dedup step
   still needs per-frame image embeddings (a joint tube embedding has none),
-  so the CLIP/SigLIP image tower (--clip-model) runs alongside it for dedup
-  and frame-level ordering, and rows stamp both (``segment_scorer`` +
-  ``clip_model``).
+  so the CLIP/SigLIP image tower (--clip-model) runs alongside it when dedup
+  is on (``dedup_tau`` < 1) and rows stamp both (``segment_scorer`` +
+  ``clip_model``); with dedup off the tower is skipped (``image_tower_ran``
+  False). Rows also stamp ``options_are_clip_refs`` (every query text is a
+  bare "Video k" / permutation string, so the ranking carried no content),
+  ``segments_keep_effective`` and ``selection_noop``.
 """
 import os
+import re
 
 import numpy as np
 from decord import VideoReader, cpu
@@ -164,6 +177,18 @@ SEGMENT_MARKER = ("=== Video {orig} — {cnt} frame(s) drawn from its {nseg} "
 # segments and segments_per_video >= 16, K spans exactly 1..16 as the stream
 # count runs 16..1.
 SEG_KEEP_MAX = 16
+
+
+_CLIP_REF_RE = re.compile(
+    r"^\s*(?:(?:video|view|clip|camera)\s*\d+|[ivx]+(?:\s*(?:->|→|,|then)\s*[ivx]+)+"
+    r"|\d+(?:\s*(?:->|→)\s*\d+)+)\s*\.?\s*$", re.I)
+
+
+def _options_are_clip_refs(texts):
+    """True when EVERY query text is a bare clip/slot reference or a
+    permutation of numerals ("Video 2", "II -> I -> III", "1, 3, 2") — a
+    content-free query the scorer cannot ground."""
+    return bool(texts) and all(_CLIP_REF_RE.match(t or "") for t in texts)
 
 
 def _dedup_keep_best(indices, scores, embs, tau):
@@ -306,6 +331,18 @@ class SegmentSelectMethod(FrameSelectMethod):
             # Qwen's 2-frame temporal merge applies as in the sequential arm;
             # still images at video pixel caps cost a 2x visual-token surplus
             self.img_token_parity = "qwen_video_list"
+            # BLOCKED until real timing is attached: qwen_vl_utils fabricates
+            # fps=2.0 / indices=range(n) for a PIL-list video item, so frames
+            # drawn from segments minutes apart are labelled seconds apart
+            # (Qwen3-VL prints the wrong "<t s>" text; Qwen2.5-VL gets a
+            # false M-RoPE time scale). SEGMENT_SELECT_QWEN_UNSAFE=1 overrides
+            # and stamps qwen_timing_unsafe on every row it produces.
+            if os.environ.get("SEGMENT_SELECT_QWEN_UNSAFE", "0") != "1":
+                raise SystemExit(
+                    f"{self.name}: the Qwen path feeds per-clip PIL-list "
+                    "video items whose timestamps qwen_vl_utils fabricates; "
+                    "attach real frame times before running a Qwen segment "
+                    "leg (or set SEGMENT_SELECT_QWEN_UNSAFE=1 knowingly).")
 
     def _decode_segments(self, vp):
         """[(segment_id, time_s, PIL)] in playback order, plus decode meta.
@@ -396,17 +433,25 @@ class SegmentSelectMethod(FrameSelectMethod):
         if not pool:
             raise FileNotFoundError("no candidate frames from any clip")
 
-        # score every pooled frame once with the image tower (dedup needs its
-        # per-frame embeddings even under viclip); scorer failures raise
-        # (inherited policy — no silent uniform fallback)
+        # score every pooled frame once with the image tower — it ranks the
+        # segments unless ViCLIP does, and its per-frame embeddings feed the
+        # dedup step. Under viclip with dedup OFF (tau >= 1) neither consumer
+        # exists, so the pass is skipped: it cost a second encoder's FLOPs and
+        # resident weights for embeddings _dedup_keep_best never read
+        # (selection verified byte-identical either way). Scorer failures
+        # raise (inherited policy — no silent uniform fallback).
         query, qmode = query_for(rec, self.query)
         queries = query if isinstance(query, list) else [query]
-        scores, embs = clip_scores(self._ensure_clip(), query,
-                                   [p[3] for p in pool], return_image_embs=True)
-        S2 = scores if scores.ndim == 2 else None    # [frames, options]
-        if scores.ndim == 2:
-            # [frames, options] -> a frame's score is its best option
-            scores = scores.max(axis=1)
+        need_img = self.seg_scorer != "viclip" or self.dedup_tau < 1.0
+        if need_img:
+            scores, embs = clip_scores(self._ensure_clip(), query,
+                                       [p[3] for p in pool], return_image_embs=True)
+            S2 = scores if scores.ndim == 2 else None    # [frames, options]
+            if scores.ndim == 2:
+                # [frames, options] -> a frame's score is its best option
+                scores = scores.max(axis=1)
+        else:
+            scores, embs, S2 = None, None, None
 
         # per-segment per-option score matrix: ViCLIP embeds each segment
         # jointly as one tube; the image tower reduces max-over-frames per
@@ -541,15 +586,31 @@ class SegmentSelectMethod(FrameSelectMethod):
             "clips_with_no_segment": sum(1 for s in kept_segs.values() if not s),
             # keyed by segment id (a bare list shifts silently when decord
             # drops a whole segment's frames, mismapping scores post-hoc)
-            "segment_scores": {v: {s: round(d[s], 4) for s in sorted(d)}
+            # 6 dp: on static-camera sets the top-K boundary can fall below
+            # 4-dp resolution, where the matrix no longer reproduces the kept
+            # set
+            "segment_scores": {v: {s: round(d[s], 6) for s in sorted(d)}
                                for v, d in seg_scores.items()},
             # the full per-option matrix behind the top-K (options mode only;
             # with one query it would just duplicate segment_scores)
             "segment_option_scores": (
-                {v: {s: [round(float(x), 4) for x in d[s]] for s in sorted(d)}
+                {v: {s: [round(float(x), 6) for x in d[s]] for s in sorted(d)}
                  for v, d in seg_opt.items()} if len(queries) > 1 else None),
             "segment_scorer": ("viclip" if self.seg_scorer == "viclip"
                                else self.clip_model_name),
+            # True when every option is a bare clip reference ("Video 3",
+            # "II -> I -> III"): the scorer then ranks segments by similarity
+            # to that token, not to any content. None outside options mode
+            "options_are_clip_refs": _options_are_clip_refs(queries) if qmode == "options" else None,
+            # the per-clip K that actually bound (a clip cannot contribute
+            # more than its segment count) — under global, each clip's ACTUAL
+            # kept count, which the one ranking sets per clip — and whether
+            # selection did anything at all (auto-K on 1-2 streams keeps
+            # every segment)
+            "segments_keep_effective": (
+                {v: len(kept_segs[v]) for v in seg_scores} if glob
+                else {v: min(keep_top, len(d)) for v, d in seg_scores.items()}),
+            "selection_noop": all(len(kept_segs[v]) == len(d) for v, d in seg_scores.items()),
             "n_pool": len(pool),
             "n_kept_segment_frames": len(kept),
             "dedup_tau": self.dedup_tau,
@@ -564,7 +625,13 @@ class SegmentSelectMethod(FrameSelectMethod):
             "floor": floor,
             "qwen_even_pad_per_video": qwen_pad if qwen_video_list else None,
             "per_video_decode": decode_meta,
+            # the CONFIGURED dedup/image tower (unchanged meaning); whether it
+            # actually ran this record is image_tower_ran
             "clip_model": self.clip_model_name,
+            "image_tower_ran": need_img,
+            # True only under the SEGMENT_SELECT_QWEN_UNSAFE override: the
+            # PIL-list items carry fabricated timestamps
+            "qwen_timing_unsafe": True if qwen_video_list else None,
             "query_mode": qmode,
             "n_query_texts": len(query) if isinstance(query, list) else 1,
             "selection_fallback": None,

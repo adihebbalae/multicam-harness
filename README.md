@@ -152,6 +152,7 @@ Rebuild the taxonomy labels and the question bank (annotations only, no GPU):
 python3 scripts/data/label_evidence_class.py    # -> data/subsets/meva_evidence_labels.json
 python3 scripts/data/make_question_bank.py      # -> data/subsets/dod_question_bank.json
 python -m evaluation.evidence_class_split results/<leg>_shard*.jsonl   # split a leg by class
+python3 evaluation/letter_floors.py --subset data/subsets/<pool>.json  # answer-letter skew + LOO floors
 ```
 
 ## Ground rules

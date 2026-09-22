@@ -1,0 +1,63 @@
+# Publishes demo/ (the four-camera replay page) to GitHub Pages whenever a push
+# to master changes it, or on demand from the Actions tab.
+#
+# One-time setup by a repository admin, before the first run can succeed:
+#   Settings -> Pages -> Build and deployment -> Source: GitHub Actions
+# The site is then https://adihebbalae.github.io/multicam-harness/ and its
+# index.html redirects to demo_ui.html. Until Pages is switched on, this job
+# fails at the Pages steps and nothing else in the repository is affected.
+name: Demo page
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "demo/**"
+      - ".github/workflows/demo-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time. A newer push queues behind a running deployment
+# instead of cancelling it halfway.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # a manual run from another branch must not publish that branch's demo/
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}demo_ui.html
+    steps:
+      - uses: actions/checkout@v7
+
+      # demo/ becomes the site root, so the page's relative paths (figs_demo/,
+      # figs_case/, rows/) resolve exactly as they do under a local server
+      - name: Stage demo/ as the site
+        run: |
+          mkdir _site
+          cp -a demo/. _site/
+          cat > _site/index.html <<'HTML'
+          <!doctype html>
+          <meta charset="utf-8">
+          <meta http-equiv="refresh" content="0; url=demo_ui.html">
+          <title>MultiCam demo</title>
+          <a href="demo_ui.html">MultiCam four-camera question answering demo</a>
+          HTML
+          du -sh _site
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v5

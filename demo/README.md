@@ -40,10 +40,10 @@ card and traces. The caption strip above the stage always names the file on scre
 
 ### The case study
 
-The first entry in the rail, **Case**, is not one of the five demo questions. It is
-question 954 of the full 1,033-question MEVA pool, the two-slide example from the
-motivation deck: every camera on its own gets it wrong, all four together get it
-right. Selecting it relabels the five buttons:
+The first entry in the rail, **Case**, is where the page opens. It is not one of
+the five demo questions. It is question 954 of the full 1,033-question MEVA pool,
+the two-slide example from the motivation deck: every camera on its own gets it
+wrong, all four together get it right. Selecting it relabels the five buttons:
 
 1. Each camera alone. The 2x2 wall with each camera's four answers stamped on its
    tile, and under it one row per camera: what its annotated event was, the four
@@ -59,7 +59,7 @@ right. Selecting it relabels the five buttons:
    where they fall in each clip.
 5. Reset.
 
-Above the case sits **How it works**: one click puts the pipeline figure from the
+Below the case sits **How it works**: one click puts the pipeline figure from the
 deck on the stage, and the rail lists the six stages with the segment count and
 frame budget read from the manifest. The wall clips play about 42 s of footage at
 2x as a 21 s loop; the clip is the raw footage over the events with the recorded

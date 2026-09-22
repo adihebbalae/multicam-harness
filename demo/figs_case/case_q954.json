@@ -957,7 +957,7 @@
  ],
  "case2_arm": "mp4sg96",
  "short": {
-  "question": "Which happened first: one person physically interacting with someone, or another person (hat, bag) talking to someone?",
+  "question": "Did the person in the grey coat talk to someone before interacting with people in the courtyard?",
   "options": {
    "A": "the interaction first",
    "B": "the talking first",

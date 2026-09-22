@@ -543,6 +543,7 @@ pre.trace{
     vidp: {},               /* "root|id" -> the promise building that record   */
     imgErr: {},             /* selection png url -> failed attempts so far     */
     dirCache: {},
+    noListings: false,      /* the host serves no directory listings (GitHub Pages) */
     snapSeq: 0,             /* bumps on every reset; a late still is ignored   */
     ready: false
   };
@@ -598,15 +599,23 @@ pre.trace{
   }
 
   /* directory listing (python -m http.server), used so that probing for an
-     optional asset set never has to fire a request that 404s. */
+     optional asset set never has to fire a request that 404s. A host with no
+     listings at all (GitHub Pages) is learned from the first probe of the root
+     and never asked again, so it costs one 404, not one per asset. */
   function dirList(path, fresh) {
+    if (S.noListings) return Promise.resolve(null);
     if (!fresh && Object.prototype.hasOwnProperty.call(S.dirCache, path)) {
       return Promise.resolve(S.dirCache[path]);
     }
+    function none() {
+      S.dirCache[path] = null;
+      if (path === "./") S.noListings = true;
+      return null;
+    }
     return fetch(path, { cache: "no-store" }).then(function (r) {
-      if (!r.ok) { S.dirCache[path] = null; return null; }
+      if (!r.ok) return none();
       return r.text().then(function (t) {
-        if (t.indexOf("Directory listing for") < 0) { S.dirCache[path] = null; return null; }
+        if (t.indexOf("Directory listing for") < 0) return none();
         var names = {}, re = /href="([^"?#]+)"/g, m, n;
         while ((m = re.exec(t))) {
           n = m[1].replace(/\/$/, "");

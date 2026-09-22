@@ -516,10 +516,11 @@ pre.trace{
   /* the pipeline figure from the deck, shown from the "How it works" rail entry */
   var HOW_FIG = "how_it_works.png";
   var STEP_LABELS_Q = ["Play streams", "Kept segments", "Answer", "Reasoning", "Reset"];
-  var STEP_LABELS_CASE = ["Each camera alone", "All four together", "Reset"];
+  var STEP_LABELS_CASE = ["Each camera alone", "How it works · one camera",
+                          "All four together", "How it works · four cameras", "Reset"];
   var STEP_LABELS_HOW = ["Pipeline", "Reset"];
   var KHINT_Q = "keys 1–5, arrows switch question";
-  var KHINT_CASE = "keys 1–3, arrows switch";
+  var KHINT_CASE = "keys 1–5, arrows switch";
   var KHINT_HOW = "keys 1–2, arrows switch";
 
   var S = {
@@ -1454,37 +1455,44 @@ pre.trace{
   function caseFigCaption(c, step) {
     var nf = nFramesSingle(c);
     return step === 1
-      ? "Each camera alone: the " + (nf || "") + " frames each camera received, and its four answers"
-      : "All four cameras together: the frames the run received, and where they fall in each clip";
+      ? "How it works, one camera: the " + (nf || "") + " frames each camera received, and its four answers"
+      : "How it works, four cameras: the frames the winning run received, and where they fall in each clip";
   }
-  function caseClip(c, step) {
-    var id = caseWallId(c, step), key = videoKey(ROOT_CASE, id), rec = S.vids[key];
-    S.caseStep = step;
+  /* Case n (1: each camera alone, 2: all four together) owns two stepper
+     buttons: 2n-1 plays its wall clip, 2n shows its figure of the frames the
+     model received. S.caseStep records which button is on stage. */
+  function caseClip(c, n) {
+    var id = caseWallId(c, n), key = videoKey(ROOT_CASE, id), rec = S.vids[key], btn = 2 * n - 1;
+    /* a second press on the playing clip pauses or resumes it, as for a question wall */
+    if (S.caseStep === btn && S.view === "video" && rec && rec.el && !rec.err) {
+      if (rec.el.paused) {
+        rec.el.play().catch(function () { /* autoplay guard */ });
+        setStatus(caseClipCaption(c, n), rec.url, true);
+      } else {
+        rec.el.pause();
+        setStatus(caseClipCaption(c, n) + ", paused", rec.url, false);
+      }
+      return;
+    }
+    S.caseStep = btn;
     if (rec && rec.err) { dropVideo(key); rec = null; }
     if (!rec || !rec.obj) setStatus("Loading the case wall clip…", wallPath(ROOT_CASE, id), false);
     makeVideo(ROOT_CASE, id).then(function (r) {
-      if (S.mode !== "case" || S.caseStep !== step) return;   /* the presenter moved on */
+      if (S.mode !== "case" || S.caseStep !== btn) return;   /* the presenter moved on */
       if (r.err) {
         showError("The case wall clip could not be loaded.", r.url, r.url);
         return;
       }
-      renderCaseBar(c, step);
-      showWall(r, caseClipCaption(c, step), step);
+      renderCaseBar(c, n);
+      showWall(r, caseClipCaption(c, n), btn);
     });
   }
-  function caseFigure(c, step) {
-    S.caseStep = step;
-    showFigure(ROOT_CASE + "case" + step + "_q" + c.id + ".png", caseFigCaption(c, step), "case figure", step);
+  function caseFigure(c, n) {
+    S.caseStep = 2 * n;
+    showFigure(ROOT_CASE + "case" + n + "_q" + c.id + ".png", caseFigCaption(c, n), "case figure", 2 * n);
   }
-  function actCase(step) {
-    var c = C();
-    if (!c) return;
-    var same = S.caseStep === step, rec = S.vids[videoKey(ROOT_CASE, caseWallId(c, step))];
-    /* second press: the figure; also the way to the figure when this step's
-       clip is known to be broken, so a bad file never hides the figure */
-    if (same && (S.view === "video" || (S.view === "err" && rec && rec.err))) { caseFigure(c, step); return; }
-    caseClip(c, step);                                                 /* first press, or back to the clip */
-  }
+  function actCaseClip(n) { var c = C(); if (c) caseClip(c, n); }
+  function actCaseFigure(n) { var c = C(); if (c) caseFigure(c, n); }
 
   /* ------------------------------------------------------------------ *
    * how it works: the pipeline figure                                   *
@@ -1850,7 +1858,9 @@ pre.trace{
    * ------------------------------------------------------------------ */
   /* the five buttons and keys, by what the rail has selected */
   var ACTS_Q = { 1: actVideo, 2: actSelection, 3: actAnswer, 4: actReason, 5: resetStage };
-  var ACTS_CASE = { 1: function () { actCase(1); }, 2: function () { actCase(2); }, 3: resetStage };
+  var ACTS_CASE = { 1: function () { actCaseClip(1); },   2: function () { actCaseFigure(1); },
+                    3: function () { actCaseClip(2); },   4: function () { actCaseFigure(2); },
+                    5: resetStage };
   var ACTS_HOW = { 1: actHow, 2: resetStage };
   function step(n) {
     var f = (inCase() ? ACTS_CASE : (inHow() ? ACTS_HOW : ACTS_Q))[n];

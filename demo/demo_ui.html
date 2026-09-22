@@ -545,6 +545,7 @@ pre.trace{
     dirCache: {},
     noListings: false,      /* the host serves no directory listings (GitHub Pages) */
     snapSeq: 0,             /* bumps on every reset; a late still is ignored   */
+    figSeq: 0,              /* bumps on every stage change; a late figure is ignored */
     ready: false
   };
   var HINT_PLAY = "press 1 to play the four camera streams";
@@ -1087,6 +1088,7 @@ pre.trace{
      off the view name; the case flow passes it, since its two steps each use
      the video view and the figure view in turn. */
   function showView(name, step) {
+    S.figSeq++;             /* a figure still loading for what was on stage is now stale */
     Object.keys(VIEWS).forEach(function (k) { $(VIEWS[k]).hidden = (k !== name); });
     S.view = name;
     if (step == null) step = STEP_OF[name] || 0;
@@ -1370,14 +1372,20 @@ pre.trace{
    * ------------------------------------------------------------------ */
   /* one still on the zoom box: the selection figure, or a case figure */
   function showFigure(url, caption, what, step) {
-    var img = $("selImg"), box = $("zoomBox"), note = $("selNote");
+    var img = $("selImg"), box = $("zoomBox"), note = $("selNote"), tok = ++S.figSeq;
     box.classList.remove("on");
     note.hidden = true;
+    /* A figure that lands after the stage moved on (another rail entry, another
+       step) must not take the stage back: the 1.4 MB pipeline figure is not
+       preloaded, and the rail walks straight past it from the case to q860. */
+    function stale() { return tok !== S.figSeq; }
     img.onerror = function () {
       S.imgErr[url] = (S.imgErr[url] || 0) + 1;   /* next press asks for it again */
+      if (stale()) return;
       showError("The " + what + " could not be loaded.", url, url);
     };
     img.onload = function () {
+      if (stale()) return;
       showView("sel", step);
       setStatus(caption, url, false);
     };

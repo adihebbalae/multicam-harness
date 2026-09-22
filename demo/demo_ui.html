@@ -765,7 +765,7 @@ pre.trace{
   function C() { return S.mode === "case" ? (S.cases[S.ci] || null) : null; }
   function inCase() { return S.mode === "case"; }
   function inHow() { return S.mode === "how"; }
-  function nHow() { return S.how ? 1 : 0; }          /* rail entries before the cases */
+  function nHow() { return S.how ? 1 : 0; }          /* rail entries between the cases and the questions */
 
   function armOf(q, name) {
     var a = (q && q.arms) || [], i;
@@ -884,22 +884,12 @@ pre.trace{
   /* ------------------------------------------------------------------ *
    * left rail                                                           *
    * ------------------------------------------------------------------ */
-  /* The rail: the case entries first, then the manifest questions. One list of
-     buttons, so the arrow keys walk both; paintRail() knows where the split is. */
+  /* The rail: the case entries first (the page opens on the first one), then
+     the pipeline entry, then the manifest questions. One list of buttons, so the
+     arrow keys walk all three; paintRail() and moveSelection() know the splits. */
   function buildQuestionList() {
     var list = $("qlist"), qs = questions();
     list.textContent = "";
-    if (S.how) {
-      var hb = el("button", "qbtn case");
-      hb.type = "button";
-      var hh = el("div", "h");
-      hh.appendChild(el("span", "id", "How it works"));
-      hh.appendChild(el("span", "ty", "the pipeline"));
-      hb.appendChild(hh);
-      hb.appendChild(el("span", "t", "Question-guided segment selection, then one answer call"));
-      hb.addEventListener("click", selectHow);
-      list.appendChild(hb);
-    }
     S.cases.forEach(function (c, i) {
       var b = el("button", "qbtn case");
       b.type = "button";
@@ -911,6 +901,17 @@ pre.trace{
       b.addEventListener("click", function () { selectCase(i); });
       list.appendChild(b);
     });
+    if (S.how) {
+      var hb = el("button", "qbtn case");
+      hb.type = "button";
+      var hh = el("div", "h");
+      hh.appendChild(el("span", "id", "How it works"));
+      hh.appendChild(el("span", "ty", "the pipeline"));
+      hb.appendChild(hh);
+      hb.appendChild(el("span", "t", "Question-guided segment selection, then one answer call"));
+      hb.addEventListener("click", selectHow);
+      list.appendChild(hb);
+    }
     qs.forEach(function (q, i) {
       var b = el("button", "qbtn");
       b.type = "button";
@@ -925,13 +926,13 @@ pre.trace{
     paintRail();
   }
 
-  /* rail order: the pipeline entry (if on disk), the cases, the questions */
+  /* rail order: the cases, the pipeline entry (if on disk), the questions */
   function paintRail() {
-    var btns = $("qlist").querySelectorAll(".qbtn"), h = nHow(), n = S.cases.length, k, on;
+    var btns = $("qlist").querySelectorAll(".qbtn"), n = S.cases.length, h = nHow(), k, on;
     for (k = 0; k < btns.length; k++) {
-      if (k < h) on = inHow();
-      else if (k - h < n) on = inCase() && k - h === S.ci;
-      else on = S.mode === "q" && k - h - n === S.qi;
+      if (k < n) on = inCase() && k === S.ci;
+      else if (k - n < h) on = inHow();
+      else on = S.mode === "q" && k - n - h === S.qi;
       btns[k].classList.toggle("on", on);
     }
   }
@@ -1723,15 +1724,15 @@ pre.trace{
     resetStage();
     actHow();
   }
-  /* arrows walk the rail as one list: the pipeline, the cases, the questions */
+  /* arrows walk the rail as one list: the cases, the pipeline, the questions */
   function moveSelection(d) {
-    var h = nHow(), n = S.cases.length, m = questions().length, total = h + n + m;
+    var n = S.cases.length, h = nHow(), m = questions().length, total = n + h + m;
     if (!total || !S.ready) return;
-    var cur = inHow() ? 0 : (inCase() ? h + S.ci : h + n + S.qi);
+    var cur = inCase() ? S.ci : (inHow() ? n : n + h + S.qi);
     var nx = (((cur + d) % total) + total) % total;
-    if (nx < h) selectHow();
-    else if (nx - h < n) selectCase(nx - h);
-    else selectQuestion(nx - h - n);
+    if (nx < n) selectCase(nx);
+    else if (nx - n < h) selectHow();
+    else selectQuestion(nx - n - h);
   }
 
   /* ------------------------------------------------------------------ *
@@ -1770,14 +1771,16 @@ pre.trace{
     for (k = 0; k < qs.length; k++) order.push(qs[(S.qi + k) % qs.length]);
     function next() {
       if (root !== S.root) return;          /* a scorer switch owns preloading now */
-      if (i >= order.length) { preloadCases(); return; }
+      if (i >= order.length) return;
       makeVideo(root, order[i++].id).then(next, next);
     }
-    next();
+    preloadCases(next);                     /* the rail's order: the case clips first */
   }
-  /* the case clips and figures, after the question walls (a second pass is
-     free: makeVideo caches by key and a loaded image is served from cache) */
-  function preloadCases() {
+  /* the case clips, then `then` (the question walls) while the case figures
+     load one at a time. The page opens on the case, so its clips go first; a
+     second pass (after a scorer switch) is free: makeVideo caches by key and a
+     loaded image is served from cache */
+  function preloadCases(then) {
     var clips = [], figs = [], i = 0, j = 0;
     S.cases.forEach(function (c) {
       [1, 2].forEach(function (s) {
@@ -1793,7 +1796,7 @@ pre.trace{
       img.src = figs[j++];
     }
     function nextClip() {
-      if (i >= clips.length) { nextFig(); return; }
+      if (i >= clips.length) { nextFig(); if (then) then(); return; }
       makeVideo(ROOT_CASE, clips[i++]).then(nextClip, nextClip);
     }
     nextClip();
@@ -1986,7 +1989,10 @@ pre.trace{
       S.ready = true;
       setButtonsEnabled(true);
       buildQuestionList();
-      selectQuestion(0);            /* paints the stepper and the top bar for the mode */
+      /* open on the top of the rail: the case when one loaded, else the first
+         question. Either call paints the stepper and the top bar for the mode */
+      if (S.cases.length) selectCase(0);
+      else selectQuestion(0);
       preloadWalls();
       preloadImages();
       selfCheck();

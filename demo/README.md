@@ -92,8 +92,10 @@ for how 954 was picked and what the rows can and cannot support.
 - `figs_case/` - the case study: `case_q954.json` (every value the case mode shows),
   the two deck figures `case1_q954.png` and `case2_q954.png`, the two wall clips
   `wall_case1_q954.mp4` and `wall_case2_q954.mp4` with their `_mid.png` stills, and
-  `how_it_works.png`, the pipeline figure from the deck. The same record and case
-  figures live in `docs/figs/demo_2026-09-22/` for the deck.
+  `how_it_works.png`, the pipeline figure from the deck. The same record and the
+  full figures live in `docs/figs/demo_2026-09-22/` for the deck; the copies here
+  are cropped above the counter-evidence block (the last horizontal rule), since
+  the page shows the counter-evidence and the disclosure in the strip and the rail.
 - `rows/` - the eight result files, one JSON object per answered question, their
   eight summary files, and the five-question subset that was run.
 - `scripts/` - the five scripts that produced the assets in this folder.

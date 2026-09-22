@@ -4,6 +4,10 @@
 # Deliberate delta vs source: the two departures are stated as mechanisms
 # without the fork's measured score delta or its dated internal audit
 # reference, and without naming the fork's registered legs — both unpublished.
+# VICLIP_SIDE (the square input side _tube resizes to, read by
+# segment_select's thumbnail decode) additionally ported from
+# Wavy-Hec/MultiCam bench/methods/viclip_scorer.py
+# @ b5f666ca990458059cd072048625ccfe629b2737.
 """ViCLIP (video-native CLIP) as a clip-level scorer for the selection arms.
 
 Unlike CLIP/SigLIP — which embed each thumbnail independently — ViCLIP embeds
@@ -50,6 +54,7 @@ VICLIP_SIZE = os.environ.get("VICLIP_SIZE", "l")
 # a missing ['model'] key, so it must never be picked up as a fallback.
 _CKPTS = ("ViClip-InternVid-10M-FLT.pth",)
 VICLIP_NFRAMES = 8            # the tube length ViCLIP was trained with
+VICLIP_SIDE = 224             # the square input side _tube resizes every frame to
 _V_MEAN = np.array([0.485, 0.456, 0.406], dtype=np.float32)
 _V_STD = np.array([0.229, 0.224, 0.225], dtype=np.float32)
 
@@ -134,7 +139,8 @@ def _tube(frames_pil, device):
                          f"got {len(frames_pil)}")
     arrs = []
     for im in frames_pil:
-        a = np.asarray(im.convert("RGB").resize((224, 224)), dtype=np.float32)
+        a = np.asarray(im.convert("RGB").resize((VICLIP_SIDE, VICLIP_SIDE)),
+                       dtype=np.float32)
         arrs.append((a / 255.0 - _V_MEAN) / _V_STD)
     x = np.stack(arrs)                            # [T, H, W, C]
     x = np.transpose(x, (0, 3, 1, 2))[None]       # [1, T, C, H, W]

@@ -177,7 +177,8 @@ def test_pre_feature_rows_compare_equal_to_per_clip():
         assert _stray(p, "global", 1) == {"seg_select": ["per_clip"],
                                           "seg_floor": [None]}
         assert IDENTITY_KNOB_DEFAULTS == {"seg_select": "per_clip",
-                                          "seg_floor": None}
+                                          "seg_floor": None,
+                                          "segment_seconds": 0.0}
 
 
 def test_per_clip_file_is_refused_under_global():

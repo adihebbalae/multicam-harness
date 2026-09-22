@@ -779,9 +779,15 @@ def frame_count(per_video, slot, times):
         return len(times)
 
 
-def segment_bounds(n_total, fps, n_seg):
-    """Same split segment_select uses: bounds = round(s * n / S)."""
-    b = [round(s * n_total / n_seg) for s in range(n_seg + 1)]
+def segment_bounds(n_total, fps, n_seg, segment_frames=None):
+    """Same split segment_select uses. Count partition: bounds = round(s * n /
+    S). A --segment-seconds row stamps ``segment_frames`` (its window w) and is
+    cut [s * w for s < S] + [n] instead — the count formula would misplace up
+    to a quarter of a 300 s camera's frames."""
+    if segment_frames:
+        b = [s * int(segment_frames) for s in range(n_seg)] + [n_total]
+    else:
+        b = [round(s * n_total / n_seg) for s in range(n_seg + 1)]
     return [(b[s] / fps, b[s + 1] / fps) for s in range(n_seg)]
 
 
@@ -807,6 +813,14 @@ def build_question(rec, rows, vp_fn, video_root, thumbs_per_cam,
     keep_k = fa.get("segments_keep")
 
     gfa = (glob_g["first"].get("frame_alloc") or {}) if glob_g else {}
+    if gfa and gfa.get("segment_seconds") != fa.get("segment_seconds"):
+        # the global leg's segment ids index ITS partition; outlined on the
+        # per-clip leg's cells they would mark the wrong seconds
+        note(f"id {qid}: the global row cuts segments by "
+             f"segment_seconds={gfa.get('segment_seconds')} and the per-clip "
+             f"row by {fa.get('segment_seconds')}; the global outline is "
+             "omitted")
+        gfa = {}
     gkept_all = gfa.get("segments_kept_per_video") or {}
     # the global leg's defining property is an UNEQUAL budget across cameras,
     # so its own frame times and per-camera counts are carried too - drawing
@@ -877,7 +891,8 @@ def build_question(rec, rows, vp_fn, video_root, thumbs_per_cam,
             "n_frames_scored": n_total,
             "n_segments": n_seg,
             "segment_bounds_s": [[round(a, 2), round(b, 2)]
-                                 for a, b in segment_bounds(n_total, fps, n_seg)],
+                                 for a, b in segment_bounds(
+                                     n_total, fps, n_seg, d.get("segment_frames"))],
             "segment_scores": {str(k): scores[k] for k in sorted(scores)},
             "max_score": max(scores.values()) if scores else None,
             "segments_kept": kept,

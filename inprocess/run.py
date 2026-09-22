@@ -69,9 +69,10 @@ generation invisibly.
 Everything else that changes what the model is shown is either a flag that is
 stamped on every row (``--nframes``, ``--budget``, ``--sel-tau``, ``--sel-tau-q``,
 ``--n-queries``, ``--max-new-tokens``, ``--internvl-max-tiles``, ``--temperature``,
-``--seeds``, reasoning on/off) or a pinned module constant that is also stamped on
-every row (the selection geometry: candidates per clip, thumbnails per clip, cell
-px, and the per-clip frame floors). The constants are deliberately not flags —
+``--seeds``, ``--segment-seconds``, reasoning on/off) or a pinned module constant
+that is also stamped on every row (the selection geometry: candidates per clip,
+thumbnails per clip, cell px, and the per-clip frame floors). The constants are
+deliberately not flags —
 they change what the model sees, so a leg that deviates cannot pool, and this
 entry point exists to produce poolable rows. Appending to a file whose rows carry
 a different value for any stamped knob is refused (see below).
@@ -161,14 +162,22 @@ OPTION_UNION_CLIP_RE = re.compile(
     r"^clip_select(?:_(?P<tag>(?!optu(?:_|$))[a-z0-9]+))?_optu$")
 QUERY_SEARCH_RE = re.compile(r"^query_search(?:_(?P<tag>[a-z0-9]+))?$")
 # segment_select: top-K segments PER clip -> per-segment frames -> question-wide
-# near-duplicate removal -> even thinning to the budget. Same tag/_opt grammar
-# as frame_select, plus 'viclip' (each segment embedded jointly as one tube for
-# segment relevance; an image tower still supplies the dedup embeddings).
+# near-duplicate removal -> even thinning to the budget. Same scorer-tag grammar
+# as frame_select (the suffix differs: _opt|_auto here, _optu there), plus
+# 'viclip' (each segment embedded jointly as one tube for segment relevance; an
+# image tower supplies the dedup embeddings while dedup is on).
 # --seg-select global takes that top-K over ALL clips at once (a clip may
 # contribute several segments, one, or none; --seg-floor reserves a per-clip
 # minimum first) — a FLAG, not a name: the mode is carried by the run's rows.
+# So is --segment-seconds (consecutive T-second segments instead of the
+# equal-parts split), which every row stamps and the append guard compares.
 SEGMENT_SELECT_RE = re.compile(
-    r"^segment_select(?:_(?P<tag>(?!opt(?:_|$))[a-z0-9]+))?(?P<opt>_opt)?$")
+    r"^segment_select(?:_(?P<tag>(?!(?:opt|auto)(?:_|$))[a-z0-9]+))?"
+    r"(?P<qmode>_opt|_auto)?$")
+# _auto = statements for event ordering, else the informative options, else the
+# question (segment_select.auto_query); needs the full pool, see main()
+SEGMENT_QUERY_MODES = {None: "question", "_opt": "options", "_auto": "auto"}
+SEGMENT_KINDS = {"segment", "segment_opt", "segment_auto"}
 
 # HF image-text scorers. 'viclip' is deliberately absent: it is not a
 # transformers id but a local download named by VICLIP_DIR, and it embeds a
@@ -203,14 +212,14 @@ DEFAULT_METHODS = "frame_select_siglip_optu,clip_select_viclip_optu,query_search
 # a montage leg legitimately tiles (its budget saturates at max_tiles — compare
 # its token columns before reading a centralized-vs-sequential difference as
 # architecture), and blind reads no media at all.
-SELECTION_KINDS = {"frame_optu", "clip_optu", "query_search",
-                   "segment", "segment_opt"}
+SELECTION_KINDS = {"frame_optu", "clip_optu", "query_search"} | SEGMENT_KINDS
 
 # Run-defining values compared against the rows already in an output file before
 # appending to it. A knob absent from a prior row is not compared (that row
-# predates the stamp); a knob present and different refuses the append, because
-# the alternative is a resume that runs nothing and writes a summary labelled
-# with this run's knobs over another run's data.
+# predates the stamp) UNLESS IDENTITY_KNOB_DEFAULTS names what its absence
+# meant; a knob present and different refuses the append, because the
+# alternative is a resume that runs nothing and writes a summary labelled with
+# this run's knobs over another run's data.
 IDENTITY_KNOBS = ("dataset", "backend", "subset_sha256", "strict_prompt",
                   "reasoning", "temperature", "seeds", "nframes", "budget",
                   "sel_tau", "sel_tau_q", "n_queries", "query_max_new_tokens",
@@ -218,11 +227,11 @@ IDENTITY_KNOBS = ("dataset", "backend", "subset_sha256", "strict_prompt",
                   "sel_thumbs", "cell_px", "frame_floor", "clip_floor",
                   "segments_per_video", "segments_keep", "frames_per_segment",
                   "dedup_tau", "seg_pool", "seg_select", "seg_floor",
-                  "total_frames", "montage_kind", "stream_kind", "weighting",
-                  "perception_max_new_tokens")
+                  "segment_seconds", "total_frames", "montage_kind",
+                  "stream_kind", "weighting", "perception_max_new_tokens")
 
 # The exception to "a knob absent from a prior row is not compared": for these
-# two, absence is not unknown — it is a VALUE. The segment-selection mode is a
+# three, absence is not unknown — it is a VALUE. The segment-selection mode is a
 # FLAG, not part of the method name (both modes record
 # segment_select[_<scorer>][_opt], so the resume key cannot tell them apart), and
 # a row written before this stamp existed is a per_clip row by construction,
@@ -239,7 +248,13 @@ IDENTITY_KNOBS = ("dataset", "backend", "subset_sha256", "strict_prompt",
 # carries: select_segments caps the floor at (segment budget // K), so one leg
 # stamps different effective floors on records with different stream counts and
 # keying identity on that would make the leg refuse to resume itself.
-IDENTITY_KNOB_DEFAULTS = {"seg_select": "per_clip", "seg_floor": None}
+#
+# segment_seconds: rows from before the --segment-seconds flag are
+# count-partition rows (0.0), so a seconds run must be refused by such a file
+# (the resume key cannot tell the two partitions apart and would count the old
+# rows as this leg's own) while a count run still resumes it.
+IDENTITY_KNOB_DEFAULTS = {"seg_select": "per_clip", "seg_floor": None,
+                          "segment_seconds": 0.0}
 
 # The four ViCLIP class files, in the order the loader executes them.
 VICLIP_CLASS_FILES = ("simple_tokenizer.py", "viclip_text.py",
@@ -292,13 +307,13 @@ def parse_method(mname):
     m = SEGMENT_SELECT_RE.match(mname)
     if m:
         tag = m.group("tag")
-        kind = "segment_opt" if m.group("opt") else "segment"
+        kind = "segment" + (m.group("qmode") or "")
         return kind, (VICLIP_SCORER if tag == VICLIP_SCORER else scorer_for(tag))
     raise SystemExit(
         f"unknown method '{mname}'. Known: {BASELINE}, centralized, per_stream, "
         "temporal_weighted, blind, "
         "frame_select[_<scorer>]_optu, clip_select[_<scorer>|_viclip]_optu, "
-        "query_search[_<scorer>], segment_select[_<scorer>|_viclip][_opt], "
+        "query_search[_<scorer>], segment_select[_<scorer>|_viclip][_opt|_auto], "
         f"with <scorer> in {sorted(SCORER_ALIASES)}.")
 
 
@@ -359,12 +374,13 @@ def make_method(mname, kind, scorer, backend, args):
             name=mname, **common)
         want = {"budget": args.budget, "floor": CLIP_FLOOR, "thumbs": SEL_THUMBS,
                 "tau": args.sel_tau, "tau_q": args.sel_tau_q}
-    elif kind in ("segment", "segment_opt"):
+    elif kind in SEGMENT_KINDS:
         # under the viclip tag the tube scorer replaces only the segment-
         # RELEVANCE signal; the dedup step needs per-frame image embeddings (a
         # joint tube embedding has none), so an image tower runs alongside —
         # pinned to SEG_DEDUP_TOWER so scorer A/Bs share one dedup space.
         seg_scorer = VICLIP_SCORER if scorer == VICLIP_SCORER else None
+        qmode = kind[len("segment"):] or None            # "" -> None (question)
         method = SegmentSelectMethod(
             backend, budget=args.budget, floor=FRAME_FLOOR,
             segments_per_video=SEGMENTS_PER_VIDEO,
@@ -372,17 +388,18 @@ def make_method(mname, kind, scorer, backend, args):
             frames_per_segment=FRAMES_PER_SEGMENT,
             dedup_tau=args.dedup_tau, seg_scorer=seg_scorer,
             seg_pool=args.seg_pool, seg_select=args.seg_select,
-            seg_floor=args.seg_floor,
+            seg_floor=args.seg_floor, segment_seconds=args.segment_seconds,
             clip_model=SEG_DEDUP_TOWER if seg_scorer else scorer,
             cell_px=CELL_PX, name=mname,
-            query="options" if kind == "segment_opt" else "question", **common)
+            query=SEGMENT_QUERY_MODES[qmode], **common)
         want = {"budget": args.budget, "floor": FRAME_FLOOR,
                 "segments_per_video": SEGMENTS_PER_VIDEO,
                 "segments_keep": args.segments_keep,
                 "frames_per_segment": FRAMES_PER_SEGMENT,
                 "dedup_tau": args.dedup_tau, "seg_pool": args.seg_pool,
                 "seg_select": args.seg_select, "seg_floor": args.seg_floor,
-                "cell_px": CELL_PX}
+                "segment_seconds": float(args.segment_seconds),
+                "query": SEGMENT_QUERY_MODES[qmode], "cell_px": CELL_PX}
     else:
         method = QuerySearchMethod(
             backend, n_queries=args.n_queries,
@@ -458,7 +475,7 @@ def scan_output(path):
     """``(key counts, keys whose row carries an error, {knob: values seen},
     media_remap values seen — 'unstamped' for rows that predate the stamp)``.
 
-    A knob missing from a row is skipped, except for the two in
+    A knob missing from a row is skipped, except for those in
     ``IDENTITY_KNOB_DEFAULTS``, where the absence itself is the pre-feature value
     and is recorded as such.
     """
@@ -848,7 +865,9 @@ def build_parser():
                          "(straight top-K over the per-option score matrix, "
                          "descending). 0 = AUTO: K = --seg-pool // "
                          "(frames_per_segment x n_streams), clamped to "
-                         "[1, min(16, segments_per_video)]")
+                         "[1, min(16, segments_per_video)] (under "
+                         "--segment-seconds: the record's longest clip's "
+                         "segment count instead)")
     ap.add_argument("--seg-pool", type=int, default=128,
                     help="segment_select with --segments-keep 0: pooled-frame "
                          "target the auto top-K fills with whole segments, "
@@ -876,6 +895,18 @@ def build_parser():
                          "--seg-floor. At a fixed budget global samples "
                          "denser inside fewer segments than per_clip, so run "
                          "a relevance-free control beside it")
+    ap.add_argument("--segment-seconds", type=float, default=0.0,
+                    help="segment_select: partition each clip by TIME — "
+                         "consecutive segments of this many seconds, S = "
+                         "duration / seconds per clip (8 = 8-second segments, "
+                         "an 8-frame tube at 1 fps). 0 (default) = the COUNT "
+                         "partition, %d equal parts per clip (37.5 s each on a "
+                         "300 s MEVA camera), which then does not bind. "
+                         "Stamped on every row and part of the append guard, "
+                         "so the two partitions never pool in one file; with "
+                         "the viclip scorer and --dedup-tau 1 selection runs "
+                         "on 224-px copies and only the kept segments are "
+                         "decoded at full size" % SEGMENTS_PER_VIDEO)
     ap.add_argument("--seg-floor", type=int, default=1,
                     help="segment_select --seg-select global: segments reserved "
                          "per clip before the global fill, so one ranking "
@@ -988,10 +1019,8 @@ def main():
             "arm's video frames do not — the matched-budget comparison would be a "
             "tokenization artifact. Run those legs with 1, and any higher-tile "
             "montage leg separately.")
-    seg_arms = sorted(m for m, k in kinds.items()
-                      if k in ("segment", "segment_opt"))
-    other_arms = sorted(m for m, k in kinds.items()
-                        if k not in ("segment", "segment_opt"))
+    seg_arms = sorted(m for m, k in kinds.items() if k in SEGMENT_KINDS)
+    other_arms = sorted(m for m, k in kinds.items() if k not in SEGMENT_KINDS)
     # A negative floor is refused HERE, ahead of the outside-global guard
     # below: it is also != 1, so the other order answered "--seg-floor -2 applies
     # only to --seg-select global", sending the operator to set --seg-select
@@ -1023,7 +1052,35 @@ def main():
             f"seg_select={args.seg_select}, seg_floor={args.seg_floor}); on "
             f"{other_arms} they would silently no-op. Drop "
             "--seg-select/--seg-floor or run only "
-            "segment_select[_<scorer>][_opt] arms.")
+            "segment_select[_<scorer>][_opt|_auto] arms.")
+    # --segment-seconds is the same kind of lever: only SegmentSelectMethod
+    # reads it, and a negative window is a typo, not "off" (0 is off)
+    if args.segment_seconds < 0:
+        raise SystemExit(
+            f"--segment-seconds {args.segment_seconds} is negative; it is the "
+            "length in seconds of each segment (0 = off: equal parts per "
+            "clip). Pass a value >= 0.")
+    if other_arms and args.segment_seconds:
+        raise SystemExit(
+            f"--segment-seconds is a segment_select-only lever (got "
+            f"{args.segment_seconds}); on {other_arms} it would silently "
+            "no-op. Drop --segment-seconds or run only "
+            "segment_select[_<scorer>][_opt|_auto] arms.")
+    if seg_arms and args.segment_seconds > 0:
+        # a record's segment count now depends on its clips' durations, which
+        # nothing reads at submit (no decode here). A record whose clips
+        # total fewer segments than the selection seats keeps ALL of them:
+        # the ranking is inert there and it shows fewer frames than the
+        # budget, so stratify on selection_noop when comparing arms.
+        seats = (f"budget // {FRAMES_PER_SEGMENT}" if args.seg_select == "global"
+                 else ("auto-K x K" if args.segments_keep == 0
+                       else f"segments_keep {args.segments_keep} x K"))
+        print(f"[note] --segment-seconds {args.segment_seconds:g}: a record "
+              f"whose clips total fewer segments than the selection seats "
+              f"({seats}) keeps every segment and shows fewer frames than "
+              "the budget; such rows stamp frame_alloc.selection_noop = true "
+              "and segments_kept_total < segments_keep. Stratify on it when "
+              "comparing arms.", flush=True)
     if VICLIP_SCORER in scorers:
         viclip_precheck()
 
@@ -1037,6 +1094,9 @@ def main():
         raise SystemExit(f"{args.subset}: expected a top-level list of records")
     subset_sha = sha256_of(args.subset)
     n_all = len(data)
+    # before sharding: the _auto generic-option test reads the whole pool, so
+    # its thresholds cannot move between shards
+    full_pool = list(data)
     if not 0 <= args.offset < max(args.chunk, 1):
         raise SystemExit(f"--offset {args.offset} outside [0, {max(args.chunk, 1)}) "
                          f"for --chunk {args.chunk} (chunk is the SHARD COUNT)")
@@ -1099,6 +1159,7 @@ def main():
         # back as identity.
         "seg_select": args.seg_select,
         "seg_floor": args.seg_floor if args.seg_select == "global" else None,
+        "segment_seconds": float(args.segment_seconds),   # 0.0 = count partition
         "total_frames": args.total_frames,
         "montage_kind": args.montage_kind,
         "stream_kind": args.stream_kind,
@@ -1217,7 +1278,9 @@ def main():
     # would otherwise read from the log as a floor in force
     print(f"segments_keep={args.segments_keep} seg_pool={args.seg_pool} "
           f"dedup_tau={args.dedup_tau} seg_select={knobs['seg_select']} "
-          f"seg_floor={knobs['seg_floor']} segment_select_qwen_unsafe="
+          f"seg_floor={knobs['seg_floor']} "
+          f"segment_seconds={args.segment_seconds or 'off'} "
+          f"segment_select_qwen_unsafe="
           f"{int(os.environ.get('SEGMENT_SELECT_QWEN_UNSAFE', '0') == '1')}")
     print(f"reasoning={int(reasoning)} strict_prompt={int(strict_prompt)} "
           f"dataset={dataset} run_id={run_id} node={node} "
@@ -1251,6 +1314,8 @@ def main():
         for mname in methods:
             kind, scorer = parsed[mname]
             method = make_method(mname, kind, scorer, backend, args)
+            if getattr(method, "query", None) == "auto":
+                method.pool_records = full_pool
             # RECORD-MAJOR: all passes of one question run consecutively, so the
             # arm's keep-last-record selection cache is reused across passes. The
             # selection is deterministic, so this is what makes the multi-pass std

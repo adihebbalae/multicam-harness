@@ -12,6 +12,15 @@
 # Deliberate delta vs source: option_texts' text-cap paragraph names the three
 # encoders' caps without the fork's measured share of MVU-Eval options that
 # overflow the smallest, which is unpublished.
+# statement_texts (the "I." / "(I)" / "(A)" enumerator forms, read by
+# segment_select's _auto rule) additionally ported from Wavy-Hec/MultiCam
+# bench/methods/clip_select.py @ b5f666ca990458059cd072048625ccfe629b2737.
+# Deliberate delta vs source: the fork's ``statements`` query mode (its _stmt
+# arm, query_for's statements branch and the temporal_statements stem parser)
+# is not carried — this port has no _stmt arm, and auto_query calls
+# statement_texts directly. The statement-parser comments state the shapes
+# parsed but omit the fork's per-dataset record counts, token-length medians
+# and record ids, which are unpublished measurements.
 """CLIP-SELECTION harness (D3, the PRIMARY decision): choose WHICH of the K
 independent clips a question actually needs, then spend the whole 64-frame
 budget on the selected clips only. Two selector families, three method arms:
@@ -160,6 +169,72 @@ def option_texts(rec):
     of MVU-Eval options still exceed ViCLIP's 32.
     """
     return [OPT_PREFIX.sub("", str(o)).strip() for o in rec.get("options", [])]
+
+
+# Event-ordering questions enumerate the events as Roman-numbered statements
+# — one per line on EgoExo ("...:\nI. The person ...\nII. ..."; a few records
+# spell the newline as a literal backslash-n), inline on MEVA ("...: I. A
+# person ... II. A vehicle ... Which sequence is correct?") — and their
+# options are permutations of the numerals: content-free as queries, while
+# the whole question rarely fits ViCLIP's 32-token window. The statements
+# themselves do.
+_STATEMENT_RE = re.compile(
+    r"(?:^|\\n|(?<=[\s:.]))\s*(I{1,3}|IV|V|VI{1,3}|IX|X)\.\s+(?=\S)")
+_ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
+# nuScenes labels its events in PARENTHESES, one per line: "(I) ... (II) ..."
+# on some of its event-ordering records and "(A) ... (B) ..." on others
+# (whose options are then "C -> B -> A"). Tried only when the dotted form
+# above finds fewer than two statements, so every MEVA / EgoExo /
+# dotted-nuScenes parse is unchanged — and only at the START OF A LINE: an
+# inline "(A)" is a label inside a sentence ("nearer to camera (A) than to
+# camera (B)"), not an event.
+_STATEMENT_PAREN_RE = re.compile(
+    r"(?:^|\r?\n|\\n)[ \t]*\((I{1,3}|IV|V|VI{1,3}|IX|X|[A-J])\)\s+(?=\S)")
+_LETTERS = list("ABCDEFGHIJ")
+# the closing question MEVA appends after the last statement
+_STATEMENT_TAIL_RE = re.compile(r"\s+(?:What|Which)\b[^.?!]*\?\s*$")
+
+
+def _statement_cuts(q, pattern, labels):
+    """(start, end) of each enumerator of ``pattern`` in ``q``, accepted only
+    in the order of ``labels``."""
+    cuts, expect = [], 0
+    for m in pattern.finditer(q):
+        if expect < len(labels) and m.group(1) == labels[expect]:
+            cuts.append((m.start(), m.end()))
+            expect += 1
+    return cuts
+
+
+def statement_texts(rec):
+    """The enumerated statements of an event-ordering question, in the
+    question's order, enumerator and delimiter stripped; [] when the question
+    holds fewer than two (then it is not an event-ordering question and the
+    caller falls back). Enumerators: "I." (MEVA, EgoExo, nuScenes), else
+    "(I)" or "(A)" (nuScenes).
+
+    Enumerators are accepted only in sequence (I, II, III, ...), so a stray
+    "the man X." inside a statement cannot open a new one.
+    """
+    q = str(rec.get("question") or "")
+    cuts = _statement_cuts(q, _STATEMENT_RE, _ROMAN)
+    if len(cuts) < 2:
+        # Roman first, letters only without it: a stem that lists "(I) (II)"
+        # events AND lettered choices must return the events, never the choices
+        cuts = _statement_cuts(q, _STATEMENT_PAREN_RE, _ROMAN)
+        if len(cuts) < 2:
+            cuts = _statement_cuts(q, _STATEMENT_PAREN_RE, _LETTERS)
+    if len(cuts) < 2:
+        return []
+    texts = []
+    for k, (_, b) in enumerate(cuts):
+        end = cuts[k + 1][0] if k + 1 < len(cuts) else len(q)
+        # a statement runs to the next numeral; on the one-per-line format
+        # cut at the line break so an appended tail never rides along
+        texts.append(re.split(r"\r?\n|\\n", q[b:end])[0].strip())
+    texts[-1] = _STATEMENT_TAIL_RE.sub("", texts[-1]).strip()
+    texts = [t for t in texts if t]
+    return texts if len(texts) >= 2 else []
 
 
 def query_for(rec, mode):
@@ -588,7 +663,8 @@ class ClipScoreSelectMethod(Method):
         if stat not in ("max", "mean"):
             raise ValueError(f"stat must be 'max' or 'mean', got {stat!r}")
         self.stat = stat
-        # "question" (historic) | "options" (the answer-choice-guided arm)
+        # "question" (historic) | "options" (the answer-choice-guided arm) |
+        # "auto" (segment_select only: segment_select.auto_query)
         self.query = query
         # The CLI method string (e.g. clip_select_siglip_top2) is passed in as
         # name so rows/resume keys distinguish scorer variants; the bare
@@ -717,7 +793,8 @@ class FrameSelectMethod(Method):
         super().__init__(backend, nframes=nframes, max_new_tokens=max_new_tokens,
                          temperature=temperature, reasoning=reasoning)
         self.budget = int(budget)
-        # "question" (historic) | "options" (the answer-choice-guided arm)
+        # "question" (historic) | "options" (the answer-choice-guided arm) |
+        # "auto" (segment_select only: segment_select.auto_query)
         self.query = query
         # Per-clip minimum, so a global ranking can never starve a whole camera.
         # The sibling arms get this via allocate_frames(floor=2); 1 is the least

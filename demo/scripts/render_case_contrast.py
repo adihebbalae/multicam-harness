@@ -103,8 +103,8 @@ MOTIVATION = os.path.join(REPO, "docs", "figs", "demo_2026-09-22", "motivation.j
 # "events" names each annotated event (gold order) in one word. A question without an entry
 # falls back to the verbatim text.
 SHORT = {
-    954: {"question": "Which happened first: one person physically interacting with someone, or another person "
-                      "(hat, bag) talking to someone?",
+    954: {"question": "Did the person in the grey coat talk to someone before interacting with people in the "
+                      "courtyard?",
           "options": {"A": "the interaction first", "B": "the talking first", "C": "simultaneous",
                       "D": "cannot be determined"},
           "events": {"E1": "talking", "E2": "interaction"}},

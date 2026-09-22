@@ -43,26 +43,27 @@ card and traces. The caption strip above the stage always names the file on scre
 The first entry in the rail, **Case**, is not one of the five demo questions. It is
 question 954 of the full 1,033-question MEVA pool, the two-slide example from the
 motivation deck: every camera on its own gets it wrong, all four together get it
-right. Selecting it switches the buttons to three:
+right. Selecting it relabels the five buttons:
 
 1. Each camera alone. The 2x2 wall with each camera's four answers stamped on its
    tile, and under it one row per camera: what its annotated event was, the four
    letters it gave when it was the only input (8 evenly spaced frames), and the
-   count. Press 1 again for the deck's figure of the exact 8 frames each camera
-   received.
-2. All four together. The same wall with the multi-camera answer in a banner, and
+   count. A second press pauses and resumes.
+2. How it works, one camera. The deck's figure of the exact 8 frames each camera
+   received, against the annotated event windows.
+3. All four together. The same wall with the multi-camera answer in a banner, and
    under it one row per recorded run on this question: the winning run first
    (SigLIP selection, 96 frames), then every other run in file order, including
-   the two that had frames inside both event windows and were still wrong. Press
-   2 again for the figure of the 96 frames selection sent and where they fall.
-3. Reset.
+   the two that had frames inside both event windows and were still wrong.
+4. How it works, four cameras. The figure of the 96 frames selection sent and
+   where they fall in each clip.
+5. Reset.
 
 Above the case sits **How it works**: one click puts the pipeline figure from the
 deck on the stage, and the rail lists the six stages with the segment count and
 frame budget read from the manifest. The wall clips play about 42 s of footage at
 2x as a 21 s loop; the clip is the raw footage over the events with the recorded
-answers stamped on, not what the model saw. The second press of each step shows
-that.
+answers stamped on, not what the model saw. Buttons 2 and 4 show that.
 
 Every letter, count and caption in case mode is read from `figs_case/case_q954.json`;
 nothing is typed into the page. The record was written by

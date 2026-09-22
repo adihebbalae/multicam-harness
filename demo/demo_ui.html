@@ -120,8 +120,13 @@ button{font:inherit;color:inherit}
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
 .qbtn.on .t{color:var(--fg-2)}
+/* the case-study entry: same row, its id in amber so it reads as a different kind of item */
+.qbtn.case .id{color:var(--amber)}
+.qbtn.case.on .id{color:var(--amber)}
 
 .qdetail{padding:14px var(--gap) 16px;overflow:auto;flex:1 1 auto;min-height:0}
+.qdetail .qtext.full{color:var(--fg-3);font-size:var(--fs-meta);line-height:1.45;margin-top:-6px}
+.qdetail .amber{margin:14px 0 0}
 .qdetail .qtext{font-size:var(--fs-rail);line-height:1.5;margin:0 0 14px;color:var(--fg)}
 .qdetail ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column}
 .qdetail li{
@@ -205,6 +210,25 @@ button{font:inherit;color:inherit}
 .vwrap{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center}
 .vwrap video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
 .vwrap video[hidden]{display:none !important}
+
+/* ---- case strip: the recorded answers under a case wall clip ----
+   One row per camera (step 1) or per run (step 2): name, what it saw, the four
+   letters, the count. Every value is read from case_q<ID>.json. */
+.casebar{flex:0 0 auto;display:flex;flex-direction:column;margin-top:12px;font-size:var(--fs-rail)}
+.casebar[hidden]{display:none !important}
+.casebar .crow{
+  display:grid;grid-template-columns:minmax(140px,max-content) minmax(0,1fr) max-content max-content;
+  gap:0 20px;align-items:baseline;padding:6px 0;border-top:1px solid var(--line);
+}
+.casebar .crow.lead{color:var(--fg)}
+.casebar .crow.lead .cn{color:var(--fg)}
+.casebar .cn{font-weight:650;color:var(--fg-2);white-space:nowrap}
+.casebar .cr{color:var(--fg-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.casebar .cl{font-family:var(--mono);font-weight:650;letter-spacing:.2em;white-space:nowrap}
+.casebar .cv{font-weight:650;white-space:nowrap;font-variant-numeric:tabular-nums}
+.casebar .ok{color:var(--ok)} .casebar .bad{color:var(--bad)}
+.casebar .foot{margin-top:8px}
+.casebar .amber{margin:10px 0 0}
 
 /* ---- selection figure ---- */
 .zoom{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -318,6 +342,7 @@ pre.trace{
 .step.on .n{color:var(--accent-ink)}
 .step:disabled{color:var(--fg-3);border-color:var(--line);cursor:not-allowed}
 .step:disabled .n{color:var(--fg-3)}
+.step[hidden]{display:none !important}    /* case mode uses three of the five */
 .steps .khint{margin-left:auto;font-size:var(--fs-meta);color:var(--fg-3);white-space:nowrap}
 
 /* ------------------------------------------------------------------ *
@@ -375,8 +400,8 @@ pre.trace{
     </div>
 
     <div class="banner" id="banner">
-      <b>Replay of a recorded run</b>
-      <span class="b1">&middot; 2026-09-16 &middot; InternVL3-8B &middot; direct answers</span>
+      <b id="bannerLead">Replay of a recorded run</b>
+      <span class="b1" id="bannerB1">&middot; 2026-09-16 &middot; InternVL3-8B &middot; direct answers</span>
       <span class="b2">&middot; nothing is computed live</span>
     </div>
   </div>
@@ -416,6 +441,7 @@ pre.trace{
         <div class="view" id="viewVideo" hidden>
           <div class="amber" id="videoNote" hidden></div>
           <div class="vwrap" id="vwrap"></div>
+          <div class="casebar" id="caseBar" hidden></div>
         </div>
 
         <div class="view" id="viewSel" hidden>
@@ -440,7 +466,7 @@ pre.trace{
         <button class="step" id="act3" type="button"><span class="n">3</span><span class="lab">Answer</span></button>
         <button class="step" id="act4" type="button"><span class="n">4</span><span class="lab">Reasoning</span></button>
         <button class="step" id="act5" type="button"><span class="n">5</span><span class="lab">Reset</span></button>
-        <span class="khint">keys 1&ndash;5, arrows switch question</span>
+        <span class="khint" id="khint">keys 1&ndash;5, arrows switch question</span>
       </div>
 
     </div>
@@ -481,6 +507,21 @@ pre.trace{
   var PER_CAM = "segments, per camera";
   var GLOBAL_SEL = "segments, global across cameras";
 
+  /* The case study: one question from the whole MEVA pool, not from the demo
+     subset, replayed as "each camera alone" then "all four together". Its
+     assets come from case_q<ID>.json (written by scripts/render_case_contrast.py)
+     and never from the scorer roots above: the case is scorer-independent. */
+  var ROOT_CASE = "figs_case/";
+  var CASE_IDS = [954];
+  /* the pipeline figure from the deck, shown from the "How it works" rail entry */
+  var HOW_FIG = "how_it_works.png";
+  var STEP_LABELS_Q = ["Play streams", "Kept segments", "Answer", "Reasoning", "Reset"];
+  var STEP_LABELS_CASE = ["Each camera alone", "All four together", "Reset"];
+  var STEP_LABELS_HOW = ["Pipeline", "Reset"];
+  var KHINT_Q = "keys 1–5, arrows switch question";
+  var KHINT_CASE = "keys 1–3, arrows switch";
+  var KHINT_HOW = "keys 1–2, arrows switch";
+
   var S = {
     root: ROOT_SIGLIP,
     scorer: "siglip",
@@ -490,6 +531,11 @@ pre.trace{
     reasonV: [],
     globalV: [],
     qi: 0,
+    cases: [],              /* case_q<ID>.json records, in CASE_IDS order        */
+    how: false,             /* the pipeline figure is on disk                    */
+    mode: "q",              /* q | case | how: what the rail has selected        */
+    ci: 0,                  /* the selected case when mode is "case"            */
+    caseStep: 0,            /* the case step on stage (1 or 2), 0 when none      */
     view: "empty",          /* empty | video | sel | ans | reason | err */
     done: {},               /* steps already shown for the current question    */
     vids: {},               /* "root|id" -> {el, err, fallback, url, note}     */
@@ -706,6 +752,10 @@ pre.trace{
   function man(sk) { return S.man[sk || S.scorer] || S.man.siglip; }
   function questions(sk) { var m = man(sk); return (m && m.questions) || []; }
   function Q() { return questions()[S.qi] || null; }
+  function C() { return S.mode === "case" ? (S.cases[S.ci] || null) : null; }
+  function inCase() { return S.mode === "case"; }
+  function inHow() { return S.mode === "how"; }
+  function nHow() { return S.how ? 1 : 0; }          /* rail entries before the cases */
 
   function armOf(q, name) {
     var a = (q && q.arms) || [], i;
@@ -789,25 +839,70 @@ pre.trace{
   /* ------------------------------------------------------------------ *
    * top bar                                                             *
    * ------------------------------------------------------------------ */
+  var BANNER_LEAD_Q = "Replay of a recorded run";
+  var BANNER_B1_Q = "· 2026-09-16 · InternVL3-8B · direct answers";
+  var BANNER_LEAD_CASE = "Replay of recorded runs";
+
   function renderTopBar() {
-    var sw = $("swSiglip"), vw = $("swViclip");
+    var sw = $("swSiglip"), vw = $("swViclip"), c = C(), off = !!c || inHow();
     if (S.man.siglip) sw.textContent = manScorerWord(S.man.siglip, "SigLIP");
     if (S.man.viclip) vw.textContent = manScorerWord(S.man.viclip, "ViCLIP");
 
+    /* the toggle only means something for the manifest questions */
+    var offTitle = c ? "the case study is scorer-independent" : "the pipeline covers both scorers";
+    sw.disabled = off;
+    vw.disabled = off || !S.man.viclip;
+    vw.title = off ? offTitle
+      : (S.man.viclip ? manScorerWord(S.man.viclip, "ViCLIP") + " scorer assets" : "not rendered yet");
+    sw.title = off ? offTitle : "";
+
     var n = $("scorerNow"), leg = manLeg(man());
     n.textContent = "";
-    n.appendChild(el("b", null, manScorerWord(man(), scorerWord(S.scorer))));
-    n.appendChild(el("span", "q", " · " + scorerQuery(leg && leg.method)));
+    if (off) {
+      n.appendChild(el("span", "q", c ? "case study · scorer-independent" : "both scorers"));
+    } else {
+      n.appendChild(el("b", null, manScorerWord(man(), scorerWord(S.scorer))));
+      n.appendChild(el("span", "q", " · " + scorerQuery(leg && leg.method)));
+    }
+
+    /* the banner names the protocol of what is on stage: the case is four
+       passes, read off its own record, not the single-pass line of the demo run */
+    txt($("bannerLead"), c ? BANNER_LEAD_CASE : BANNER_LEAD_Q);
+    txt($("bannerB1"), c ? "· " + (c.protocol || "") : BANNER_B1_Q);
   }
 
   /* ------------------------------------------------------------------ *
    * left rail                                                           *
    * ------------------------------------------------------------------ */
+  /* The rail: the case entries first, then the manifest questions. One list of
+     buttons, so the arrow keys walk both; paintRail() knows where the split is. */
   function buildQuestionList() {
     var list = $("qlist"), qs = questions();
     list.textContent = "";
+    if (S.how) {
+      var hb = el("button", "qbtn case");
+      hb.type = "button";
+      var hh = el("div", "h");
+      hh.appendChild(el("span", "id", "How it works"));
+      hh.appendChild(el("span", "ty", "the pipeline"));
+      hb.appendChild(hh);
+      hb.appendChild(el("span", "t", "Question-guided segment selection, then one answer call"));
+      hb.addEventListener("click", selectHow);
+      list.appendChild(hb);
+    }
+    S.cases.forEach(function (c, i) {
+      var b = el("button", "qbtn case");
+      b.type = "button";
+      var h = el("div", "h");
+      h.appendChild(el("span", "id", "Case"));
+      h.appendChild(el("span", "ty", "one camera vs. four · q" + c.id));
+      b.appendChild(h);
+      b.appendChild(el("span", "t", trunc((c.short && c.short.question) || c.question, 52)));
+      b.addEventListener("click", function () { selectCase(i); });
+      list.appendChild(b);
+    });
     qs.forEach(function (q, i) {
-      var b = el("button", "qbtn" + (i === S.qi ? " on" : ""));
+      var b = el("button", "qbtn");
       b.type = "button";
       var h = el("div", "h");
       h.appendChild(el("span", "id", "q" + q.id));
@@ -817,6 +912,111 @@ pre.trace{
       b.addEventListener("click", function () { selectQuestion(i); });
       list.appendChild(b);
     });
+    paintRail();
+  }
+
+  /* rail order: the pipeline entry (if on disk), the cases, the questions */
+  function paintRail() {
+    var btns = $("qlist").querySelectorAll(".qbtn"), h = nHow(), n = S.cases.length, k, on;
+    for (k = 0; k < btns.length; k++) {
+      if (k < h) on = inHow();
+      else if (k - h < n) on = inCase() && k - h === S.ci;
+      else on = S.mode === "q" && k - h - n === S.qi;
+      btns[k].classList.toggle("on", on);
+    }
+  }
+
+  /* the pipeline, in the words the manifest supports: segment count and frame
+     budget read off the active selection leg, never typed in */
+  function renderHowDetail() {
+    var d = $("qdetail"), leg = manLeg(man()) || {}, q = questions()[0] || {};
+    var cams = q.cameras || [], nseg = cams.length ? cams[0].n_segments : null;
+    d.textContent = "";
+    $("qdetailHead").textContent = "How it works · the harness";
+    d.appendChild(el("p", "qtext",
+      "Nothing here is a new model. A frozen vision-language model answers once, after a " +
+      "retrieval step decides which frames of which cameras it gets to see."));
+    var steps = [
+      "Synchronised camera streams. Every camera of the scene, on a shared clock.",
+      "Temporal segmentation. Each camera is cut into " + (nseg || "equal") + " equal-time segments" +
+        (leg.frames_per_segment ? ", " + leg.frames_per_segment + " frames sampled per segment." : "."),
+      "Query builder. The question text (" + manScorerWord(S.man.siglip, "SigLIP") + ") or the four " +
+        "answer options (" + manScorerWord(S.man.viclip, "ViCLIP") + ") become the retrieval queries.",
+      "Relevance scoring. Every segment is scored against every query with the image-text or " +
+        "video-text scorer; a segment's score is its best match.",
+      "Top-K selection. " + (leg.segments_keep && nseg ? "The best " + leg.segments_keep + " of " + nseg +
+        " segments per camera are kept" : "The best segments per camera are kept") +
+        (leg.budget ? ", thinned to " + leg.budget + " frames in time order with camera labels." : "."),
+      "Frozen VLM. One InternVL3-8B call on those frames only. The letter it returns is the answer."
+    ];
+    var ol = el("ol");
+    steps.forEach(function (s, i) {
+      var li = el("li");
+      li.appendChild(el("span", "ol", String(i + 1)));
+      li.appendChild(el("span", "ot", s));
+      ol.appendChild(li);
+    });
+    d.appendChild(ol);
+    var meta = el("div", "meta");
+    meta.appendChild(el("span", "row", "Baselines on this page: all cameras at the same " +
+      (leg.budget || "") + "-frame budget with no selection, and blind (no video)."));
+    meta.appendChild(el("span", "row", "Case study: each camera alone with 8 frames, then all four with selection."));
+    d.appendChild(meta);
+    d.appendChild(el("div", "amber",
+      "The dashed roadmap on the figure (per-event coverage, VLM-proposed queries, scene graphs) is " +
+      "future work, not part of any number shown here."));
+  }
+
+  /* letters of a run's four passes, one character each ("D. Cannot be
+     determined" in the answers array is "D" in predictions; use predictions) */
+  function letters(preds) {
+    return (preds || []).map(function (p) { return String(p).trim().charAt(0); }).join(" ");
+  }
+  function ofFour(nRight, n) { return nRight + " of " + n; }
+
+  function renderCaseDetail() {
+    var c = C(), d = $("qdetail");
+    d.textContent = "";
+    if (!c) { d.appendChild(el("div", "meta", "No case loaded.")); return; }
+    $("qdetailHead").textContent = "Case study · question " + c.id + " · " +
+      String(c.task_type || "").split("-").pop().toLowerCase();
+    var sh = c.short || {};
+    d.appendChild(el("p", "qtext", sh.question || c.question));
+    if (sh.question && sh.abbreviated) d.appendChild(el("p", "qtext full", "Verbatim: " + c.question));
+
+    /* the four options, abbreviated as on the deck; the gold one tagged */
+    var ol = el("ol"), opts = sh.options || {};
+    (c.options || []).forEach(function (o) {
+      var s = String(o), m = s.match(/^\s*([A-Za-z])[.)]\s*/);
+      var letter = m ? m[1] : s.trim().charAt(0);
+      var body = opts[letter] || (m ? s.slice(m[0].length) : s);
+      var li = el("li", letter === c.gold ? "gold" : "");
+      li.appendChild(el("span", "ol", letter + "."));
+      var t = el("span", "ot", body);
+      if (letter === c.gold) {
+        t.appendChild(document.createTextNode(" "));
+        t.appendChild(el("span", "tag", "gold"));
+      }
+      li.appendChild(t);
+      ol.appendChild(li);
+    });
+    d.appendChild(ol);
+
+    /* the disclosure travels with the case wherever it is shown, above the
+       fold of the rail rather than under it */
+    if (c.disclosure) d.appendChild(el("div", "amber", c.disclosure));
+
+    var cams = (c.cameras || []).map(function (k) { return k.camera; }).join(", ");
+    var meta = el("div", "meta");
+    meta.appendChild(el("span", "row", "Cameras " + cams));
+    var r2 = el("span", "row");
+    r2.appendChild(document.createTextNode("Evidence in "));
+    r2.appendChild(el("span", "ev", (c.requires_cameras || []).join(", ")));
+    r2.appendChild(document.createTextNode(" · gold "));
+    r2.appendChild(el("span", "ev", c.gold));
+    meta.appendChild(r2);
+    if (c.protocol) meta.appendChild(el("span", "row", c.protocol));
+    d.appendChild(meta);
   }
 
   function renderQuestionDetail() {
@@ -872,13 +1072,34 @@ pre.trace{
     });
   }
 
-  function showView(name) {
+  /* step: which stepper button this view stands for. The manifest flow reads it
+     off the view name; the case flow passes it, since its two steps each use
+     the video view and the figure view in turn. */
+  function showView(name, step) {
     Object.keys(VIEWS).forEach(function (k) { $(VIEWS[k]).hidden = (k !== name); });
     S.view = name;
-    var step = STEP_OF[name] || 0;
+    if (step == null) step = STEP_OF[name] || 0;
     if (step) S.done[step] = true;
     paintSteps(step);
     if (name !== "video") pauseAllVideos();
+    if (name !== "video" || !inCase()) $("caseBar").hidden = true;
+  }
+
+  /* the stepper's words and the top bar follow the rail selection */
+  function paintMode() {
+    var labels = inCase() ? STEP_LABELS_CASE : (inHow() ? STEP_LABELS_HOW : STEP_LABELS_Q);
+    [1, 2, 3, 4, 5].forEach(function (n) {
+      var b = $("act" + n), lab = labels[n - 1];
+      b.hidden = !lab;
+      if (lab) txt(b.querySelector(".lab"), lab);
+    });
+    txt($("khint"), inCase() ? KHINT_CASE : (inHow() ? KHINT_HOW : KHINT_Q));
+    renderTopBar();
+  }
+  function hintPlay() {
+    if (inCase()) return "press 1 to see each camera answer on its own";
+    if (inHow()) return "press 1 to show the pipeline";
+    return HINT_PLAY;
   }
 
   function showError(title, detail, srcLabel) {
@@ -897,13 +1118,14 @@ pre.trace{
 
   function resetStage() {
     S.done = {};
+    S.caseStep = 0;
     showView("empty");
     paintSteps(0);
     $("viewEmpty").classList.remove("snapped");
     $("emptySnap").hidden = true;
     $("emptySub").hidden = false;
     $("emptyBig").textContent = S.ready ? "Stage is empty" : "Loading the recorded run…";
-    $("emptySub").textContent = S.ready ? HINT_PLAY : "manifest, walls and reasoning rows are read from disk";
+    $("emptySub").textContent = S.ready ? hintPlay() : "manifest, walls and reasoning rows are read from disk";
     setStatus(S.ready ? "Nothing on stage" : "Loading…", "", false);
     showSnapshot();
   }
@@ -912,20 +1134,31 @@ pre.trace{
      looked up in the directory listing first (no 404 when a set is half
      rendered); a still that lands later is picked up on the next reset. */
   function snapPath(root, id) { return root + "walls/q" + id + "_wall_snapshot.png"; }
+  /* the still for the current rail selection: the case's mid-clip frame, or
+     the question's wall snapshot */
+  function snapFor() {
+    var c = C(), q = Q();
+    if (c) {
+      return { dir: ROOT_CASE, name: caseWallName(c, 1) + "_mid.png", fresh: true,
+               caption: "Idle, the middle frame of the case-1 wall clip, dimmed" };
+    }
+    if (inHow() || !q) return null;
+    return { dir: S.root + "walls/", name: "q" + q.id + "_wall_snapshot.png", fresh: S.root !== ROOT_SIGLIP };
+  }
   function showSnapshot() {
-    var q = Q(), img = $("emptySnap"), view = $("viewEmpty"), seq = ++S.snapSeq;
-    if (!q || !S.ready) return;
-    var root = S.root, url = snapPath(root, q.id), name = "q" + q.id + "_wall_snapshot.png";
-    dirList(root + "walls/", root !== ROOT_SIGLIP).then(function (names) {
+    var s = snapFor(), img = $("emptySnap"), view = $("viewEmpty"), seq = ++S.snapSeq;
+    if (!s || !S.ready) return;
+    var url = s.dir + s.name, name = s.name;
+    dirList(s.dir, s.fresh).then(function (names) {
       if (seq !== S.snapSeq || S.view !== "empty") return;
       if (names && !names[name]) return;          /* not rendered: the plain hint stays */
       img.onload = function () {
         if (seq !== S.snapSeq || S.view !== "empty") return;
         img.hidden = false;
         view.classList.add("snapped");
-        $("emptyBig").textContent = HINT_PLAY;
+        $("emptyBig").textContent = hintPlay();
         $("emptySub").hidden = true;
-        setStatus(IDLE_CAPTION, url, false);
+        setStatus(s.caption || IDLE_CAPTION, url, false);
       };
       img.onerror = function () {
         img.hidden = true;
@@ -939,7 +1172,12 @@ pre.trace{
   /* ------------------------------------------------------------------ *
    * 1. camera wall video                                                *
    * ------------------------------------------------------------------ */
-  function wallPath(root, id) { return root + "walls/q" + id + "_wall.mp4"; }
+  function wallPath(root, id) {
+    if (root === ROOT_CASE) return root + "wall_" + id + ".mp4";   /* id is "case1_q954" */
+    return root + "walls/q" + id + "_wall.mp4";
+  }
+  function caseWallName(c, step) { return "wall_case" + step + "_q" + c.id; }
+  function caseWallId(c, step) { return "case" + step + "_q" + c.id; }
 
   /* the amber line for a clip that had to fall back to the other scorer's wall;
      both scorer words come out of their own manifests, never out of the toggle */
@@ -953,8 +1191,9 @@ pre.trace{
      itself (404, which the browser logs as a console error). Listings are read
      fresh, so walls that land later are picked up on the next press. */
   function resolveWall(root, id) {
-    if (root === ROOT_SIGLIP) {
-      return Promise.resolve({ url: wallPath(ROOT_SIGLIP, id), fallback: false, alt: null });
+    if (root === ROOT_SIGLIP || root === ROOT_CASE) {
+      /* one set, no other scorer's clip to fall back to */
+      return Promise.resolve({ url: wallPath(root, id), fallback: false, alt: null });
     }
     var mine = wallPath(root, id), back = wallPath(ROOT_SIGLIP, id);
     return dirList(root, true).then(function (names) {
@@ -1059,8 +1298,9 @@ pre.trace{
     for (i = 0; i < v.length; i++) { try { v[i].pause(); } catch (e) { /* ignore */ } }
   }
 
-  /* put one prepared clip on the stage */
-  function showWall(rec) {
+  /* put one prepared clip on the stage; caption and step default to the
+     manifest flow's */
+  function showWall(rec, caption, step) {
     var all = $("vwrap").querySelectorAll("video"), i;
     for (i = 0; i < all.length; i++) { all[i].hidden = (all[i] !== rec.el); }
     var note = $("videoNote");
@@ -1068,15 +1308,16 @@ pre.trace{
       note.hidden = false;
       note.textContent = rec.note || fallbackNote(NOTE_NOT_YET);
     } else { note.hidden = true; }
-    showView("video");
+    showView("video", step);
     try { rec.el.currentTime = 0; } catch (e) { /* not seekable yet */ }
     rec.el.play().catch(function () { /* the controls are there if autoplay is blocked */ });
-    setStatus("Four camera streams on a shared clock", rec.url, true);
+    setStatus(caption || "Four camera streams on a shared clock", rec.url, true);
   }
 
   function actVideo() {
     var q = Q();
     if (!q) return;
+    $("caseBar").hidden = true;
     var key = videoKey(S.root, q.id), rec = S.vids[key];
 
     /* a clip that failed, or fell back earlier: drop it so this press loads it
@@ -1100,7 +1341,11 @@ pre.trace{
     }
 
     if (!rec || !rec.obj) setStatus("Loading the camera wall clip…", wallPath(S.root, q.id), false);
-    makeVideo(S.root, q.id).then(function (r) {
+    var root = S.root, qid = q.id;
+    makeVideo(root, qid).then(function (r) {
+      /* the presenter moved to another question, the case, or the other
+         scorer while the clip was loading: it is theirs to press for again */
+      if (S.mode !== "q" || !Q() || Q().id !== qid || S.root !== root) return;
       if (r.err) {
         showError("The camera wall clip could not be loaded.", r.url, r.url);
         return;
@@ -1112,21 +1357,18 @@ pre.trace{
   /* ------------------------------------------------------------------ *
    * 2. what the selector kept                                           *
    * ------------------------------------------------------------------ */
-  function actSelection() {
-    var q = Q();
-    if (!q) return;
-    var url = S.root + "q" + q.id + "_selection.png";
+  /* one still on the zoom box: the selection figure, or a case figure */
+  function showFigure(url, caption, what, step) {
     var img = $("selImg"), box = $("zoomBox"), note = $("selNote");
     box.classList.remove("on");
     note.hidden = true;
     img.onerror = function () {
       S.imgErr[url] = (S.imgErr[url] || 0) + 1;   /* next press asks for it again */
-      showError("The selection figure could not be loaded.", url, url);
+      showError("The " + what + " could not be loaded.", url, url);
     };
     img.onload = function () {
-      showView("sel");
-      setStatus(manScorerWord(man(), scorerWord(S.scorer)) +
-        " timeline, the kept segments and the frames actually sent", url, false);
+      showView("sel", step);
+      setStatus(caption, url, false);
     };
     if (img.getAttribute("data-key") === url && img.complete && img.naturalWidth > 0) {
       img.onload();
@@ -1135,6 +1377,122 @@ pre.trace{
       /* a URL that failed before is re-requested rather than left broken */
       img.setAttribute("src", S.imgErr[url] ? url + "?retry=" + S.imgErr[url] : url);
     }
+  }
+
+  function actSelection() {
+    var q = Q();
+    if (!q) return;
+    showFigure(S.root + "q" + q.id + "_selection.png",
+      manScorerWord(man(), scorerWord(S.scorer)) +
+        " timeline, the kept segments and the frames actually sent",
+      "selection figure");
+  }
+
+  /* ------------------------------------------------------------------ *
+   * the case study: each camera alone, then all four together           *
+   *                                                                     *
+   * Two steps. A first press plays the case wall clip with the recorded *
+   * answers under it; a second press on the same step swaps the clip    *
+   * for the deck's figure of the frames each run received. Every letter *
+   * and count is read from the case record.                             *
+   * ------------------------------------------------------------------ */
+  function nFramesSingle(c) {
+    var s = c.cameras && c.cameras[0] && c.cameras[0].single;
+    return s && s.times_s ? s.times_s.length : null;
+  }
+  function caseRow(name, reading, preds, nRight, lead) {
+    var n = (preds || []).length, ok = n > 0 && nRight === n;
+    var r = el("div", "crow" + (lead ? " lead" : ""));
+    r.appendChild(el("span", "cn", name));
+    r.appendChild(el("span", "cr", reading || ""));
+    r.appendChild(el("span", "cl " + (ok ? "ok" : "bad"), letters(preds)));
+    r.appendChild(el("span", "cv " + (ok ? "ok" : "bad"), (ok ? "✓ " : "✗ ") + ofFour(nRight, n)));
+    return r;
+  }
+  /* an arm that sampled the same frames per camera as the single-camera runs,
+     just from all four at once: the budget-matched pairing to step 1 */
+  function isBudgetMatched(c, arm) {
+    var nf = nFramesSingle(c), t = arm.times_s || {}, ks = Object.keys(t);
+    if (arm.scorer || !nf || !ks.length) return false;
+    return ks.every(function (k) { return (t[k] || []).length === nf; });
+  }
+  function renderCaseBar(c, step) {
+    var bar = $("caseBar"), nf = nFramesSingle(c);
+    bar.textContent = "";
+    if (step === 1) {
+      (c.cameras || []).forEach(function (k) {
+        var s = k.single || {};
+        bar.appendChild(caseRow(k.camera, s.reading_short, s.predictions, s.n_right, false));
+      });
+      if (c.blind) bar.appendChild(caseRow("no video", "", c.blind.answers, c.blind.n_right, false));
+      bar.appendChild(el("div", "foot",
+        "One camera = the " + (nf || "") + " evenly spaced frames the single-camera run received. " +
+        (c.protocol || "")));
+    } else {
+      var arms = c.arms || {}, order = [], k;
+      if (c.case2_arm && arms[c.case2_arm]) order.push(c.case2_arm);
+      for (k in arms) if (Object.prototype.hasOwnProperty.call(arms, k) && k !== c.case2_arm) order.push(k);
+      order.forEach(function (key, i) {
+        var a = arms[key];
+        var reading = isBudgetMatched(c, a)
+          ? "the same " + nf + " frames per camera as step 1, all four at once"
+          : (a.windows_reached != null && a.frames_in_window
+              ? "frames inside " + a.windows_reached + " of " + Object.keys(a.frames_in_window).length + " event windows"
+              : "");
+        bar.appendChild(caseRow(a.label || key, reading, a.predictions, a.n_right, i === 0));
+      });
+      if (c.counter_evidence) bar.appendChild(el("div", "amber", c.counter_evidence));
+    }
+    bar.hidden = false;
+  }
+  function caseClipCaption(c, step) {
+    var nf = nFramesSingle(c), arm = c.arms && c.arms[c.case2_arm];
+    return step === 1
+      ? "Each camera alone, " + (nf ? nf + " frames each, " : "") + (c.protocol || "")
+      : "All four cameras together, " + ((arm && arm.label) || "multi-camera run") + " · " + (c.protocol || "");
+  }
+  function caseFigCaption(c, step) {
+    var nf = nFramesSingle(c);
+    return step === 1
+      ? "Each camera alone: the " + (nf || "") + " frames each camera received, and its four answers"
+      : "All four cameras together: the frames the run received, and where they fall in each clip";
+  }
+  function caseClip(c, step) {
+    var id = caseWallId(c, step), key = videoKey(ROOT_CASE, id), rec = S.vids[key];
+    S.caseStep = step;
+    if (rec && rec.err) { dropVideo(key); rec = null; }
+    if (!rec || !rec.obj) setStatus("Loading the case wall clip…", wallPath(ROOT_CASE, id), false);
+    makeVideo(ROOT_CASE, id).then(function (r) {
+      if (S.mode !== "case" || S.caseStep !== step) return;   /* the presenter moved on */
+      if (r.err) {
+        showError("The case wall clip could not be loaded.", r.url, r.url);
+        return;
+      }
+      renderCaseBar(c, step);
+      showWall(r, caseClipCaption(c, step), step);
+    });
+  }
+  function caseFigure(c, step) {
+    S.caseStep = step;
+    showFigure(ROOT_CASE + "case" + step + "_q" + c.id + ".png", caseFigCaption(c, step), "case figure", step);
+  }
+  function actCase(step) {
+    var c = C();
+    if (!c) return;
+    var same = S.caseStep === step, rec = S.vids[videoKey(ROOT_CASE, caseWallId(c, step))];
+    /* second press: the figure; also the way to the figure when this step's
+       clip is known to be broken, so a bad file never hides the figure */
+    if (same && (S.view === "video" || (S.view === "err" && rec && rec.err))) { caseFigure(c, step); return; }
+    caseClip(c, step);                                                 /* first press, or back to the clip */
+  }
+
+  /* ------------------------------------------------------------------ *
+   * how it works: the pipeline figure                                   *
+   * ------------------------------------------------------------------ */
+  function actHow() {
+    showFigure(ROOT_CASE + HOW_FIG,
+      "How it works: question-guided segment selection, then one answer call on the kept frames",
+      "pipeline figure", 1);
   }
 
   /* ------------------------------------------------------------------ *
@@ -1321,17 +1679,49 @@ pre.trace{
   function selectQuestion(i) {
     var qs = questions();
     if (!qs.length) return;
+    S.mode = "q";
     S.qi = ((i % qs.length) + qs.length) % qs.length;
-    var btns = $("qlist").querySelectorAll(".qbtn"), k;
-    for (k = 0; k < btns.length; k++) btns[k].classList.toggle("on", k === S.qi);
+    paintRail();
+    paintMode();
     renderQuestionDetail();
     resetStage();
+  }
+  function selectCase(i) {
+    var n = S.cases.length;
+    if (!n || !S.ready) return;
+    S.mode = "case";
+    S.ci = ((i % n) + n) % n;
+    paintRail();
+    paintMode();
+    renderCaseDetail();
+    resetStage();
+  }
+  /* the pipeline entry puts its figure straight on the stage: one click */
+  function selectHow() {
+    if (!S.how || !S.ready) return;
+    S.mode = "how";
+    paintRail();
+    paintMode();
+    renderHowDetail();
+    resetStage();
+    actHow();
+  }
+  /* arrows walk the rail as one list: the pipeline, the cases, the questions */
+  function moveSelection(d) {
+    var h = nHow(), n = S.cases.length, m = questions().length, total = h + n + m;
+    if (!total || !S.ready) return;
+    var cur = inHow() ? 0 : (inCase() ? h + S.ci : h + n + S.qi);
+    var nx = (((cur + d) % total) + total) % total;
+    if (nx < h) selectHow();
+    else if (nx - h < n) selectCase(nx - h);
+    else selectQuestion(nx - h - n);
   }
 
   /* ------------------------------------------------------------------ *
    * scorer toggle                                                       *
    * ------------------------------------------------------------------ */
   function setScorer(which) {
+    if (inCase()) return;                       /* the buttons are disabled; keys can still land here */
     if (which === "viclip" && !S.man.viclip) return;
     if (S.scorer === which) return;
     var id = Q() ? Q().id : null;
@@ -1363,10 +1753,33 @@ pre.trace{
     for (k = 0; k < qs.length; k++) order.push(qs[(S.qi + k) % qs.length]);
     function next() {
       if (root !== S.root) return;          /* a scorer switch owns preloading now */
-      if (i >= order.length) return;
+      if (i >= order.length) { preloadCases(); return; }
       makeVideo(root, order[i++].id).then(next, next);
     }
     next();
+  }
+  /* the case clips and figures, after the question walls (a second pass is
+     free: makeVideo caches by key and a loaded image is served from cache) */
+  function preloadCases() {
+    var clips = [], figs = [], i = 0, j = 0;
+    S.cases.forEach(function (c) {
+      [1, 2].forEach(function (s) {
+        clips.push(caseWallId(c, s));
+        figs.push(ROOT_CASE + "case" + s + "_q" + c.id + ".png");
+      });
+    });
+    function nextFig() {
+      if (j >= figs.length) return;
+      var img = new Image();
+      img.onload = nextFig;
+      img.onerror = nextFig;
+      img.src = figs[j++];
+    }
+    function nextClip() {
+      if (i >= clips.length) { nextFig(); return; }
+      makeVideo(ROOT_CASE, clips[i++]).then(nextClip, nextClip);
+    }
+    nextClip();
   }
   /* the selection figures are large; one at a time keeps the browser's per-host
      connections free for the still on the stage and the clip being played */
@@ -1435,12 +1848,19 @@ pre.trace{
   /* ------------------------------------------------------------------ *
    * wiring                                                              *
    * ------------------------------------------------------------------ */
+  /* the five buttons and keys, by what the rail has selected */
+  var ACTS_Q = { 1: actVideo, 2: actSelection, 3: actAnswer, 4: actReason, 5: resetStage };
+  var ACTS_CASE = { 1: function () { actCase(1); }, 2: function () { actCase(2); }, 3: resetStage };
+  var ACTS_HOW = { 1: actHow, 2: resetStage };
+  function step(n) {
+    var f = (inCase() ? ACTS_CASE : (inHow() ? ACTS_HOW : ACTS_Q))[n];
+    if (f) f();
+  }
+
   function wire() {
-    $("act1").addEventListener("click", actVideo);
-    $("act2").addEventListener("click", actSelection);
-    $("act3").addEventListener("click", actAnswer);
-    $("act4").addEventListener("click", actReason);
-    $("act5").addEventListener("click", resetStage);
+    [1, 2, 3, 4, 5].forEach(function (n) {
+      $("act" + n).addEventListener("click", function () { step(n); });
+    });
     $("swSiglip").addEventListener("click", function () { setScorer("siglip"); });
     $("swViclip").addEventListener("click", function () { setScorer("viclip"); });
 
@@ -1453,15 +1873,14 @@ pre.trace{
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       var tag = (e.target && e.target.tagName) || "";
       if (tag === "INPUT" || tag === "TEXTAREA") return;
-      var acts = { "1": actVideo, "2": actSelection, "3": actAnswer, "4": actReason, "5": resetStage };
-      if (acts[e.key]) {
+      if (/^[1-5]$/.test(e.key)) {
         if (!S.ready) return;
         e.preventDefault();
-        acts[e.key]();
+        step(Number(e.key));
       } else if (e.key === "ArrowLeft") {
-        e.preventDefault(); selectQuestion(S.qi - 1);
+        e.preventDefault(); moveSelection(-1);
       } else if (e.key === "ArrowRight") {
-        e.preventDefault(); selectQuestion(S.qi + 1);
+        e.preventDefault(); moveSelection(1);
       }
     });
   }
@@ -1479,7 +1898,8 @@ pre.trace{
 
     /* the ViCLIP set is optional: look for it in a directory listing so that
        its absence never costs a 404 (which the browser logs as an error). */
-    var viclip = dirList("./").then(function (names) {
+    var rootList = dirList("./");          /* one listing, shared by both probes */
+    var viclip = rootList.then(function (names) {
       if (names && !names["figs_demo_viclip"]) return { ok: false, err: "not rendered yet" };
       if (names) {
         return dirList(ROOT_VICLIP).then(function (inner) {
@@ -1491,13 +1911,30 @@ pre.trace{
       return getJSON(ROOT_VICLIP + "manifest.json");
     });
 
+    /* the case set is optional too: probed the same way, then one record per
+       id; a record that is missing or malformed simply leaves no rail entry */
+    var cases = rootList.then(function (names) {
+      if (names && !names["figs_case"]) return { cases: [], how: false };
+      return dirList(ROOT_CASE).then(function (inner) {
+        var ids = CASE_IDS.filter(function (id) { return !inner || inner["case_q" + id + ".json"]; });
+        var how = !inner || !!inner[HOW_FIG];
+        return Promise.all(ids.map(function (id) { return getJSON(ROOT_CASE + "case_q" + id + ".json"); }))
+          .then(function (rs) {
+            return { how: how, cases:
+              rs.filter(function (r) { return r.ok && r.data && r.data.id != null && r.data.cameras; })
+                .map(function (r) { return r.data; }) };
+          });
+      });
+    });
+
     Promise.all([
       getJSON(ROOT_SIGLIP + "manifest.json"),
       getJSONL(REASON_FILE),
       getJSONL(GLOBAL_FILE),
       viclip,
       getJSONL(REASON_FILE_V),
-      getJSONL(GLOBAL_FILE_V)
+      getJSONL(GLOBAL_FILE_V),
+      cases
     ]).then(function (res) {
       var mS = res[0], rr = res[1], gg = res[2], mV = res[3];
       S.reasonV = (res[4] && res[4].ok && res[4].data) ? res[4].data : [];
@@ -1510,8 +1947,8 @@ pre.trace{
           ROOT_SIGLIP + "manifest.json");
         $("qdetail").textContent = "";
         $("qdetail").appendChild(el("div", "meta",
-          "manifest.json did not load. Serve the page from the repo root: " +
-          "python3 -m http.server 8765 --bind 127.0.0.1"));
+          "manifest.json did not load. Serve the page from the demo folder: " +
+          "cd demo && python3 -m http.server 8765 --bind 127.0.0.1"));
         return;
       }
 
@@ -1519,15 +1956,9 @@ pre.trace{
       S.man.viclip = (mV && mV.ok && mV.data && mV.data.questions) ? mV.data : null;
       S.reason = (rr.ok && rr.data) ? rr.data : [];
       S.global = (gg.ok && gg.data) ? gg.data : [];
-
-      var sw = $("swViclip");
-      if (S.man.viclip) {
-        sw.disabled = false;
-        sw.title = manScorerWord(S.man.viclip, "ViCLIP") + " scorer assets";
-      } else {
-        sw.disabled = true;
-        sw.title = "not rendered yet";
-      }
+      /* the optional entries, only once the page has a manifest to stand on */
+      S.cases = (res[6] && Array.isArray(res[6].cases)) ? res[6].cases : [];
+      S.how = !!(res[6] && res[6].how);
 
       if (!S.reason.length && !S.global.length) {
         $("act4").title = "reasoning rows did not load";
@@ -1535,9 +1966,8 @@ pre.trace{
 
       S.ready = true;
       setButtonsEnabled(true);
-      renderTopBar();
       buildQuestionList();
-      selectQuestion(0);
+      selectQuestion(0);            /* paints the stepper and the top bar for the mode */
       preloadWalls();
       preloadImages();
       selfCheck();

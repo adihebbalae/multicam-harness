@@ -1,0 +1,97 @@
+{
+ "note": "Legs run on ece-859525 (distributed-multicam). Same row schema as ../legs/. Pooled accuracy over 4 seeds at T=0.1; seeds agree on ~90% of questions, so treat (id, seed) rows as far from independent.",
+ "source_repo": "adihebbalae/multicam-harness",
+ "media": "MEVA .mp4 siblings on /nas/mars = a 640x358 TRANSCODE of the release .avi, not Hector's full-resolution remux; segment picks differ, so these legs do not pair question-by-question with the mp4sg* legs above",
+ "legs": [
+  {
+   "leg": "crossview_meva1033_subset_internvl_adi_pirule96",
+   "file": "legs/crossview_meva1033_subset_internvl_adi_pirule96.jsonl.gz",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb883214083904dfcc5f19b764cefaf965bcfc5aaa36451a7dfe7cecc",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_viclip_auto",
+   "budget": "96 frames total, 8-s clips, global top-12, floor 0 (PI rule)",
+   "passes": 4,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "complete": true,
+   "accuracy_pct": 44.14,
+   "accuracy_by_task_pct": {
+    "CrossView-MEVA-Event-Ordering": 43.43,
+    "CrossView-MEVA-Spatial": 39.5,
+    "CrossView-MEVA-Temporal": 51.39
+   },
+   "errors": 0,
+   "temperature": [
+    0.1
+   ],
+   "reasoning": "off",
+   "media_remap": "avi->mp4",
+   "media": "MEVA .mp4 siblings on /nas/mars = a 640x358 TRANSCODE of the release .avi, not Hector's full-resolution remux; segment picks differ, so these legs do not pair question-by-question with the mp4sg* legs above",
+   "source_commit": "66b0b29 (branch pi-rule-rebased; functionally identical to PR #18 as merged)",
+   "launcher": "distributed-multicam: PI-rule chain, 2026-09-22"
+  },
+  {
+   "leg": "crossview_meva1033_subset_internvl_adi_sgglobal96",
+   "file": "legs/crossview_meva1033_subset_internvl_adi_sgglobal96.jsonl.gz",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb883214083904dfcc5f19b764cefaf965bcfc5aaa36451a7dfe7cecc",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_siglip",
+   "budget": "96 frames total, seg_select global, seg_floor 1, segments_keep 4",
+   "passes": 4,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "complete": true,
+   "accuracy_pct": 47.14,
+   "accuracy_by_task_pct": {
+    "CrossView-MEVA-Event-Ordering": 42.26,
+    "CrossView-MEVA-Spatial": 43.21,
+    "CrossView-MEVA-Temporal": 57.46
+   },
+   "errors": 0,
+   "temperature": [
+    0.1
+   ],
+   "reasoning": "off",
+   "media_remap": "avi->mp4",
+   "media": "MEVA .mp4 siblings on /nas/mars = a 640x358 TRANSCODE of the release .avi, not Hector's full-resolution remux; segment picks differ, so these legs do not pair question-by-question with the mp4sg* legs above",
+   "source_commit": "b8e9b26 + scorer-on-second-GPU patch (later committed as a2262a6)",
+   "launcher": "distributed-multicam: scripts/run_meva_segglobal.sh, 2026-09-13"
+  },
+  {
+   "leg": "crossview_meva1033_subset_internvl_adi_sgperclip96",
+   "file": "legs/crossview_meva1033_subset_internvl_adi_sgperclip96.jsonl.gz",
+   "dataset": "CrossView-MEVA",
+   "subset": "crossview_meva1033_subset.json",
+   "subset_sha256": "cee491cbb883214083904dfcc5f19b764cefaf965bcfc5aaa36451a7dfe7cecc",
+   "backend": "InternVL3-8B",
+   "method": "segment_select_siglip",
+   "budget": "96 frames total, seg_select per_clip, segments_keep 4",
+   "passes": 4,
+   "questions_expected": 1033,
+   "questions_run": 1033,
+   "rows": 4132,
+   "complete": true,
+   "accuracy_pct": 48.23,
+   "accuracy_by_task_pct": {
+    "CrossView-MEVA-Event-Ordering": 46.21,
+    "CrossView-MEVA-Spatial": 43.5,
+    "CrossView-MEVA-Temporal": 56.89
+   },
+   "errors": 0,
+   "temperature": [
+    0.1
+   ],
+   "reasoning": "off",
+   "media_remap": "avi->mp4",
+   "media": "MEVA .mp4 siblings on /nas/mars = a 640x358 TRANSCODE of the release .avi, not Hector's full-resolution remux; segment picks differ, so these legs do not pair question-by-question with the mp4sg* legs above",
+   "source_commit": "b8e9b26 + scorer-on-second-GPU patch (later committed as a2262a6)",
+   "launcher": "distributed-multicam: scripts/run_meva_segglobal.sh, 2026-09-13"
+  }
+ ]
+}

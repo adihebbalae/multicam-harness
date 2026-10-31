@@ -144,6 +144,7 @@ gitignored.
 | [`docs/evidence_taxonomy.md`](docs/evidence_taxonomy.md) | the five evidence-locality classes (C1–C5) and how each question is assigned one |
 | [`docs/dod_question_bank.md`](docs/dod_question_bank.md) | curated DOD-relevant MEVA questions per class, plus what the footage does **not** support |
 | [`docs/bounds_meva_internvl3.md`](docs/bounds_meva_internvl3.md) | empirical lower/upper bounds on MEVA x InternVL3-8B |
+| [`docs/cvbench_text_only.md`](docs/cvbench_text_only.md) | CVBench without the videos: what Qwen3.8-27B gets right from the question text alone, and how that lines up with with-video scores |
 | [`docs/bench_spec.md`](docs/bench_spec.md), [`docs/PORTING.md`](docs/PORTING.md) | harness contract; the byte-faithfulness rule for ported code |
 
 Rebuild the taxonomy labels and the question bank (annotations only, no GPU):

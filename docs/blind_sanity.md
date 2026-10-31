@@ -1,6 +1,17 @@
 <!-- Ported from Wavy-Hec/CVBench analysis/blind_sanity.md @ 480d6f41cddddc7efea9a09b79134811740ba17a -->
 # Blind (no-video) run sanity check — qwen3vl_blind
 
+> **Update, 2026-10-30.** The input checks below still hold: the blind prompts carry no
+> video tokens and no metadata. The accuracy does not stand as stated. 34 of the 45
+> no-video outputs hit the 2048-token cap without an `<answer>` tag, and the parser used
+> here then took the first stray letter in the trace. Re-scored, the same outputs give
+> 19/45 (42.2%) with today's parser (the tag, else the last "the answer is X" phrase,
+> hedged or not) and 5/45 (11.1%) with the tag alone; the with-video side moves from
+> 28/45 to 23/45 and 19/45. The video gain on this slice is +22.2 points as reported,
+> +8.9 with today's parser or +31.1 with the tag alone, so the slice cannot settle it.
+> Section 4.3 of [`cvbench_text_only.md`](cvbench_text_only.md) has the details; the
+> rest of that document measures text-only accuracy on all 1000 CVBench questions.
+
 Read-only audit of the no-video baseline
 (the fork's stored eval JSON `eval_subset_qwen3vl_novideo.json`, slurm job
 56689, launched by the fork's `analysis/run_eval_novideo.sbatch`). Produced by

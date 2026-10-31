@@ -1,26 +1,26 @@
 {
- "note": "CVBench questions Qwen3.8-27B answers WITHOUT video in >= 3 of 4 seeds in BOTH option orders (O1 as released, O2 reversed). 'thinking' = effort medium, T 0.6; 'no_thinking' = thinking off. both_modes / either_mode combine the two legs; either_mode is the conservative deletion set for video claims. Caution: on yes/no questions the answer is a word, so reversing the options cannot catch a Yes/No habit; the yes/no passes are not above the model's own Yes/No habit (handoff section 3.2). Filter on format to keep only the lettered questions. The O2 order moves the 'All/None of the above' option of 47 questions and the 'Both A and C' option of cvb-89, so those 48 questions are flagged in o2_position_dependent. The no-thinking leg's batched calls replayed one noise stream per batch slot, in both option orders (see the handoff, section 5). Its per-order k values are valid per question, but its both-orders flags are not those of independent orders: the coupling likely inflates its Yes/No count and slightly deflates its lettered count.",
- "source": "MultiCam analysis/records/cvbench_text_answerability_{q38bm,q38nt}.json, 2026-10-30",
+ "note": "CVBench questions Qwen3.8-27B answers WITHOUT video in >= 3 of 4 seeds in BOTH option orders (O1 as released, O2 reversed). 'thinking' = effort medium, T 0.6; 'no_thinking' = thinking off. both_modes / either_mode combine the two legs; either_mode is the conservative deletion set for video claims. Caution: on yes/no questions the answer is a word, so reversing the options cannot catch a Yes/No habit; the yes/no passes are not above the model's own Yes/No habit (docs/cvbench_text_only.md, section 3.2). Filter on format to keep only the lettered questions. The O2 order moves the 'All/None of the above' option of 47 questions and the 'Both A and C' option of cvb-89, so those 48 questions are flagged in o2_position_dependent. The no_thinking columns come from the rerun with per-call seeds (_q38nt2), which replaced the as-run control (_q38nt), whose batched calls shared one noise stream per batch slot.",
+ "source": "MultiCam analysis/records/cvbench_text_answerability_{q38bm,q38nt2}.json (q38bm 2026-10-30, q38nt2 2026-10-31)",
  "counts": {
   "all": {
    "thinking": 343,
-   "no_thinking": 316,
-   "both_modes": 235,
-   "either_mode": 424,
+   "no_thinking": 301,
+   "both_modes": 225,
+   "either_mode": 419,
    "questions": 1000
   },
   "lettered": {
    "thinking": 296,
-   "no_thinking": 251,
-   "both_modes": 209,
-   "either_mode": 338,
+   "no_thinking": 241,
+   "both_modes": 202,
+   "either_mode": 335,
    "questions": 864
   },
   "yes/no": {
    "thinking": 47,
-   "no_thinking": 65,
-   "both_modes": 26,
-   "either_mode": 86,
+   "no_thinking": 60,
+   "both_modes": 23,
+   "either_mode": 84,
    "questions": 136
   }
  },
@@ -84,7 +84,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 2,
     "O2_k": 1,
     "both_orders": false
    },
@@ -119,7 +119,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -135,8 +135,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -153,7 +153,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 2,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -170,7 +170,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -204,7 +204,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -237,7 +237,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 0,
     "O2_k": 2,
     "both_orders": false
    },
@@ -254,7 +254,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -271,8 +271,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 0,
+    "O1_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -288,12 +288,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 2,
     "O2_k": 4,
-    "both_orders": true
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-13": {
@@ -339,8 +339,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 4,
+    "O1_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -357,7 +357,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -373,12 +373,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 3,
     "O2_k": 4,
-    "both_orders": false
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-18": {
@@ -390,8 +390,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 0,
+    "O1_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -407,8 +407,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 0,
+    "O1_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -424,8 +424,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -459,7 +459,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -476,7 +476,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 4,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -493,7 +493,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -509,8 +509,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 1,
+    "O1_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -526,7 +526,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -577,7 +577,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 4,
     "O2_k": 0,
     "both_orders": false
    },
@@ -594,7 +594,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 4,
     "O2_k": 0,
     "both_orders": false
    },
@@ -628,7 +628,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 0,
     "O2_k": 2,
     "both_orders": false
    },
@@ -645,8 +645,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -662,12 +662,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 3,
     "O2_k": 3,
-    "both_orders": false
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-35": {
@@ -730,7 +730,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 2,
     "O2_k": 1,
     "both_orders": false
    },
@@ -747,8 +747,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 0,
+    "O1_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -764,8 +764,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 2,
+    "O1_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -781,8 +781,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 1,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -798,7 +798,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -816,7 +816,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -866,8 +866,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -884,7 +884,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -934,12 +934,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 3,
     "O2_k": 4,
-    "both_orders": false
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-51": {
@@ -951,8 +951,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 4,
+    "O1_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -969,7 +969,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 3,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -1002,11 +1002,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 4,
-    "both_orders": true
+    "O1_k": 2,
+    "O2_k": 0,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -1019,8 +1019,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 1,
+    "O1_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -1036,7 +1036,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 1,
     "both_orders": false
    },
@@ -1087,8 +1087,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -1104,7 +1104,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -1122,7 +1122,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -1139,7 +1139,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -1173,7 +1173,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 3,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -1190,7 +1190,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 3,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -1224,7 +1224,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -1240,8 +1240,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -1292,7 +1292,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -1309,7 +1309,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 4,
+    "O2_k": 3,
     "both_orders": true
    },
    "both_modes": false,
@@ -1342,7 +1342,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -1393,7 +1393,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },
@@ -1410,8 +1410,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 3,
+    "O1_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -1444,7 +1444,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 3,
     "O2_k": 1,
     "both_orders": false
    },
@@ -1495,12 +1495,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 3,
     "O2_k": 3,
-    "both_orders": false
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-84": {
@@ -1546,7 +1546,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -1563,11 +1563,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 2,
     "O2_k": 4,
-    "both_orders": true
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -1580,7 +1580,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 4,
     "O2_k": 1,
     "both_orders": false
    },
@@ -1598,7 +1598,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -1632,11 +1632,11 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 1,
-    "both_orders": false
+    "O2_k": 3,
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-92": {
@@ -1682,7 +1682,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },
@@ -1700,11 +1700,11 @@
    },
    "no_thinking": {
     "O1_k": 3,
-    "O2_k": 3,
-    "both_orders": true
+    "O2_k": 2,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-96": {
@@ -1716,7 +1716,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -1733,8 +1733,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 4,
+    "O1_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -1767,8 +1767,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -1801,8 +1801,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 3,
+    "O1_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -1819,7 +1819,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -1853,7 +1853,7 @@
    },
    "no_thinking": {
     "O1_k": 3,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": true
    },
    "both_modes": true,
@@ -1870,10 +1870,10 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 4,
-    "both_orders": true
+    "O2_k": 2,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -1904,7 +1904,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 3,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -1920,11 +1920,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 2,
     "O2_k": 4,
-    "both_orders": true
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -1937,7 +1937,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -1954,7 +1954,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 3,
     "O2_k": 1,
     "both_orders": false
    },
@@ -1988,8 +1988,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -2057,7 +2057,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 2,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -2091,10 +2091,10 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 3,
-    "both_orders": true
+    "O2_k": 1,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -2124,7 +2124,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -2142,7 +2142,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -2159,7 +2159,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 2,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -2176,7 +2176,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": true
    },
    "both_modes": false,
@@ -2192,7 +2192,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -2227,7 +2227,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -2244,7 +2244,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -2261,7 +2261,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -2277,7 +2277,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -2294,7 +2294,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 4,
     "O2_k": 4,
     "both_orders": true
    },
@@ -2312,7 +2312,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -2329,7 +2329,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 4,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -2345,7 +2345,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 1,
     "both_orders": false
    },
@@ -2362,8 +2362,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -2379,8 +2379,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 3,
+    "O1_k": 3,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -2396,7 +2396,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },
@@ -2413,7 +2413,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },
@@ -2430,11 +2430,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 4,
-    "both_orders": true
+    "O1_k": 2,
+    "O2_k": 1,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -2464,8 +2464,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 2,
+    "O1_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -2499,7 +2499,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -2515,11 +2515,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 4,
     "O2_k": 4,
-    "both_orders": false
+    "both_orders": true
    },
-   "both_modes": false,
+   "both_modes": true,
    "either_mode": true,
    "o2_position_dependent": true
   },
@@ -2549,7 +2549,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 1,
     "both_orders": false
    },
@@ -2635,7 +2635,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -2651,7 +2651,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -2787,8 +2787,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 1,
+    "O1_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -2804,7 +2804,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 4,
     "O2_k": 3,
     "both_orders": true
    },
@@ -2821,7 +2821,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 3,
     "both_orders": true
    },
@@ -2838,8 +2838,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 1,
+    "O1_k": 3,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -2873,7 +2873,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -2975,7 +2975,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -2991,12 +2991,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 4,
     "O2_k": 3,
-    "both_orders": false
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-172": {
@@ -3008,7 +3008,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -3077,7 +3077,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -3111,7 +3111,7 @@
    },
    "no_thinking": {
     "O1_k": 3,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": true
    },
    "both_modes": false,
@@ -3145,7 +3145,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -3178,8 +3178,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 0,
+    "O1_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -3195,7 +3195,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 4,
     "both_orders": false
    },
@@ -3246,7 +3246,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -3263,7 +3263,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -3281,7 +3281,7 @@
    },
    "no_thinking": {
     "O1_k": 3,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -3315,11 +3315,11 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 3,
-    "both_orders": true
+    "O2_k": 2,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-191": {
@@ -3331,7 +3331,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 4,
     "O2_k": 4,
     "both_orders": true
    },
@@ -3348,8 +3348,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 4,
+    "O1_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -3382,7 +3382,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -3400,7 +3400,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": true
    },
    "both_modes": true,
@@ -3434,10 +3434,10 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 1,
-    "both_orders": false
+    "O2_k": 3,
+    "both_orders": true
    },
-   "both_modes": false,
+   "both_modes": true,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -3451,7 +3451,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 3,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -3485,10 +3485,10 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 1,
-    "both_orders": false
+    "O2_k": 3,
+    "both_orders": true
    },
-   "both_modes": false,
+   "both_modes": true,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -3502,7 +3502,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -3535,7 +3535,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 2,
     "O2_k": 1,
     "both_orders": false
    },
@@ -3552,7 +3552,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 1,
     "O2_k": 2,
     "both_orders": false
    },
@@ -3569,8 +3569,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 2,
+    "O1_k": 2,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -3586,8 +3586,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 0,
+    "O1_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -3604,7 +3604,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -3621,7 +3621,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -3637,7 +3637,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 1,
     "both_orders": false
    },
@@ -3655,7 +3655,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 0,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -3688,7 +3688,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 4,
     "both_orders": false
    },
@@ -3723,7 +3723,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -3740,7 +3740,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -3808,7 +3808,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": true
    },
    "both_modes": true,
@@ -3824,7 +3824,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 4,
     "O2_k": 4,
     "both_orders": true
    },
@@ -3841,8 +3841,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 3,
+    "O1_k": 3,
+    "O2_k": 4,
     "both_orders": true
    },
    "both_modes": false,
@@ -3892,7 +3892,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 1,
     "both_orders": false
    },
@@ -3977,8 +3977,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 4,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -3994,12 +3994,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 4,
-    "both_orders": false
+    "O1_k": 3,
+    "O2_k": 3,
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-231": {
@@ -4012,7 +4012,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 3,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -4028,8 +4028,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -4046,7 +4046,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -4062,12 +4062,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 4,
-    "both_orders": true
+    "O1_k": 1,
+    "O2_k": 2,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-235": {
@@ -4097,7 +4097,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -4114,7 +4114,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -4164,7 +4164,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -4215,12 +4215,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 4,
     "O2_k": 4,
-    "both_orders": false
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-244": {
@@ -4232,11 +4232,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 2,
     "O2_k": 4,
-    "both_orders": true
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -4250,7 +4250,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -4266,8 +4266,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 4,
+    "O1_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -4283,12 +4283,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 1,
-    "both_orders": false
+    "O1_k": 3,
+    "O2_k": 3,
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-248": {
@@ -4301,7 +4301,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -4334,11 +4334,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 3,
-    "both_orders": true
+    "O1_k": 4,
+    "O2_k": 2,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": true
   },
@@ -4402,8 +4402,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 1,
+    "O1_k": 2,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -4419,8 +4419,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 3,
+    "O1_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -4453,8 +4453,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 3,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -4505,7 +4505,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -4522,7 +4522,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -4623,7 +4623,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },
@@ -4640,7 +4640,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -4657,7 +4657,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 1,
     "O2_k": 1,
     "both_orders": false
    },
@@ -4691,8 +4691,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 3,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -4709,7 +4709,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -4742,8 +4742,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 4,
+    "O1_k": 2,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -4759,8 +4759,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 4,
+    "O1_k": 1,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -4776,8 +4776,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -4793,8 +4793,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 4,
+    "O1_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -4845,7 +4845,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -4862,7 +4862,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 3,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -4913,7 +4913,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -4963,8 +4963,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -4981,7 +4981,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 4,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -5066,7 +5066,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": true
    },
    "both_modes": true,
@@ -5134,7 +5134,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 3,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -5150,8 +5150,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 0,
+    "O1_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -5167,7 +5167,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 2,
     "both_orders": false
    },
@@ -5185,7 +5185,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 2,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -5201,7 +5201,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 0,
     "both_orders": false
    },
@@ -5218,7 +5218,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 4,
     "O2_k": 4,
     "both_orders": true
    },
@@ -5252,8 +5252,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -5286,7 +5286,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 3,
     "O2_k": 0,
     "both_orders": false
    },
@@ -5303,12 +5303,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 2,
     "O2_k": 4,
-    "both_orders": true
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-308": {
@@ -5388,8 +5388,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 3,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -5439,8 +5439,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 1,
+    "O1_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -5490,12 +5490,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 4,
-    "both_orders": true
+    "O1_k": 3,
+    "O2_k": 2,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-319": {
@@ -5524,7 +5524,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -5541,12 +5541,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 2,
     "O2_k": 4,
-    "both_orders": true
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-322": {
@@ -5575,7 +5575,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -5609,7 +5609,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 4,
     "both_orders": false
    },
@@ -5643,8 +5643,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 4,
+    "O1_k": 3,
+    "O2_k": 3,
     "both_orders": true
    },
    "both_modes": true,
@@ -5678,7 +5678,7 @@
    },
    "no_thinking": {
     "O1_k": 3,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -5695,10 +5695,10 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 4,
-    "both_orders": true
+    "O2_k": 1,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -5711,8 +5711,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -5763,10 +5763,10 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 3,
-    "both_orders": true
+    "O2_k": 2,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -5797,10 +5797,10 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 2,
-    "both_orders": false
+    "O2_k": 3,
+    "both_orders": true
    },
-   "both_modes": false,
+   "both_modes": true,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -5814,11 +5814,11 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 4,
-    "both_orders": true
+    "O2_k": 2,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-338": {
@@ -5831,7 +5831,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -5847,8 +5847,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -5864,7 +5864,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },
@@ -5882,7 +5882,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -5898,7 +5898,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 4,
     "O2_k": 4,
     "both_orders": true
    },
@@ -5915,7 +5915,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -5932,7 +5932,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -6171,7 +6171,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -6188,10 +6188,10 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 3,
-    "both_orders": true
+    "O2_k": 2,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -6221,8 +6221,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 0,
+    "O1_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -6239,7 +6239,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 3,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -6273,11 +6273,11 @@
    },
    "no_thinking": {
     "O1_k": 3,
-    "O2_k": 3,
-    "both_orders": true
+    "O2_k": 2,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-365": {
@@ -6289,7 +6289,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -6324,7 +6324,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 3,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -6358,7 +6358,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -6477,7 +6477,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -6510,7 +6510,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },
@@ -6562,7 +6562,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": true
    },
    "both_modes": false,
@@ -6595,8 +6595,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 0,
+    "O1_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -6612,8 +6612,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -6647,7 +6647,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -6664,7 +6664,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -6732,10 +6732,10 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 3,
-    "both_orders": true
+    "O2_k": 1,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -6749,7 +6749,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -6765,7 +6765,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 0,
     "O2_k": 4,
     "both_orders": false
    },
@@ -6782,7 +6782,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 2,
     "O2_k": 1,
     "both_orders": false
    },
@@ -6800,7 +6800,7 @@
    },
    "no_thinking": {
     "O1_k": 3,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -6816,8 +6816,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -6867,8 +6867,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 3,
+    "O1_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -6901,8 +6901,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 0,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -6952,8 +6952,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 1,
+    "O1_k": 3,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -6986,7 +6986,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -7037,11 +7037,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 4,
-    "both_orders": false
+    "O1_k": 4,
+    "O2_k": 3,
+    "both_orders": true
    },
-   "both_modes": false,
+   "both_modes": true,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -7055,7 +7055,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 4,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -7122,7 +7122,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 2,
     "O2_k": 2,
     "both_orders": false
    },
@@ -7173,7 +7173,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 4,
     "both_orders": false
    },
@@ -7190,8 +7190,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 4,
+    "O1_k": 3,
+    "O2_k": 3,
     "both_orders": true
    },
    "both_modes": true,
@@ -7258,8 +7258,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 0,
+    "O1_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -7275,7 +7275,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -7326,7 +7326,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 2,
     "both_orders": false
    },
@@ -7344,10 +7344,10 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 2,
-    "both_orders": false
+    "O2_k": 4,
+    "both_orders": true
    },
-   "both_modes": false,
+   "both_modes": true,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -7360,8 +7360,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 0,
+    "O1_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -7377,8 +7377,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -7394,7 +7394,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -7412,11 +7412,11 @@
    },
    "no_thinking": {
     "O1_k": 3,
-    "O2_k": 3,
-    "both_orders": true
+    "O2_k": 2,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-432": {
@@ -7428,8 +7428,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 2,
+    "O1_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -7446,7 +7446,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -7480,7 +7480,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -7496,8 +7496,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 3,
+    "O1_k": 3,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -7514,7 +7514,7 @@
    },
    "no_thinking": {
     "O1_k": 3,
-    "O2_k": 4,
+    "O2_k": 3,
     "both_orders": true
    },
    "both_modes": true,
@@ -7530,12 +7530,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 2,
     "O2_k": 3,
-    "both_orders": true
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-439": {
@@ -7581,8 +7581,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 2,
+    "O1_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -7666,8 +7666,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 1,
+    "O1_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -7683,7 +7683,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },
@@ -7718,7 +7718,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -7734,11 +7734,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 2,
     "O2_k": 4,
-    "both_orders": true
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -7751,7 +7751,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -7786,7 +7786,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -7836,12 +7836,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 3,
-    "both_orders": true
+    "O1_k": 2,
+    "O2_k": 1,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-457": {
@@ -7888,7 +7888,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -7905,7 +7905,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -7972,8 +7972,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -8006,8 +8006,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 4,
+    "O1_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -8023,7 +8023,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -8057,11 +8057,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 4,
-    "both_orders": false
+    "O1_k": 4,
+    "O2_k": 3,
+    "both_orders": true
    },
-   "both_modes": false,
+   "both_modes": true,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -8108,7 +8108,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -8125,8 +8125,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 0,
+    "O1_k": 4,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -8142,8 +8142,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 0,
+    "O1_k": 3,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -8176,8 +8176,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -8194,7 +8194,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -8210,12 +8210,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 3,
-    "both_orders": true
+    "O1_k": 3,
+    "O2_k": 1,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-479": {
@@ -8227,7 +8227,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 0,
     "both_orders": false
    },
@@ -8312,7 +8312,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 3,
     "O2_k": 0,
     "both_orders": false
    },
@@ -8329,7 +8329,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 0,
     "O2_k": 3,
     "both_orders": false
    },
@@ -8380,7 +8380,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 4,
     "O2_k": 0,
     "both_orders": false
    },
@@ -8397,12 +8397,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 2,
-    "both_orders": false
+    "O1_k": 3,
+    "O2_k": 3,
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-490": {
@@ -8415,7 +8415,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -8431,8 +8431,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -8448,7 +8448,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -8465,11 +8465,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 4,
-    "both_orders": true
+    "O1_k": 1,
+    "O2_k": 3,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -8482,7 +8482,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -8516,7 +8516,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },
@@ -8533,12 +8533,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 4,
-    "both_orders": true
+    "O1_k": 1,
+    "O2_k": 2,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-498": {
@@ -8602,7 +8602,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -8618,7 +8618,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -8669,12 +8669,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 1,
-    "both_orders": false
+    "O1_k": 3,
+    "O2_k": 3,
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-506": {
@@ -8687,7 +8687,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -8721,10 +8721,10 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 3,
-    "both_orders": true
+    "O2_k": 1,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -8737,8 +8737,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 1,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -8755,7 +8755,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 4,
+    "O2_k": 3,
     "both_orders": true
    },
    "both_modes": false,
@@ -8771,7 +8771,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },
@@ -8805,8 +8805,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 2,
+    "O1_k": 3,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -8822,8 +8822,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 2,
+    "O1_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -8839,8 +8839,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 0,
+    "O1_k": 3,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -8856,8 +8856,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 3,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -8873,8 +8873,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 1,
+    "O1_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -8890,7 +8890,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 4,
     "both_orders": false
    },
@@ -8907,8 +8907,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -8958,11 +8958,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 4,
-    "both_orders": true
+    "O1_k": 3,
+    "O2_k": 1,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -9009,8 +9009,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -9043,7 +9043,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -9060,7 +9060,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 4,
     "both_orders": false
    },
@@ -9095,7 +9095,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": true
    },
    "both_modes": false,
@@ -9111,8 +9111,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -9145,8 +9145,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 3,
+    "O1_k": 2,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -9162,8 +9162,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 0,
+    "O1_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -9179,7 +9179,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 3,
     "both_orders": false
    },
@@ -9197,7 +9197,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -9230,7 +9230,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 3,
     "O2_k": 0,
     "both_orders": false
    },
@@ -9247,7 +9247,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -9265,7 +9265,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 4,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -9282,7 +9282,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -9299,7 +9299,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -9315,12 +9315,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 2,
-    "both_orders": false
+    "O1_k": 3,
+    "O2_k": 3,
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-544": {
@@ -9332,7 +9332,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 3,
     "O2_k": 0,
     "both_orders": false
    },
@@ -9383,8 +9383,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 4,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -9417,7 +9417,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -9451,8 +9451,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 1,
+    "O1_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -9486,7 +9486,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 4,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -9520,7 +9520,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -9570,8 +9570,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -9588,7 +9588,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 3,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -9639,7 +9639,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -9673,7 +9673,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -9690,7 +9690,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -9706,8 +9706,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 1,
+    "O1_k": 2,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -9740,7 +9740,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -9757,7 +9757,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 2,
     "O2_k": 1,
     "both_orders": false
    },
@@ -9774,7 +9774,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 3,
     "O2_k": 0,
     "both_orders": false
    },
@@ -9791,7 +9791,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -9808,7 +9808,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -9842,8 +9842,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 1,
+    "O1_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -9877,7 +9877,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -9944,7 +9944,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 1,
     "O2_k": 3,
     "both_orders": false
    },
@@ -9961,8 +9961,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 1,
+    "O1_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -9995,7 +9995,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -10012,8 +10012,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -10046,12 +10046,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 2,
     "O2_k": 4,
-    "both_orders": true
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-587": {
@@ -10080,8 +10080,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 4,
+    "O1_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -10098,10 +10098,10 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 0,
-    "both_orders": false
+    "O2_k": 4,
+    "both_orders": true
    },
-   "both_modes": false,
+   "both_modes": true,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -10114,8 +10114,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 2,
+    "O1_k": 0,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -10131,8 +10131,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -10166,11 +10166,11 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 2,
-    "both_orders": false
+    "O2_k": 4,
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-594": {
@@ -10182,8 +10182,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 2,
+    "O1_k": 2,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -10200,7 +10200,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 4,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -10233,8 +10233,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -10250,7 +10250,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 3,
     "O2_k": 0,
     "both_orders": false
    },
@@ -10268,7 +10268,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -10284,8 +10284,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 1,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -10301,8 +10301,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 4,
+    "O1_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -10318,8 +10318,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -10335,7 +10335,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 1,
     "O2_k": 1,
     "both_orders": false
    },
@@ -10386,7 +10386,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -10403,8 +10403,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -10420,8 +10420,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -10454,8 +10454,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 1,
+    "O1_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -10471,8 +10471,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 0,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -10488,8 +10488,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -10505,11 +10505,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 1,
     "O2_k": 3,
-    "both_orders": true
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -10523,7 +10523,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 3,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -10557,7 +10557,7 @@
    },
    "no_thinking": {
     "O1_k": 3,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -10590,8 +10590,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 0,
+    "O1_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -10607,7 +10607,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 1,
     "both_orders": false
    },
@@ -10624,11 +10624,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 0,
     "O2_k": 4,
-    "both_orders": true
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -10642,10 +10642,10 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 4,
-    "both_orders": true
+    "O2_k": 1,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -10658,7 +10658,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 3,
     "O2_k": 2,
     "both_orders": false
    },
@@ -10710,7 +10710,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -10760,8 +10760,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -10777,12 +10777,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 3,
     "O2_k": 3,
-    "both_orders": false
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-630": {
@@ -10828,8 +10828,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -10846,7 +10846,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -10880,7 +10880,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -10913,7 +10913,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -10931,7 +10931,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -10964,8 +10964,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 0,
+    "O1_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -10981,8 +10981,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 3,
+    "O1_k": 2,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -11016,7 +11016,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -11049,7 +11049,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 4,
     "O2_k": 1,
     "both_orders": false
    },
@@ -11067,7 +11067,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": true
    },
    "both_modes": true,
@@ -11135,7 +11135,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -11152,7 +11152,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -11271,7 +11271,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -11287,7 +11287,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 2,
     "O2_k": 3,
     "both_orders": false
    },
@@ -11321,11 +11321,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 3,
-    "both_orders": true
+    "O1_k": 2,
+    "O2_k": 1,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -11338,7 +11338,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 4,
     "both_orders": false
    },
@@ -11355,7 +11355,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 1,
     "both_orders": false
    },
@@ -11406,8 +11406,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 3,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -11440,8 +11440,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -11474,8 +11474,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 3,
+    "O1_k": 1,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -11491,8 +11491,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 3,
+    "O1_k": 3,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -11509,7 +11509,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -11542,8 +11542,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 1,
+    "O1_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -11559,8 +11559,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -11577,7 +11577,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -11627,8 +11627,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -11695,8 +11695,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 3,
+    "O1_k": 0,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -11712,8 +11712,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -11729,8 +11729,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 4,
+    "O1_k": 1,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -11747,7 +11747,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 2,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -11797,8 +11797,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -11814,8 +11814,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 3,
+    "O1_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -11848,7 +11848,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 2,
     "both_orders": false
    },
@@ -11865,8 +11865,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 2,
+    "O1_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -11899,7 +11899,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -11933,7 +11933,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 2,
     "O2_k": 4,
     "both_orders": false
    },
@@ -11951,7 +11951,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -12001,7 +12001,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -12052,8 +12052,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 1,
+    "O1_k": 3,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -12086,8 +12086,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 3,
+    "O1_k": 4,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -12120,8 +12120,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 1,
+    "O1_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -12137,8 +12137,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -12155,7 +12155,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 4,
+    "O2_k": 3,
     "both_orders": true
    },
    "both_modes": false,
@@ -12171,7 +12171,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 1,
     "O2_k": 2,
     "both_orders": false
    },
@@ -12189,7 +12189,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 3,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -12206,7 +12206,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -12223,7 +12223,7 @@
    },
    "no_thinking": {
     "O1_k": 3,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -12239,8 +12239,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 4,
+    "O1_k": 3,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -12274,7 +12274,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -12291,7 +12291,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 0,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -12307,7 +12307,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -12324,7 +12324,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -12341,11 +12341,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 0,
-    "both_orders": false
+    "O1_k": 3,
+    "O2_k": 3,
+    "both_orders": true
    },
-   "both_modes": false,
+   "both_modes": true,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -12358,7 +12358,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 1,
     "both_orders": false
    },
@@ -12375,7 +12375,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },
@@ -12392,8 +12392,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -12443,12 +12443,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 4,
-    "both_orders": true
+    "O1_k": 2,
+    "O2_k": 3,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-728": {
@@ -12511,8 +12511,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 0,
+    "O1_k": 3,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -12528,8 +12528,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 1,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -12545,8 +12545,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 3,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -12580,7 +12580,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -12597,7 +12597,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -12613,8 +12613,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -12665,7 +12665,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -12749,8 +12749,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 1,
+    "O1_k": 2,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -12766,8 +12766,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 4,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -12801,7 +12801,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -12817,7 +12817,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 1,
     "both_orders": false
    },
@@ -12852,7 +12852,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -12886,7 +12886,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -12919,8 +12919,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -12953,8 +12953,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 1,
+    "O1_k": 3,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -12970,7 +12970,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -13004,8 +13004,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -13022,7 +13022,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -13072,7 +13072,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 3,
     "O2_k": 0,
     "both_orders": false
    },
@@ -13089,8 +13089,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 2,
+    "O1_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -13106,12 +13106,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 4,
-    "both_orders": true
+    "O1_k": 1,
+    "O2_k": 3,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-767": {
@@ -13191,8 +13191,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 1,
+    "O1_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -13243,7 +13243,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 2,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -13310,12 +13310,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 3,
-    "both_orders": true
+    "O1_k": 2,
+    "O2_k": 2,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-779": {
@@ -13361,8 +13361,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 0,
+    "O1_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -13379,7 +13379,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 1,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -13395,8 +13395,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 2,
+    "O1_k": 4,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -13429,7 +13429,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 1,
     "both_orders": false
    },
@@ -13463,8 +13463,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -13480,7 +13480,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },
@@ -13514,7 +13514,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 2,
     "both_orders": false
    },
@@ -13549,7 +13549,7 @@
    },
    "no_thinking": {
     "O1_k": 3,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -13599,7 +13599,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 1,
     "O2_k": 4,
     "both_orders": false
    },
@@ -13617,7 +13617,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -13634,7 +13634,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -13651,7 +13651,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 4,
+    "O2_k": 3,
     "both_orders": true
    },
    "both_modes": true,
@@ -13702,7 +13702,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -13719,7 +13719,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": true
    },
    "both_modes": true,
@@ -13786,12 +13786,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 2,
     "O2_k": 4,
-    "both_orders": true
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-807": {
@@ -13803,7 +13803,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 3,
     "O2_k": 0,
     "both_orders": false
    },
@@ -13837,8 +13837,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 1,
+    "O1_k": 4,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -13855,7 +13855,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 0,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -13905,7 +13905,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 4,
     "both_orders": false
    },
@@ -13956,7 +13956,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },
@@ -13973,7 +13973,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },
@@ -14110,7 +14110,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -14245,8 +14245,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 1,
+    "O1_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -14262,7 +14262,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -14296,8 +14296,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -14398,8 +14398,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 3,
+    "O1_k": 4,
+    "O2_k": 4,
     "both_orders": true
    },
    "both_modes": true,
@@ -14416,7 +14416,7 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -14466,8 +14466,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 0,
+    "O1_k": 2,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -14568,8 +14568,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 4,
+    "O1_k": 4,
+    "O2_k": 3,
     "both_orders": true
    },
    "both_modes": false,
@@ -14671,7 +14671,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -14705,7 +14705,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 3,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -14722,7 +14722,7 @@
    },
    "no_thinking": {
     "O1_k": 1,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -14772,7 +14772,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -14806,7 +14806,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },
@@ -14823,8 +14823,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -14840,8 +14840,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 4,
+    "O1_k": 4,
+    "O2_k": 3,
     "both_orders": true
    },
    "both_modes": true,
@@ -14925,8 +14925,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 3,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -14942,8 +14942,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 3,
+    "O1_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -14960,7 +14960,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -14993,7 +14993,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -15010,7 +15010,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -15044,7 +15044,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 3,
     "O2_k": 2,
     "both_orders": false
    },
@@ -15078,8 +15078,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 4,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -15129,11 +15129,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 2,
-    "both_orders": false
+    "O1_k": 3,
+    "O2_k": 3,
+    "both_orders": true
    },
-   "both_modes": false,
+   "both_modes": true,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -15147,7 +15147,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -15163,7 +15163,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 2,
     "both_orders": false
    },
@@ -15181,7 +15181,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 2,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -15249,7 +15249,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 4,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -15265,12 +15265,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 2,
+    "O1_k": 3,
     "O2_k": 4,
-    "both_orders": false
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-894": {
@@ -15283,7 +15283,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -15299,12 +15299,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 4,
-    "both_orders": true
+    "O1_k": 4,
+    "O2_k": 2,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-896": {
@@ -15350,8 +15350,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 2,
+    "O1_k": 3,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -15367,8 +15367,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -15384,12 +15384,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 3,
-    "both_orders": true
+    "O1_k": 4,
+    "O2_k": 2,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-901": {
@@ -15470,7 +15470,7 @@
    },
    "no_thinking": {
     "O1_k": 3,
-    "O2_k": 3,
+    "O2_k": 4,
     "both_orders": true
    },
    "both_modes": false,
@@ -15503,8 +15503,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 4,
+    "O1_k": 4,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -15588,8 +15588,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 0,
+    "O1_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -15605,12 +15605,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 3,
-    "both_orders": true
+    "O1_k": 1,
+    "O2_k": 1,
+    "both_orders": false
    },
    "both_modes": false,
-   "either_mode": true,
+   "either_mode": false,
    "o2_position_dependent": false
   },
   "cvb-914": {
@@ -15622,7 +15622,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -15673,8 +15673,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -15707,8 +15707,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 1,
+    "O1_k": 1,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -15758,8 +15758,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 4,
+    "O1_k": 3,
+    "O2_k": 3,
     "both_orders": true
    },
    "both_modes": true,
@@ -15792,7 +15792,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -15826,7 +15826,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 1,
     "O2_k": 1,
     "both_orders": false
    },
@@ -15843,8 +15843,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -15912,7 +15912,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 3,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -15928,12 +15928,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 2,
-    "both_orders": false
+    "O1_k": 3,
+    "O2_k": 3,
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-933": {
@@ -15962,8 +15962,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 0,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -16013,8 +16013,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 3,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -16030,11 +16030,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 3,
-    "both_orders": true
+    "O1_k": 3,
+    "O2_k": 2,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -16064,7 +16064,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 3,
+    "O1_k": 4,
     "O2_k": 2,
     "both_orders": false
    },
@@ -16098,8 +16098,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 3,
+    "O1_k": 2,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -16132,7 +16132,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -16149,8 +16149,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 4,
+    "O1_k": 0,
+    "O2_k": 3,
     "both_orders": false
    },
    "both_modes": false,
@@ -16200,11 +16200,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 3,
     "O2_k": 4,
-    "both_orders": false
+    "both_orders": true
    },
-   "both_modes": false,
+   "both_modes": true,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -16234,7 +16234,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -16251,8 +16251,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 3,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -16404,11 +16404,11 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 2,
-    "O2_k": 2,
-    "both_orders": false
+    "O1_k": 3,
+    "O2_k": 3,
+    "both_orders": true
    },
-   "both_modes": false,
+   "both_modes": true,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -16455,8 +16455,8 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 3,
-    "O2_k": 3,
+    "O1_k": 4,
+    "O2_k": 4,
     "both_orders": true
    },
    "both_modes": true,
@@ -16473,7 +16473,7 @@
    },
    "no_thinking": {
     "O1_k": 2,
-    "O2_k": 0,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -16489,8 +16489,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 4,
     "both_orders": false
    },
    "both_modes": false,
@@ -16523,7 +16523,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
+    "O1_k": 3,
     "O2_k": 4,
     "both_orders": true
    },
@@ -16557,7 +16557,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -16574,7 +16574,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 0,
     "both_orders": false
    },
@@ -16591,8 +16591,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
-    "O2_k": 2,
+    "O1_k": 1,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -16609,10 +16609,10 @@
    },
    "no_thinking": {
     "O1_k": 4,
-    "O2_k": 4,
-    "both_orders": true
+    "O2_k": 1,
+    "both_orders": false
    },
-   "both_modes": true,
+   "both_modes": false,
    "either_mode": true,
    "o2_position_dependent": false
   },
@@ -16829,12 +16829,12 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 1,
-    "both_orders": false
+    "O1_k": 3,
+    "O2_k": 3,
+    "both_orders": true
    },
    "both_modes": false,
-   "either_mode": false,
+   "either_mode": true,
    "o2_position_dependent": false
   },
   "cvb-986": {
@@ -16846,7 +16846,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 0,
+    "O1_k": 1,
     "O2_k": 2,
     "both_orders": false
    },
@@ -16863,8 +16863,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
-    "O2_k": 1,
+    "O1_k": 2,
+    "O2_k": 0,
     "both_orders": false
    },
    "both_modes": false,
@@ -16897,7 +16897,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 0,
     "both_orders": false
    },
@@ -16914,8 +16914,8 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 4,
-    "O2_k": 0,
+    "O1_k": 1,
+    "O2_k": 2,
     "both_orders": false
    },
    "both_modes": false,
@@ -16948,7 +16948,7 @@
     "both_orders": true
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 0,
     "O2_k": 1,
     "both_orders": false
    },
@@ -16983,7 +16983,7 @@
    },
    "no_thinking": {
     "O1_k": 0,
-    "O2_k": 2,
+    "O2_k": 1,
     "both_orders": false
    },
    "both_modes": false,
@@ -17067,7 +17067,7 @@
     "both_orders": false
    },
    "no_thinking": {
-    "O1_k": 1,
+    "O1_k": 2,
     "O2_k": 0,
     "both_orders": false
    },

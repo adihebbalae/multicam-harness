@@ -1,7 +1,7 @@
 {
  "note": "One entry per (dataset, backend, method, budget) leg; `file` is the merged row file, `complete` says whether every question ran. Legs with media_ok=false are not shipped; see `excluded`.",
  "source_repo": "Wavy-Hec/MultiCam",
- "source_commit": "f4ba98dfe41b553cd700154fbe6c2ef680a2311d",
+ "source_commit": "ee7c2b028dfed2a4861ed2a2a685c1adc62f0067",
  "legs": [
   {
    "dataset": "MVU-Eval",
@@ -3926,7 +3926,7 @@
    "dataset": "CVBench",
    "backend": "Qwen3.8-27B",
    "method": "blind",
-   "budget": "no images, thinking off, direct-answer prompt",
+   "budget": "no images, thinking off, direct-answer prompt, per-call seeds",
    "subset": "cvbench_full_runnable_subset.json",
    "subset_sha256": "4bde34ea0ef752aa",
    "subset_questions": 1000,
@@ -3935,9 +3935,9 @@
    "rows": 4000,
    "passes": 4,
    "complete": true,
-   "accuracy_pct": 48.55,
+   "accuracy_pct": 48.1,
    "errors": 0,
-   "glob": "bench_cvbench_full_runnable_subset_cvbench_q38nt_shard*.jsonl",
+   "glob": "bench_cvbench_full_runnable_subset_cvbench_q38nt2_shard*.jsonl",
    "rescored": false,
    "protocol": {
     "temperature": [
@@ -3951,8 +3951,8 @@
    },
    "media_ok": true,
    "media_mixed": false,
-   "file": "legs/cvbench_full_runnable_subset_cvbench_q38nt.jsonl.gz",
-   "leg": "cvbench_full_runnable_subset_cvbench_q38nt",
+   "file": "legs/cvbench_full_runnable_subset_cvbench_q38nt2.jsonl.gz",
+   "leg": "cvbench_full_runnable_subset_cvbench_q38nt2",
    "shards_source": "raw"
   },
   {
@@ -3992,7 +3992,7 @@
    "dataset": "CVBench",
    "backend": "Qwen3.8-27B",
    "method": "blind",
-   "budget": "no images, thinking off, direct-answer prompt, options reversed",
+   "budget": "no images, thinking off, direct-answer prompt, per-call seeds, options reversed",
    "subset": "cvbench_full_runnable_subset_o2.json",
    "subset_sha256": "58d29ecd70b70437",
    "subset_questions": 1000,
@@ -4001,9 +4001,9 @@
    "rows": 4000,
    "passes": 4,
    "complete": true,
-   "accuracy_pct": 49.2,
+   "accuracy_pct": 48.98,
    "errors": 0,
-   "glob": "bench_cvbench_full_runnable_subset_o2_cvbench_q38nt_shard*.jsonl",
+   "glob": "bench_cvbench_full_runnable_subset_o2_cvbench_q38nt2_shard*.jsonl",
    "rescored": false,
    "protocol": {
     "temperature": [
@@ -4017,8 +4017,8 @@
    },
    "media_ok": true,
    "media_mixed": false,
-   "file": "legs/cvbench_full_runnable_subset_o2_cvbench_q38nt.jsonl.gz",
-   "leg": "cvbench_full_runnable_subset_o2_cvbench_q38nt",
+   "file": "legs/cvbench_full_runnable_subset_o2_cvbench_q38nt2.jsonl.gz",
+   "leg": "cvbench_full_runnable_subset_o2_cvbench_q38nt2",
    "shards_source": "raw"
   }
  ],

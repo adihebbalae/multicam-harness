@@ -2,28 +2,30 @@
 
 The analysis outputs behind [`docs/cvbench_text_only.md`](../../docs/cvbench_text_only.md):
 Qwen3.8-27B answering CVBench's 1000 questions with no video, as a thinking leg (`_q38bm`, effort
-medium) and a no-thinking control (`_q38nt`), each in both option orders (O1 = released, O2 =
+medium) and a no-thinking control (`_q38nt2`), each in both option orders (O1 = released, O2 =
 reversed). Section numbers below are the write-up's. The rows are in [`../legs/`](../legs/)
-(`cvbench_full_runnable_subset{,_o2}_cvbench_{q38bm,q38nt}.jsonl.gz`), the question records in
+(`cvbench_full_runnable_subset{,_o2}_cvbench_{q38bm,q38nt2}.jsonl.gz`), the question records in
 [`../../data/subsets/`](../../data/subsets/) (`cvbench_full_runnable_subset.json` for O1,
 `cvbench_full_runnable_subset_o2.json` for O2).
 
 | file | holds |
 |---|---|
 | [`cvbench_text_answerability_q38bm.json`](cvbench_text_answerability_q38bm.json) | the analysis of the thinking leg: each order's tables, the both-orders label and its nulls, the with-video cross-tab, the 45-question slice and every question's label |
-| [`cvbench_text_answerability_q38nt.json`](cvbench_text_answerability_q38nt.json) | the same for the no-thinking control |
+| [`cvbench_text_answerability_q38nt2.json`](cvbench_text_answerability_q38nt2.json) | the same for the no-thinking control |
 | [`text_answerable_ids.json`](text_answerable_ids.json) | all 1000 questions with both legs' seeds right per order and the text-answerable flags (section 3.2) |
 | [`fig_cvbench_data.json`](fig_cvbench_data.json) | every number plotted in the 12 figures (section 2) |
 
 The two analysis JSONs were written by `analysis/cvbench_text_answerability.py` and
-`fig_cvbench_data.json` by `analysis/make_cvbench_text_figs.py`, both at Wavy-Hec/MultiCam commit
-`6c377c0`. `text_answerable_ids.json` is built from the two analysis JSONs (each question's task,
-format and k values, and the flags derived from them) and from the option texts of the two subsets
-in `data/subsets/` (the `o2_position_dependent` flags); no script in either repository writes it.
+`fig_cvbench_data.json` by `analysis/make_cvbench_text_figs.py`, both as of Wavy-Hec/MultiCam commit
+`6c377c0` (neither script has changed since): the thinking leg's JSON on 2026-10-30, the control's
+JSON and the figure data on 2026-10-31, from the rerun. `text_answerable_ids.json` is built from
+the two analysis JSONs (each question's task, format and k values, and the flags derived from them)
+and from the option texts of the two subsets in `data/subsets/` (the `o2_position_dependent`
+flags); no script in either repository writes it.
 
 ## The two analysis JSONs
 
-`cvbench_text_answerability_q38bm.json` (thinking) and `cvbench_text_answerability_q38nt.json` (no
+`cvbench_text_answerability_q38bm.json` (thinking) and `cvbench_text_answerability_q38nt2.json` (no
 thinking) have the same layout. Percentages are rounded half-up from counts, which sit beside them
 (`n_correct`, `n_rows`). Top-level keys:
 
@@ -74,8 +76,9 @@ The fields a reader needs most:
 - `rows`: the raw result shards in MultiCam's `bench/results/` (result rows are not in git). The
   files in `../legs/` are those shards merged, one per leg and order, with the export's `leg` and
   `source_commit` fields added, so their sha256 differ from the ones listed here. `source_commit` is
-  the MultiCam commit the export was made from (`f4ba98d`, which registers these legs for the
-  export), not the commit that ran the legs (`a477d80`).
+  the MultiCam commit the export was made from, not the commit that ran the legs: `f4ba98d` for the
+  thinking leg (run at `a477d80`) and `ee7c2b0` for the control (run at `f4ba98d`, which carries
+  `6c377c0`'s per-call seeds), each the commit that registers the leg for the export.
 - `sighted`, `slices`: the Era-1 with-video rows and the 45-question slice file, local copies in
   MultiCam's working tree that are not in git. Their paths (and the matching `argv` values) begin
   with `scratchpad/` and `docs/`, untracked folders of that working tree: they do not point into
@@ -89,7 +92,7 @@ The per-question list of section 3.2, for use as a deletion set. Top-level keys:
 
 | key | holds |
 |---|---|
-| `note` | what the file holds, with its caveats; its "handoff" is the write-up, which keeps the same section numbers |
+| `note` | what the file holds, with its caveats; it cites the write-up by section number |
 | `source` | the two analysis JSONs behind its k values and flags, named by their path in MultiCam's working tree (an output directory, not in git); this folder holds the same files |
 | `counts` | for `all` (1000 questions), `lettered` (864) and `yes/no` (136): `thinking`, `no_thinking`, `both_modes`, `either_mode` and `questions` |
 | `o2_position_dependent` | the ids of the 48 questions flagged below |
@@ -102,15 +105,18 @@ Every entry of `questions` has these fields:
 | `task` | the CVBench task type (15 types) |
 | `format` | `lettered` (options A–D, or A–B) or `yes/no` |
 | `thinking`, `no_thinking` | one object per leg: `O1_k` and `O2_k`, the seeds right (0 to 4 of 4) in each option order, and `both_orders`, true when both are 3 or more (text-answerable in both orders) |
-| `both_modes` | `both_orders` is true in both legs (235 questions) |
-| `either_mode` | `both_orders` is true in at least one leg (424 questions): the conservative deletion set for video claims |
+| `both_modes` | `both_orders` is true in both legs (225 questions) |
+| `either_mode` | `both_orders` is true in at least one leg (419 questions): the conservative deletion set for video claims |
 | `o2_position_dependent` | true for the 48 questions whose O2 order changes an option's meaning (section 7): 47 lettered questions whose "All of the above", "None of the above" or "None of above" option moves from D in O1 to A in O2, and `cvb-89`, whose gold "Both A and C." lands at A |
 
-Filter on `format` to keep the lettered questions (338 in `either_mode`): on a Yes/No question the
+Filter on `format` to keep the lettered questions (335 in `either_mode`): on a Yes/No question the
 answer is a word, so reversing the options cannot catch a Yes/No habit, and the Yes/No passes are
-not above the model's own habit (section 3.2). The no-thinking leg's option orders are coupled
-(section 5, Seeds): its per-order `O1_k` and `O2_k` are valid per question, but its `both_orders`
-flags are not those of independent orders.
+not above the model's own habit (section 3.2). The no-thinking columns come from the rerun
+(`_q38nt2`), whose generate calls are each seeded by a hash of their prompts and pass labels, so
+its two orders are independent draws. As run, every batched call of both legs was seeded with
+pass 1's seed, which coupled the control's answers across questions and across the two orders
+(section 5, Seeds); the as-run control (`_q38nt`) is not shipped here. The thinking leg was not
+rerun and shows no detectable coupling.
 
 ## `fig_cvbench_data.json`
 

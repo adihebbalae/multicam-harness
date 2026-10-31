@@ -1,22 +1,29 @@
-<!-- Source: Wavy-Hec/MultiCam, code as run a477d80, review fixes 6c377c0; written 2026-10-30 -->
+<!-- Source: Wavy-Hec/MultiCam, code as run a477d80, review fixes 6c377c0, thinking-off control rerun at f4ba98d on 2026-10-31; written 2026-10-30, revised 2026-10-31 -->
 # CVBench: can the questions be answered without the videos?
 
 All four legs are complete: thinking and no thinking, each 1000 questions × 4 seeds × 2 option
-orders (16,000 rows, 0 errors, 0 unparsed answers). Every number below, apart from the exceptions
-named next, was recomputed from raw result rows and carries its source.
+orders (16,000 rows, 0 errors, 0 unparsed answers). As run, every batched call was seeded with 1,
+which coupled the no-thinking control's answers across questions and option orders; on 2026-10-31
+the control was rerun with per-call seeds (`_q38nt2`). The thinking-off numbers below come from the
+rerun, except a few as-run figures quoted as history (sections 3.4, 5, 6 and 7). Every number below, apart
+from the exceptions named next, was recomputed from raw result rows and carries its source.
 
-**How the numbers were checked.** The numbers were checked twice, each time re-derived
-independently from the raw rows, the archived rows of Era 1 (the earlier CVBench runs in MultiCam,
-June–July 2026; section 4), git history and the job logs, and the
+**How the numbers were checked.** Apart from the rerun's numbers and the as-run figures quoted as
+history, the numbers were checked twice, each time re-derived independently from the
+raw rows, the archived rows of Era 1 (the earlier CVBench runs in MultiCam, June–July 2026;
+section 4), git history and the job logs, and the
 analysis and figure code was reviewed. The analysis JSONs and figures shipped here were regenerated
 from the reviewed code (MultiCam `6c377c0`). Not recomputed: the figures of the rule-based audit in
 section 4.4, which are quoted, and a few statements that the rows cannot check, such as the vLLM and
 driver notes in section 5 and the statement in section 4.4 about the CVBench paper. Section 4
-(Provenance) says what each check covered of the earlier runs.
+(Provenance) says what each check covered of the earlier runs. The rerun's numbers come from the
+same code; they and those as-run figures were re-derived from the raw rows by two independent
+checks on 2026-10-31.
 
 **Code and files.** "MultiCam" below is the
 [Wavy-Hec/MultiCam](https://github.com/Wavy-Hec/MultiCam) harness, where the experiment ran: commit
-`a477d80` is the code as run and commit `6c377c0` holds the review fixes (section 5). In this
+`a477d80` is the code as run, commit `6c377c0` holds the review fixes (section 5), and the
+thinking-off control was rerun at commit `f4ba98d`, which carries them. In this
 repository the result rows are in [`multicam_results/legs/`](../multicam_results/legs/) (section 6);
 the analysis JSONs and the per-question list are in
 [`multicam_results/cvbench_text_only/`](../multicam_results/cvbench_text_only/), whose
@@ -34,18 +41,18 @@ not run this protocol yet (section 8).
   2–4 independent clips per question) is back in the MultiCam harness. We ran it **text-only** on
   **Qwen3.8-27B**: question and options, no frames. It follows the team's 27B text-only
   protocol (thinking at effort medium, 4 seeds, both option orders O1/O2, O2 = reversed) except
-  for the prompt, an 8,192-token cap, per-batch seeding and the serving stack (section 5). A
+  for the prompt, an 8,192-token cap, batch-level seeding and the serving stack (section 5). A
   no-thinking control ran on the same questions.
 - **Result.** With no video at all, Qwen3.8-27B answers about half of CVBench:
   - with thinking: **49.3% / 49.7%** (O1 / O2)
-  - without thinking: **48.6% / 49.2%**
+  - without thinking: **48.1% / 49.0%**
   - Chance is 28.5%. The best answer-key guesser reaches 37.4% in-sample and 30.9% leave-one-out
     (released order O1; O2: 37.5% and 31.0%). The model's own answer habits, shuffled across
-    questions, reach 30.2–31.6% (both legs, both orders).
-  - The thinking leg scores +0.6 points above the no-thinking control overall (95% interval −1.3
-    to +2.6; the legs differ in thinking and in prompt), which is not separable from zero.
+    questions, reach 30.2–31.3% (both legs, both orders).
+  - The thinking leg scores +1.0 points above the no-thinking control overall (95% interval −0.9
+    to +2.9; the legs differ in thinking and in prompt), which is not separable from zero.
 - **Text-answerable questions.** With thinking, **343 of 1000** questions are right in ≥ 3 of 4 seeds
-  **in both option orders** (316 without thinking). Pure guessing would give about 16. If each
+  **in both option orders** (301 without thinking). Pure guessing would give about 16. If each
   question's answers, both orders together, are moved onto another question of the same task and
   answer space, **186.6** [166, 207] questions still pass on average. That baseline keeps the model's
   answer-format habits but also part of its accuracy (an always-right model would score 315.5 on
@@ -58,7 +65,7 @@ not run this protocol yet (section 8).
     from the same shuffle.
   - **Yes/No questions (136).** The answer is a word, so a Yes/No habit passes both orders. The 47
     that pass are no more than the same shuffle gives (48.2 [40, 57]).
-  - 235 questions pass in both modes and 424 in at least one. The per-question list is
+  - 225 questions pass in both modes and 419 in at least one. The per-question list is
     [`text_answerable_ids.json`](../multicam_results/cvbench_text_only/text_answerable_ids.json).
 - **Where they sit.** Share of each task that passes, with thinking:
   - Highest, far above habits: Summarization 65%, Multi-view Scene Understanding 62%,
@@ -140,7 +147,8 @@ option order (864 lettered questions), and Yes/No (136).
 
 ![Figure 8: answer habits against the key](../figures/fig_cvbench_8_answer_letters.png)
 
-**Figure 9** (`fig_cvbench_9_history_full1000.png`): everything ever run on the full 1000 questions.
+**Figure 9** (`fig_cvbench_9_history_full1000.png`): everything run on the full 1000 questions; the
+no-thinking bar is the rerun `_q38nt2`, not the as-run control (section 5, Seeds).
 
 ![Figure 9: everything run on the full 1000 questions](../figures/fig_cvbench_9_history_full1000.png)
 
@@ -166,7 +174,7 @@ text-only levels; its note gives the 128-montage input length and says nothing w
 Sources:
 [`cvbench_text_answerability_q38bm.json`](../multicam_results/cvbench_text_only/cvbench_text_answerability_q38bm.json)
 (thinking) and
-[`cvbench_text_answerability_q38nt.json`](../multicam_results/cvbench_text_only/cvbench_text_answerability_q38nt.json)
+[`cvbench_text_answerability_q38nt2.json`](../multicam_results/cvbench_text_only/cvbench_text_answerability_q38nt2.json)
 (no thinking). They are built by MultiCam's `analysis/cvbench_text_answerability.py` from the rows
 listed in section 6.
 
@@ -177,16 +185,18 @@ All 1000 questions, 4 seeds each, no visual input. Error rows: 0. Unparsed answe
 | | O1 (released order) | O2 (reversed) |
 |---|---:|---:|
 | **thinking, effort medium** (`_q38bm`) | **49.33 ± 0.72** | **49.70 ± 0.64** |
-| **no thinking** (`_q38nt`) | **48.55 ± 1.03** | **49.20 ± 1.12** |
+| **no thinking** (`_q38nt2`) | **48.10 ± 0.60** | **48.98 ± 0.44** |
 | chance (mean 1/n_options) | 28.48 | 28.48 |
 | best answer-key guesser: modal answer per (task × answer space: Yes/No, A–B or A–D), in-sample / leave-one-out (ties split evenly; the three questions alone in their stratum scored at chance) | 37.4 / 30.9 | 37.5 / 31.0 |
 | pick the longest option (863 lettered questions; ties split; malformed `cvb-996` excluded) | 31.7 | 31.7 |
 | bias null: thinking answers shuffled within (task × answer space) | 30.2 [27.9, 32.5] | 30.4 [28.1, 32.7] |
-| bias null: no-thinking answers shuffled within (task × answer space) | 31.0 [28.9, 33.2] | 31.6 [29.4, 33.7] |
+| bias null: no-thinking answers shuffled within (task × answer space) | 31.1 [29.0, 33.3] | 31.3 [29.2, 33.5] |
 | InternVL3-8B **with** video (Era 1, 4 passes, for reference) | 61.83 | — |
 
-- **± values** are population standard deviations over the 4 passes. For the no-thinking control,
-  see section 5 (Seeds).
+- **± values** are population standard deviations over the 4 passes.
+- **No-thinking control.** As run, every batched call of both legs was seeded with 1, which coupled
+  the control's answers across questions and option orders. Its row is the rerun with per-call seeds
+  (section 5, Seeds).
 - **Square brackets** give the permutation 95% range (100,000 draws, seed 0). Each bias null
   shuffles whole 4-seed answer sets among questions with the same task and answer space, one order
   at a time.
@@ -213,16 +223,16 @@ A question counts as text-answerable when it is **right in ≥ 3 of 4 seeds in b
 
 | | thinking | no thinking |
 |---|---:|---:|
-| **text-answerable in both orders** | **343** | **316** |
-| — of the 864 lettered questions | 296 | 251 |
-| — of the 136 Yes/No questions | 47 | 65 |
-| in one order only | 207 | 226 |
-| in neither | 450 | 458 |
+| **text-answerable in both orders** | **343** | **301** |
+| — of the 864 lettered questions | 296 | 241 |
+| — of the 136 Yes/No questions | 47 | 60 |
+| in one order only | 207 | 215 |
+| in neither | 450 | 484 |
 | expected under pure guessing | 15.8 | 15.8 |
-| **answers shuffled across questions, orders kept together** (paired), mean [95%] | **186.6** [166, 207] | **164.8** [146, 183] |
-| — lettered | 138.5 [120, 158] | 106.1 [90, 123] |
-| — Yes/No | 48.2 [40, 57], p = 0.65 | 58.8 [50, 67], p = 0.095 |
-| answers shuffled, each order on its own (independent null) | 88.2 [73, 104] | 89.5 [75, 105] |
+| **answers shuffled across questions, orders kept together** (paired), mean [95%] | **186.6** [166, 207] | **160.5** [142, 179] |
+| — lettered | 138.5 [120, 158] | 106.3 [90, 123] |
+| — Yes/No | 48.2 [40, 57], p = 0.65 | 54.2 [46, 62], p = 0.10 |
+| answers shuffled, each order on its own (independent null) | 88.2 [73, 104] | 83.5 [70, 98] |
 
 **The two nulls.** Both shuffle each question's 4-seed answers among questions of the same task and
 answer space.
@@ -239,11 +249,10 @@ answer space.
   cross-order consistency.
 
 The observed counts beat both nulls overall (p < 0.0001). The Yes/No passes do not beat the paired
-null. The no-thinking column comes from coupled option orders (section 5, Seeds), which push its
-Yes/No count up and its lettered count down.
+null.
 
-**Across the two modes**, 235 questions pass in both modes and 424 in at least one; of the 864
-lettered questions, 209 and 338.
+**Across the two modes**, 225 questions pass in both modes and 419 in at least one; of the 864
+lettered questions, 202 and 335.
 [`text_answerable_ids.json`](../multicam_results/cvbench_text_only/text_answerable_ids.json) lists
 all 1000 questions with:
 
@@ -253,59 +262,59 @@ all 1000 questions with:
 - `o2_position_dependent`, true for the 48 questions whose O2 order changes an option's meaning
   (section 7)
 
-For a deletion set on video claims, `either_mode` (424) is the conservative choice. Filter on
-`format` to keep its 338 lettered questions. Its 86 Yes/No members are habit-level, so they are no
+For a deletion set on video claims, `either_mode` (419) is the conservative choice. Filter on
+`format` to keep its 335 lettered questions. Its 84 Yes/No members are habit-level, so they are no
 evidence of text answerability. Deleting them barely moves the Yes/No key (56% Yes left, against
-58%); deleting one mode's Yes/No set would move it (74% Yes left after the thinking set, 39% after
+58%); deleting one mode's Yes/No set would move it (74% Yes left after the thinking set, 38% after
 the no-thinking set).
 
 **Per task**, both modes, sorted by the thinking leg's share:
 
 | task | n | chance | thinking: acc O1 / O2 | thinking: both orders | no thinking: acc O1 / O2 | no thinking: both orders |
 |---|---:|---:|---|---|---|---|
-| Joint-video Summarization | 52 | 25.0 | 73.1 / 78.4 | 34 (65%) | 72.6 / 81.3 | 33 (63%) |
-| Multi-view Scene Understanding | 55 | 25.0 | 72.3 / 71.8 | 34 (62%) | 69.1 / 71.4 | 33 (60%) |
-| Cross-video Counterfactual Reasoning | 52 | 25.5 | 72.6 / 65.9 | 30 (58%) | 68.3 / 63.5 | 26 (50%) |
-| Cross-video Procedural Transfer | 51 | 25.0 | 57.8 / 61.8 | 27 (53%) | 57.4 / 60.8 | 24 (47%) |
-| Multi-video Attribute Recognition | 46 | 26.1 | 50.5 / 54.3 | 17 (37%) | 59.2 / 54.9 | 17 (37%) |
-| Cross-video Scene Recognition ‡ | 149 | 45.5 | 48.5 / 46.6 | 54 (36%) † | 56.7 / 54.2 | 67 (45%) |
-| Video Difference Caption | 55 | 25.0 | 49.1 / 49.5 | 19 (35%) | 38.2 / 40.5 | 13 (24%) |
-| Joint-video Spatial Navigating | 42 | 26.2 | 54.8 / 48.2 | 14 (33%) | 53.6 / 50.6 | 10 (24%) |
-| Cross-video Entity Matching | 74 | 27.7 | 49.3 / 46.3 | 24 (32%) | 47.3 / 49.7 | 23 (31%) |
-| Multi-video Key-Action Recognition | 88 | 25.0 | 44.9 / 50.3 | 27 (31%) | 48.0 / 54.3 | 33 (38%) |
-| Multi-video Temporal Reasoning | 75 | 25.7 | 38.7 / 36.0 | 17 (23%) | 28.3 / 28.3 | 7 (9%) † |
-| Joint-video Counting | 60 | 25.0 | 38.8 / 38.8 | 13 (22%) † | 40.8 / 37.9 | 9 (15%) |
-| Cross-video Object Recognition | 68 | 25.4 | 42.6 / 43.8 | 14 (21%) | 38.6 / 35.7 | 12 (18%) |
-| Cross-video Anomaly Detection | 84 | 25.3 | 33.6 / 39.6 | 13 (15%) | 31.8 / 33.9 | 7 (8%) † |
-| Cross-video Event Retrieval | 49 | 25.0 | 35.2 / 35.2 | 6 (12%) † | 28.1 / 32.1 | 2 (4%) † |
+| Joint-video Summarization | 52 | 25.0 | 73.1 / 78.4 | 34 (65%) | 74.0 / 77.9 | 35 (67%) |
+| Multi-view Scene Understanding | 55 | 25.0 | 72.3 / 71.8 | 34 (62%) | 70.5 / 70.9 | 34 (62%) |
+| Cross-video Counterfactual Reasoning | 52 | 25.5 | 72.6 / 65.9 | 30 (58%) | 67.3 / 64.4 | 26 (50%) |
+| Cross-video Procedural Transfer | 51 | 25.0 | 57.8 / 61.8 | 27 (53%) | 53.9 / 57.4 | 23 (45%) |
+| Multi-video Attribute Recognition | 46 | 26.1 | 50.5 / 54.3 | 17 (37%) | 50.0 / 50.0 | 14 (30%) |
+| Cross-video Scene Recognition ‡ | 149 | 45.5 | 48.5 / 46.6 | 54 (36%) † | 55.4 / 56.0 | 60 (40%) |
+| Video Difference Caption | 55 | 25.0 | 49.1 / 49.5 | 19 (35%) | 40.5 / 38.6 | 10 (18%) † |
+| Joint-video Spatial Navigating | 42 | 26.2 | 54.8 / 48.2 | 14 (33%) | 53.6 / 50.6 | 12 (29%) |
+| Cross-video Entity Matching | 74 | 27.7 | 49.3 / 46.3 | 24 (32%) | 51.0 / 46.3 | 22 (30%) |
+| Multi-video Key-Action Recognition | 88 | 25.0 | 44.9 / 50.3 | 27 (31%) | 46.3 / 57.1 | 31 (35%) |
+| Multi-video Temporal Reasoning | 75 | 25.7 | 38.7 / 36.0 | 17 (23%) | 30.0 / 29.3 | 8 (11%) † |
+| Joint-video Counting | 60 | 25.0 | 38.8 / 38.8 | 13 (22%) † | 38.3 / 37.5 | 9 (15%) |
+| Cross-video Object Recognition | 68 | 25.4 | 42.6 / 43.8 | 14 (21%) | 39.7 / 40.1 | 11 (16%) |
+| Cross-video Anomaly Detection | 84 | 25.3 | 33.6 / 39.6 | 13 (15%) | 29.2 / 33.9 | 6 (7%) † |
+| Cross-video Event Retrieval | 49 | 25.0 | 35.2 / 35.2 | 6 (12%) † | 31.6 / 28.1 | 0 (0%) † |
 
 - **†** marks a count that is not above that task's paired null (one-sided p ≥ 0.05,
   uncorrected):
   - thinking: Scene Recognition p = 0.16, Counting 0.13, Event Retrieval 0.60
-  - no thinking: Temporal 0.24, Anomaly 0.073, Event Retrieval 0.19
+  - no thinking: Video Difference Caption 0.17, Temporal 0.17, Anomaly 0.14, Event Retrieval 1.0
 
   With a Holm correction over the 15 tasks the lists grow: thinking Anomaly Detection (p = 0.027)
-  fails too, and so do no-thinking Video Difference Caption, Scene Recognition and Object
-  Recognition (p = 0.0093, 0.0094 and 0.011). Under the independent null only Event Retrieval
-  failed.
+  fails too, and so do no-thinking Scene Recognition and Object Recognition (p = 0.011 and
+  0.020). Under the independent null only Event Retrieval failed.
 - **‡** 120 of Scene Recognition's 149 questions are Yes/No, hence its 45.5% chance.
 
 **What the thinking leg adds** (figure 7). The two legs differ in two things: thinking on at effort
 medium with the harness reasoning prompt, against thinking off with a direct-answer prompt (section
-5). So this is their joint effect. It is +0.6 points overall (95% interval −1.3 to +2.6, paired over
-questions). Per task, two intervals exclude 0 (95%, not corrected for the 15 tasks):
+5). So this is their joint effect. It is +1.0 points overall (95% interval −0.9 to +2.9, paired over
+questions). Per task, three intervals exclude 0 (95%, not corrected for the 15 tasks):
 
-- Video Difference Caption: +10.0 [+4.2, +15.8] (p = 0.00068)
-- Temporal Reasoning: +9.0 [+2.6, +15.4] (p = 0.0057)
+- Video Difference Caption: +9.8 [+3.5, +16.1] (p = 0.0024)
+- Temporal Reasoning: +7.7 [+1.4, +13.9] (p = 0.017)
+- Scene Recognition: −8.1 [−16.1, −0.2] (p = 0.044)
 
 With a Holm correction over the 15 tasks only Video Difference Caption remains (Temporal Reasoning's
-adjusted p is 0.080). Every other per-task interval includes 0.
+adjusted p is 0.23, Scene Recognition's 0.58). Every other per-task interval includes 0.
 
-The largest drop is Scene Recognition, −7.9 [−16.3, +0.6]. About half of it comes from the opposite
+The largest drop is Scene Recognition, −8.1. About half of it comes from the opposite
 Yes/No habits: thinking answers "No" and no thinking answers "Yes" (section 3.4). On its 120 Yes/No
-questions (56% Yes in the key) the change is −9.9, of which the habit shift accounts for −5.2. The
-rest is that no thinking's Yes/No answers beat its own habit (57.8% vs 52.6%) while thinking's do
-not (47.9% vs 47.4%). On its 29 lettered questions the change is +0.4.
+questions (56% Yes in the key) the change is −9.9, of which the habit shift accounts for −4.9. The
+rest is that no thinking's Yes/No answers beat its own habit (57.8% vs 52.3%) while thinking's do
+not (47.9% vs 47.4%). On its 29 lettered questions the change is −0.9.
 
 **Sanity check.** Some questions have options that only name clips, such as "Video 2", "Both of
 them" or "2-1-3", so no text cue can choose among them. The rule requires a clip number after
@@ -316,7 +325,7 @@ fitted on all 1000 questions with the conventions of section 3.1 (ties split eve
 leave-one-out and 31.4 in-sample.
 
 - thinking: 27.7 / 31.1 (O1 / O2)
-- no thinking: 23.3 / 28.0
+- no thinking: 25.7 / 27.2
 
 ### 3.3 With-video accuracy by text-only label (vs the archived run)
 
@@ -333,12 +342,12 @@ The same split by the single-order (O1) label, for both modes:
 
 | text-only label (O1) | thinking: n | with video | no thinking: n | with video |
 |---|---:|---:|---:|---:|
-| text-answerable (≥ 3 of 4) | 451 | 73.8 | 423 | 73.5 |
-| unstable (1–2 of 4) | 185 | 60.8 | 222 | 63.9 |
-| not (0 of 4) | 364 | 47.5 | 355 | 46.7 |
+| text-answerable (≥ 3 of 4) | 451 | 73.8 | 408 | 73.7 |
+| unstable (1–2 of 4) | 185 | 60.8 | 270 | 62.2 |
+| not (0 of 4) | 364 | 47.5 | 322 | 46.4 |
 
-- **Text 0 of 4 in O1, video ≥ 3 of 4:** 154 questions with thinking (148 without).
-- **Text ≥ 3 of 4 in O1, video 0 of 4:** 52 questions with thinking (59 without).
+- **Text 0 of 4 in O1, video ≥ 3 of 4:** 154 questions with thinking (129 without).
+- **Text ≥ 3 of 4 in O1, video 0 of 4:** 52 questions with thinking (54 without).
 
 **How to read this.** The with-video score rises with the text-only label. Without the 343
 text-answerable questions, InternVL3-8B is at 53.0% on the other 657.
@@ -346,7 +355,7 @@ text-answerable questions, InternVL3-8B is at 53.0% on the other 657.
 This is an association between two different models (Qwen3.8-27B text-only, InternVL3-8B with
 video). It fits a text prior in InternVL3-8B's score, but it would also appear if some questions
 are simply easier for any model. Both counts above are below what independence of the two labels
-would give: about 209 and 100 with thinking, 203 and 93 without. A text-only run of InternVL3-8B
+would give: about 209 and 100 with thinking, 185 and 90 without. A text-only run of InternVL3-8B
 would separate the two readings.
 
 ### 3.4 Answer habits
@@ -358,10 +367,10 @@ In 860 of them, which have four options, reversal swaps A↔D and B↔C.
 |---|---:|---:|---:|---:|
 | gold, O1 | 27.0 | 30.0 | 26.7 | 16.3 |
 | thinking, O1 | 17.0 | **40.2** | 29.5 | 13.3 |
-| no thinking, O1 | 13.6 | 33.9 | **43.0** | 9.6 |
+| no thinking, O1 | 14.4 | **38.0** | 37.3 | 10.3 |
 | gold, O2 | 16.4 | 26.9 | 29.7 | 27.0 |
 | thinking, O2 | 10.2 | 26.2 | **37.4** | 26.3 |
-| no thinking, O2 | 8.8 | 23.8 | **47.8** | 19.7 |
+| no thinking, O2 | 8.7 | 27.7 | **41.6** | 22.0 |
 
 On the 136 Yes/No questions, the share answering "Yes":
 
@@ -369,21 +378,24 @@ On the 136 Yes/No questions, the share answering "Yes":
 |---|---:|---:|
 | gold | 58.1 | 58.1 |
 | thinking | 29.4 | 27.8 |
-| no thinking | 72.4 | 72.2 |
+| no thinking | 71.1 | 69.7 |
 
-- **No thinking prefers position C:** 43.0% (O1) and 47.8% (O2), against 26.7% and 29.7% gold.
+- **No thinking over-picks position C:** 37.3% (O1) and 41.6% (O2), against 26.7% and 29.7% gold.
 - **Thinking avoids position A:** 17.0% (O1) and 10.2% (O2), against 27.0% and 16.4% gold. In O2
   the released-A options sit at D, where thinking picks them at about the gold rate (26.3% vs 27.0%).
 - **Thinking over-picks the option released at B:** 40.2% against 30.0% gold. In O2 that option
-  sits at C, where thinking picks 37.4% against 29.7% gold. No thinking picks B at 33.9%, 3.9
-  points above gold but only about 1.3 to 1.5 times that share's shared sampling error (2.6 to 3.1
-  points; below), so its excess is not distinguishable from noise.
+  sits at C, where thinking picks 37.4% against 29.7% gold. No thinking picks B at 38.0%, 8.0
+  points above gold (95% interval [+4.8, +11.2]; percentile bootstrap, 1,000,000 resamples of the
+  questions, each with its 4 passes and its gold answer), so it over-picks that option too.
 - **The two modes have opposite Yes/No habits.** Thinking says "No" about 71% of the time and no
-  thinking says "Yes" about 72%, against 58% Yes in the key.
-- **The no-thinking shares carry a shared sampling error.** That leg drew each answer from noise
-  shared by every question in the same batch slot, in both orders (section 5, Seeds). Its letter
-  and Yes shares therefore carry a common sampling error of up to about 3.5 points. The C habit
-  (43.0% / 47.8%) and the Yes habit (72%) are well outside it.
+  thinking says "Yes" about 70%, against 58% Yes in the key.
+- **The no-thinking shares are from independent draws.** As run, each batch slot replayed one
+  noise stream across questions and both orders, and the control's O1 C share ranged from 17% to
+  70% by slot. The rerun `_q38nt2` seeds every call on its own (section 5, Seeds): by slot its C
+  share is 32–42% (O1) and 35–50% (O2), and slot does not predict the letter (chi-square p = 0.99
+  in both orders). In the same bootstrap, both habits stay above gold: C by +10.6 / +11.8 points
+  (95% intervals [+7.4, +13.8] / [+8.6, +15.0]) and Yes by +13.1 / +11.6 points ([+3.3, +22.8] /
+  [+1.8, +21.3]).
 - **What absorbs them.** The both-orders rule removes letter-position habits on lettered questions.
   Both bias nulls keep habits that do not depend on the question (position, the option released at
   a given slot, Yes/No). A preference tied to the option texts themselves, such as picking the
@@ -485,7 +497,7 @@ clip-selection run on the full 1000 followed.
 | same outputs, today's parser (the tag, else the last "the answer is X" phrase, hedged or not) | 45 | 19/45 = 42.2% | 23/45 = 51.1% |
 | same outputs, tag only (an untagged output scored wrong) | 45 | 5/45 = 11.1% | 19/45 = 42.2% |
 | InternVL3-8B with video, Stage A (Jun 2026, lmms-eval, 8 frames per clip, 1 pass) | 45 | — | 25/45 = 55.6% |
-| this run: Qwen3.8-27B no thinking, mean of 4 seeds, O1 / O2 | 45 | 32.8% / 37.2% | — |
+| this run: Qwen3.8-27B no thinking, mean of 4 seeds, O1 / O2 | 45 | 34.4% / 38.9% | — |
 | this run: Qwen3.8-27B thinking, mean of 4 seeds, O1 / O2 | 45 | 38.3% / 43.3% | — |
 
 The reported row is the result in this repository's [`blind_sanity.md`](blind_sanity.md). The two
@@ -513,10 +525,10 @@ first-letter fallback (13 vs 3 discordant questions, exact McNemar p = 0.021), +
 parser (9 vs 5, p = 0.42) and +31.1 with the tag alone (16 vs 2, p = 0.0013). The slice cannot
 settle it.
 
-**What the new rows add.** A proper no-video run on the same 45 questions lands at 33–43%, close to
+**What the new rows add.** A proper no-video run on the same 45 questions lands at 34–43%, close to
 the old no-video level. Under today's parser it is the with-video number that moved.
 
-On 45 questions a 4-seed-mean accuracy has a standard deviation of about 6.4 points (about 7.3 for
+On 45 questions a 4-seed-mean accuracy has a standard deviation of about 6.3 points (about 7.5 for
 one pass), so only differences of roughly 18 points or more are distinguishable at 95%. The
 full-1000 result in section 3 is the one to use.
 
@@ -578,7 +590,7 @@ per job.
 This is the team's 27B text-only protocol, set out in an internal protocol document and its
 reference client script (neither is public):
 
-| setting | thinking leg `_q38bm` | control `_q38nt` |
+| setting | thinking leg `_q38bm` | control `_q38nt2` |
 |---|---|---|
 | thinking / effort | on / medium | off |
 | sampling | T 0.6, top_p 0.95, top_k 20 | same |
@@ -586,22 +598,29 @@ reference client script (neither is public):
 | prompt | harness blind prompt, `REASONING=1` | direct-answer prompt |
 | max new tokens | 8,192 | 8,192 |
 
-**Seeds.** Rows stamp seeds 1–4, but these are pass labels. As run, every batched call was seeded
-with 1, so all calls of the same size drew the same random numbers, slot by slot, whatever their
-questions and in both orders: each batch slot replayed one noise stream.
+**Seeds.** Rows stamp seeds 1–4, but these are pass labels. As run (2026-10-29/30), every batched
+call of both legs was seeded with 1, so all calls of the same size drew the same random numbers,
+slot by slot, whatever their questions and in both orders: each batch slot replayed one noise stream.
 
-- With thinking this does not measurably reach the answers.
-- Without thinking, the answer is fixed at the third generated token, so every question in the same
-  batch slot drew it from the same noise, in both orders. The O1 C share ranges from 17% to 70%
-  across the 24 batch slots and moves with O2 slot by slot. Matched O1/O2 passes chose the same letter 8
-  points more often than other pairs, and agreed in correctness 2.4 points less often on lettered
-  questions and 11.5 points more often on Yes/No questions.
-- So the control's ± values, letter and Yes shares and both-orders counts are not those of
-  independent draws: its shares in section 3.4 carry a common sampling error of up to about 3.5
-  points, and its Yes/No both-orders count is inflated. Its per-question marginals are valid.
-- Commit `6c377c0` seeds every batched call of two or more sequences from a hash of its prompts
-  and pass labels (Harness additions, below); one-sequence calls keep the pass seed. The control
-  will be rerun with that seeding (about 0.3 A100-hours); it has not run yet.
+- With thinking this does not measurably reach the answers: in its 24-sequence calls the batch slot
+  does not predict the answer letter (chi-square p > 0.9 in both orders). The thinking leg was not
+  rerun.
+- Without thinking, the answer is fixed at the third generated token, so the as-run control
+  (`_q38nt`) drew every answer in the same batch slot from the same noise, coupling its answers
+  across questions and across the two orders. Its C share (lettered answers) ranged from 17% to
+  70% (O1) and 15% to 79% (O2) across the 24 batch slots, and a chi-square test of slot × answer
+  letter gave p of about 1e-125 (O1) and 1e-173 (O2).
+- The control was rerun on 2026-10-31 as `_q38nt2`, with `6c377c0`'s per-call seeds (Harness
+  additions, below): each call of two or more sequences is seeded with a hash of its rendered
+  prompts and pass labels. Every other setting is unchanged. Each order ran 167 calls, each with
+  its own seed, and no seed is shared between the orders. Every call held at least 16 sequences,
+  so none fell back to a pass seed. The rerun replaces the as-run control everywhere in this
+  document; the as-run rows are not shipped.
+- In the rerun the coupling is gone. The C share by slot is 32–42% (O1) and 35–50% (O2), and the
+  slot × letter chi-square gives p = 0.99 in both orders. On the same question, O1 and O2 name the
+  same answer text 60.4% of the time for the same pass and 60.2% for different passes, so the pass
+  no longer matters. As run it did (56.7% and 58.5%): matched passes tended to share a letter, which
+  names a different option once the order is reversed, or on Yes/No questions the same word.
 - Unbatched decoding shares noise too, per pass. The harness seeds pass p of every question with
   the p-th seed, at `6c377c0` as before, and the Era-1 backend did the same. In the eight Era-1
   with-video arms on the full 1000, whose answers follow a reasoning text (median output 237–289
@@ -616,23 +635,25 @@ cannot replay its pass.
 is the harness blind template (`REASONING=1`), not the protocol's letter prompt ("Answer with the
 option's letter from the given choices directly."). The control uses the harness direct-answer
 template; the protocol's thinking-off keeps the letter prompt. Calls are seeded per batch, not per
-request (Seeds, above). Decoding is batched HF transformers 5.2.0, not vLLM. The cap is 8,192, not
+request: the thinking leg ran every batch under seed 1, the control each batch under its own
+`call_seed` (Seeds, above). Decoding is batched HF transformers 5.2.0, not vLLM. The cap is 8,192, not
 the protocol's 16,384. A 24-sequence batch's cache grows with its longest sample. At 16k that
-exceeds the memory left beside the weights, and, as run, an OOM would write error rows. The cap
-never bound: the longest output in the thinking leg, reasoning trace plus reply, was 5,904 tokens
-(mean 861, median 828 over 8,000 rows). The trace alone averaged 570 tokens (median 529, max 5,593),
-and no trace was left unclosed.
+exceeds the memory left beside the weights, and, at `a477d80`, an OOM would write error rows. The
+cap never bound: the longest output in the thinking leg, reasoning trace plus reply, was 5,904
+tokens (mean 861, median 828 over 8,000 rows). The trace alone averaged 570 tokens (median 529, max
+5,593), and no trace was left unclosed.
 
 ### Harness additions
 
-The rows were produced by commit `a477d80`, the code as run. At that commit all 67 tests in MultiCam
-`bench/tests` pass, and 15 of them (two new files) cover these additions. Commit `6c377c0` holds the
-review fixes (last bullet).
+The thinking leg's rows were produced by commit `a477d80`, the code as run. At that commit all 67
+tests in MultiCam `bench/tests` pass, and 15 of them (two new files) cover these additions. Commit
+`6c377c0` holds the review fixes (last bullet). The control's rows (`_q38nt2`) were produced on
+2026-10-31 at `f4ba98d`, which carries those fixes.
 
 - **The `qwen38` backend.** It adds the decode preset, the template knobs `QWEN_ENABLE_THINKING` and
   `QWEN_REASONING_EFFORT`, and a `decode` stamp on every row. A resume is refused when the backend,
-  dataset, media, segment identity or `decode` stamp differs. As run, temperature, reasoning mode
-  and `max_new_tokens` were not compared.
+  dataset, media, segment identity or `decode` stamp differs. At `a477d80`, temperature, reasoning
+  mode and `max_new_tokens` were not compared.
 - **Answer parsing fix.**
   - At xhigh effort, Qwen3.8's thinking quoted "`<answer>` and `</answer>`", and the first-match
     parser read " and ".
@@ -657,10 +678,11 @@ review fixes (last bullet).
     Qwen3.8 uses. Their wheels need glibc 2.31 where the nodes have 2.28, so they might work from a
     container or a source build but were not tested.
 - **Cost.**
-  - About 20 A100-hours of allocation for all four legs: 19.6 thinking and 0.3 no thinking. This
-    includes model loads and the in-flight batches lost to cancellations.
+  - About 20 A100-hours of allocation for all four legs: 19.6 thinking and 0.7 no thinking (the
+    rerun; the as-run control took 0.3). This includes model loads and the in-flight batches lost
+    to cancellations.
   - The rows' own GPU time is 18.9 + 0.3 h.
-  - Wall clock was 22:35 to 01:15.
+  - Wall clock was 22:35 to 01:15 as run, and 16:16 to 16:37 on 2026-10-31 for the control's rerun.
   - Unbatched, the thinking legs would have needed about 190 GPU-hours (8,000 answers × 861 tokens
     at about 0.10 s per step for one sequence).
 - **Review fixes (commit `6c377c0`).**
@@ -668,7 +690,8 @@ review fixes (last bullet).
     the rendered prompts in order and the pass labels. Every row stamps `call_seed` and
     `batch_slot`, and a batched leg adds `rng: call_hash_v1` to its `decode` stamp, so it can never
     resume an as-run file. Identical calls reproduce; a different batch composition, or a solo
-    decode, gives different draws.
+    decode, gives different draws. The control's rerun `_q38nt2` ran with it; the thinking leg did
+    not.
   - **Resume guard.** It also compares temperature (already stamped on every row), and stamps and
     compares reasoning mode and `max_new_tokens`. Rows without a stamp are not compared on that
     key, and `--allow-mixed` waives the guard.
@@ -701,13 +724,14 @@ The nulls draw 100,000 permutations from numpy's PCG64 generator (seed 0, numpy 
 
 The code is on MultiCam's `main`: commit
 [`a477d80`](https://github.com/Wavy-Hec/MultiCam/commit/a477d80047a1af2a2d3bc12396cfed563313c5a7) is
-the code that produced the rows, and commit
+the code that produced the thinking leg's rows, and commit
 [`6c377c0`](https://github.com/Wavy-Hec/MultiCam/commit/6c377c0189c4165b6963a9bbfcb5c7ec3b44d3fc)
-adds the review fixes of section 5. The launcher scripts that submitted the legs stay outside git;
-the environment settings they passed to `bench/run_bench.sbatch` are in the commands below.
+adds the review fixes of section 5, per-call seeds among them. The shipped control, `_q38nt2`, ran
+at `f4ba98d`, which carries those fixes. The launcher scripts that submitted the legs stay outside
+git; the environment settings they passed to `bench/run_bench.sbatch` are in the commands below.
 
 ```bash
-# in a Wavy-Hec/MultiCam checkout (the shipped analysis JSONs and figures were made at 6c377c0);
+# in a Wavy-Hec/MultiCam checkout (the shipped analysis JSONs and figures used 6c377c0's scripts);
 # replace every <...> placeholder below before running (as written they are not valid shell)
 # data (no GPU)
 python3 analysis/convert_cvbench.py && python3 analysis/convert_cvbench.py --order O2
@@ -737,7 +761,7 @@ R=bench/results               # the legs' raw shards
 A=<era1-rows-dir>             # the Era-1 with-video rows (not public; below)
 S45=<era1-45-subset.json>     # the 45-question Era-1 slice (below)
 OUT=<out-dir>                 # a scratch directory for the outputs
-for t in <bm-tag> <nt-tag>; do      # q38bm q38nt = the as-run legs
+for t in <bm-tag> <nt-tag>; do      # q38bm q38nt2 = the shipped legs
   python3 analysis/cvbench_text_answerability.py \
     --blind    "$R/bench_cvbench_full_runnable_subset_cvbench_${t}_shard*.jsonl" \
     --blind-o2 "$R/bench_cvbench_full_runnable_subset_o2_cvbench_${t}_shard*.jsonl" \
@@ -762,23 +786,25 @@ python3 analysis/make_cvbench_text_figs.py --bm "$OUT/cvbench_text_answerability
     `git show 27c96b1:analysis/subset.json > <dir>/cvbench_era1_45_subset.json`.
 - **A re-run needs new TAGs.** `run_bench` resumes into an existing TAG's files, and at `6c377c0` a
   batched leg cannot resume an as-run file. The same `<bm-tag>` and `<nt-tag>` go into
-  the legs, the analysis loop and the figure command; `q38bm` and `q38nt` re-analyse the as-run
-  rows. At `6c377c0` the figure script itself
+  the legs, the analysis loop and the figure command; `q38bm` and `q38nt2` re-analyse the shipped
+  rows (`_q38nt2` is the control's rerun under a new TAG). At `6c377c0` the figure script itself
   needs no change: it reads every Qwen number from the two analysis JSONs, figure 11's token counts
   from the row files the `--bm` JSON lists (checked by sha256), the Era-1 rows from `--archive` and
   the option counts from `--subset`.
 - **Order.** A queued job reads `bench/` when it starts, so nothing under `bench/` should change
-  while a task is pending. The run submitted the 2-task control first, then the 8 thinking tasks.
+  while a task is pending. The run submitted the 2-task control first, then the 8 thinking tasks;
+  the control's 2-task rerun was submitted on its own on 2026-10-31, after the thinking leg ended.
 - **Temperature on resume.** At `a477d80` a missing TEMPERATURE is not caught on resume: it would
   append T 0.7 rows to the T 0.6 file. `6c377c0` compares it on resume (rows already stamp it) and
   refuses the mismatch.
 
 **Rows.** The analysis read the raw shards
-`bench/results/bench_cvbench_full_runnable_subset{,_o2}_cvbench_{q38bm,q38nt}_shard*.jsonl` in
+`bench/results/bench_cvbench_full_runnable_subset{,_o2}_cvbench_{q38bm,q38nt2}_shard*.jsonl` in
 MultiCam's tree (result rows are not in git). The rows in this repository are those shards merged,
 one file per leg and order, with the export's `leg` and `source_commit` fields added.
-`source_commit` is the MultiCam commit the export was made from, `f4ba98d`, which registers these
-legs for the export; the legs themselves ran at `a477d80`.
+`source_commit` is the MultiCam commit the export was made from: `f4ba98d` for the thinking leg and
+`ee7c2b0` for the control, each the commit that registers its leg for the export. The thinking leg
+ran at `a477d80`; the control's rerun ran at `f4ba98d` on 2026-10-31.
 [`multicam_results/README.md`](../multicam_results/README.md),
 [`registry.json`](../multicam_results/registry.json) and
 [`summary.csv`](../multicam_results/summary.csv) list them:
@@ -786,7 +812,7 @@ legs for the export; the legs themselves ran at `a477d80`.
 | leg | O1 (released order) | O2 (reversed) |
 |---|---|---|
 | thinking, effort medium (`_q38bm`) | [`cvbench_full_runnable_subset_cvbench_q38bm.jsonl.gz`](../multicam_results/legs/cvbench_full_runnable_subset_cvbench_q38bm.jsonl.gz) | [`cvbench_full_runnable_subset_o2_cvbench_q38bm.jsonl.gz`](../multicam_results/legs/cvbench_full_runnable_subset_o2_cvbench_q38bm.jsonl.gz) |
-| no thinking (`_q38nt`) | [`cvbench_full_runnable_subset_cvbench_q38nt.jsonl.gz`](../multicam_results/legs/cvbench_full_runnable_subset_cvbench_q38nt.jsonl.gz) | [`cvbench_full_runnable_subset_o2_cvbench_q38nt.jsonl.gz`](../multicam_results/legs/cvbench_full_runnable_subset_o2_cvbench_q38nt.jsonl.gz) |
+| no thinking (`_q38nt2`) | [`cvbench_full_runnable_subset_cvbench_q38nt2.jsonl.gz`](../multicam_results/legs/cvbench_full_runnable_subset_cvbench_q38nt2.jsonl.gz) | [`cvbench_full_runnable_subset_o2_cvbench_q38nt2.jsonl.gz`](../multicam_results/legs/cvbench_full_runnable_subset_o2_cvbench_q38nt2.jsonl.gz) |
 
 - The analysis JSONs' `provenance` lists the raw shard paths, in MultiCam's tree, with their sha256.
   The figure script reads figure 11's token counts from the row files the `--bm` JSON lists and
@@ -794,11 +820,11 @@ legs for the export; the legs themselves ran at `a477d80`.
 - Shard 1 of the thinking leg was split into the CHUNK=24 files `shard{1,5,9,13,17,21}`.
 - Every leg and order holds exactly 4000 unique rows.
 
-**Timeline** (all times CDT, 2026-10-29/30):
+**Timeline** (all times CDT, 2026-10-29/30, unless dated):
 
 | what | when |
 |---|---|
-| no-thinking control, O1 / O2 | 22:35–22:44 |
+| no-thinking control as run (`_q38nt`), O1 / O2 | 22:35–22:44 |
 | thinking, O1 / O2, 4 shards each | 22:35–00:42 |
 | the switch (CPU): stopped the two slow shard-1 tasks and split their remaining questions | 00:42 |
 | the split pieces of shard 1, O1 / O2 | 00:43–01:12 |
@@ -807,7 +833,9 @@ legs for the export; the legs themselves ran at `a477d80`.
 | O2 piece 13, pinned off cores 42–49 | 01:01–01:15 |
 | finalize (CPU): first analysis JSONs and figures (later overwritten) | done 01:18 |
 | by hand, after the first check: both scripts fixed and rerun (5,000 draws) | 01:59–02:01 |
-| by hand, after the second check: both scripts rerun at `6c377c0` with 100,000 draws; these are the shipped analysis JSONs and figures | 2026-10-30 |
+| by hand, after the second check: both scripts rerun at `6c377c0` with 100,000 draws; these are the shipped thinking-leg analysis JSON and figures 3, 4, 6, 11 and 12 | 2026-10-30 |
+| no-thinking control rerun with per-call seeds (`_q38nt2`), O1 / O2 | 2026-10-31, 16:16–16:37 |
+| the control's analysis JSON, figures 1, 2, 5, 7, 8, 9 and 10 and the figure data redone from the rerun (same scripts, 100,000 draws); the per-question list rebuilt from the two analysis JSONs | 2026-10-31 |
 | preflights and GPU validation | before 22:35 |
 
 **Ops note.**
@@ -834,18 +862,22 @@ legs for the export; the legs themselves ran at `a477d80`.
     exact repeats of others, so 57 are distinct draws.
   - The final medium-effort legs (T 0.6) had 0 abstentions and 0 unclosed traces in 8,000 rows.
   - Effort and temperature changed together, so the cause of the difference is not isolated.
-- **Batched seeding.** As run, every batched call was seeded with 1, so each batch slot replayed one
-  noise stream across all calls of the same size, whatever their questions and in both option
-  orders (section 5, Seeds). In the control that is all but one call per order. The thinking
-  leg shows no detectable coupling in its answers. The no-thinking control's ± values, answer shares
-  and both-orders counts are not those of independent draws, and its Yes/No both-orders count is
-  inflated; its per-question marginals are valid. It will be rerun with `6c377c0`'s per-call seeds
-  (about 0.3 A100-hours); that has not run yet.
+- **Batched seeding.** As run, every batched call of both legs was seeded with 1, so each batch slot
+  replayed one noise stream across all calls of the same size, whatever their questions and in both
+  option orders (section 5, Seeds). The thinking leg shows no detectable coupling in its answers and
+  was not rerun. In the as-run control (`_q38nt`) the coupling reached the answers: the share of C
+  answers by batch slot ranged 17–70% (O1) and 15–79% (O2). The control was rerun on 2026-10-31 as
+  `_q38nt2` with `6c377c0`'s per-call seeds, all other settings unchanged (about 0.7 A100-hours):
+  167 calls per order, each with its own seed. Its C share by slot is 32–42% (O1) and 35–50% (O2),
+  and a slot × letter chi-square gives p = 0.99 in both orders. The rerun moved the control's
+  accuracy from 48.55 / 49.20 to 48.10 / 48.98 and its both-orders count from 316 to 301. Apart
+  from the as-run figures quoted as history here and in sections 3.4, 5 and 6, every control number in
+  this document is from the rerun; the as-run rows stay in MultiCam, not here.
 - **O2 changes the meaning of 48 options.** In 47 lettered questions an "All of the above", "None of
   the above" or "None of above" option moves from D in O1 to A in O2, where "the above" points at
   nothing; it is the gold in 17 of them. In `cvb-89` the gold "Both A and C." lands at A and so
   refers to itself. Among these 48, 13 pass both orders with thinking and 7 without. Their accuracy,
-  O1 / O2, is 45.8 / 43.8 with thinking and 36.5 / 43.8 without. Excluding them moves headline
+  O1 / O2, is 45.8 / 43.8 with thinking and 40.1 / 38.0 without. Excluding them moves headline
   accuracy by at most about 0.6 points.
   [`text_answerable_ids.json`](../multicam_results/cvbench_text_only/text_answerable_ids.json) flags
   them (`o2_position_dependent`).
@@ -855,12 +887,14 @@ legs for the export; the legs themselves ran at `a477d80`.
 - **Granularity.** k-of-4 labels are coarse at the question level. The both-orders rule and the
   bias null make the counts robust, but not any single question's label.
 - **Reproducibility.** Each row's sample depends on its whole call. As run, a pass repeats only when
-  its entire call is rerun unchanged (same questions, same order, seed 1); in the preflight,
-  identical calls repeated exactly in separate jobs. A stamped seed cannot replay one pass alone,
-  and a question decoded in a different group or alone gets different samples. A rerun from section
-  6 at `a477d80` would regroup the 178 (O1) and 190 (O2) thinking-leg questions that ran after the
-  shard-1 split, and `6c377c0` seeds every call differently from the run. Either way only the
-  aggregates are expected to hold.
+  its entire call is rerun unchanged: same questions, same order, and seed 1 (thinking leg) or the
+  same `call_seed` (control). In the preflight, identical calls repeated exactly in separate jobs.
+  A stamped seed cannot replay one pass alone, and a question decoded in a different group or alone
+  gets different samples. A rerun from section 6 at `a477d80` would regroup the 178 (O1) and 190
+  (O2) thinking-leg questions that ran after the shard-1 split, and `6c377c0` seeds every call
+  differently from the run. Either way only the thinking leg's aggregates are expected to hold. The
+  control ran with one shard per order and `6c377c0`'s seeds, so a rerun of it at `f4ba98d` groups
+  and seeds its calls as the run did.
 
 ---
 
@@ -873,6 +907,7 @@ legs for the export; the legs themselves ran at `a477d80`.
       with-video score from question easiness (section 3.3).
 - [ ] If CVBench stays in scope, run one with-video 27B leg on the non-text-answerable questions.
       This needs the clips.
-- [ ] Rerun the no-thinking control with `6c377c0`'s per-call seeds (about 0.3 A100-hours).
+- [x] Rerun the no-thinking control with `6c377c0`'s per-call seeds (about 0.7 A100-hours). Done
+      on 2026-10-31 as `_q38nt2`; it replaces the as-run control everywhere here (section 7).
 - [ ] Port the harness changes of section 5 to this repository's harness (`inprocess/`), so that
       it can run this protocol itself.

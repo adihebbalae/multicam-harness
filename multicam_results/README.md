@@ -1,6 +1,6 @@
 # MultiCam benchmark results
 
-Per-question result rows from the `Wavy-Hec/MultiCam` harness, one merged JSONL per leg file group, exported at commit `f4ba98dfe41b553cd700154fbe6c2ef680a2311d`.
+Per-question result rows from the `Wavy-Hec/MultiCam` harness, one merged JSONL per leg file group, exported at commit `ee7c2b028dfed2a4861ed2a2a685c1adc62f0067`.
 
 A row is one question x method x backend x sampling pass. **Key on `(dataset, id)`** — `id` restarts at 0 in every subset. The question records live in `data/subsets/<dataset>.json`.
 
@@ -32,7 +32,7 @@ df.groupby(['method', 'backend']).video_tokens.mean()               # the budget
 - montage arm (`centralized`): every view resized into a fixed square cell; its token count saturates while the sequential arm's grows with views — compare `video_tokens` before reading an arm gap.
 - Qwen3.8-27B: the model thinks natively. `decode.enable_thinking` null = thinking on (effort in `decode.reasoning_effort`), false = off. With thinking on, the answer is parsed from the reply after the last `</think>` (`parsed_from` = `after_think`); with it off, from the whole reply (`parsed_from` null). The prompt template is a separate setting: the CVBench thinking legs used the reasoning template and the no-thinking control the direct-answer one, so the two differ in prompt as well as in thinking.
 - a subset ending `_o2` holds the same questions as its stem with the options reversed and the gold letter moved with them (in CVBench all but `cvb-996`, whose options are one packed string).
-- batched before per-call seeding: `cvbench_full_runnable_subset_cvbench_q38bm`, `cvbench_full_runnable_subset_cvbench_q38nt`, `cvbench_full_runnable_subset_o2_cvbench_q38bm`, `cvbench_full_runnable_subset_o2_cvbench_q38nt`. Each call (`batch_n` sequences) ran under its first pending pass's seed, so each batch slot, rather than each pass, replayed one noise stream across the calls of the same size, whatever the question and in both option orders; the seeding caveat above applies to their slots. Rows that stamp `call_seed` were seeded per call.
+- batched before per-call seeding: `cvbench_full_runnable_subset_cvbench_q38bm`, `cvbench_full_runnable_subset_o2_cvbench_q38bm`. Each call (`batch_n` sequences) ran under its first pending pass's seed, so each batch slot, rather than each pass, replayed one noise stream across the calls of the same size, whatever the question and in both option orders; the seeding caveat above applies to their slots. Rows that stamp `call_seed` were seeded per call.
 - MEVA rows decode the remuxed `.mp4` siblings of the release `.avi` (`media_remap`); see the exclusion note below.
 
 ## Row schema
@@ -54,7 +54,7 @@ df.groupby(['method', 'backend']).video_tokens.mean()               # the budget
 | `frame_alloc` | frames per view the arm chose; on segment_select legs also the per-segment scores (absent in slim/) |
 | `media_remap` | 'avi->mp4' on MEVA rows decoded through the remux; the reason older MEVA legs are excluded |
 | `error` | non-null when the call failed; such rows are counted in `errors` |
-| `decode` | decoding settings the row ran under (Qwen3.8: top_p, top_k, answer_after_think, enable_thinking, reasoning_effort); a knob at its template default is null |
+| `decode` | decoding settings the row ran under (Qwen3.8: top_p, top_k, answer_after_think, enable_thinking, reasoning_effort; a batched leg from MultiCam 6c377c0 on adds its seeding scheme as rng); a knob at its template default is null |
 | `parsed_from` | `after_think` when the answer was parsed from the reply after the last `</think>` (Qwen3.8 native thinking); null = the whole text |
 | `batch_n, call_seed, batch_slot` | batched sampling: sequences in the row's generate call (null for a one-sequence call); `call_seed` and `batch_slot` only on rows written from MultiCam 6c377c0 on |
 | `reasoning, max_new_tokens` | prompt mode and output-token cap, stamped on rows written from MultiCam 6c377c0 on |
@@ -179,9 +179,9 @@ df.groupby(['method', 'backend']).video_tokens.mean()               # the budget
 | `crossview_meva1033_subset_internvl_mp4sv8` | CrossView-MEVA | InternVL3-8B | single_view3 | 8 frames/view, single view | 958/958 | 3832 | 31.73 | yes |
 | `crossview_meva1033_subset_internvl_mp4sv8` | CrossView-MEVA | InternVL3-8B | single_view4 | 8 frames/view, single view | 955/955 | 3820 | 29.58 | yes |
 | `cvbench_full_runnable_subset_cvbench_q38bm` | CVBench | Qwen3.8-27B | blind | no images, native thinking (effort medium) | 1000/1000 | 4000 | 49.33 | yes |
-| `cvbench_full_runnable_subset_cvbench_q38nt` | CVBench | Qwen3.8-27B | blind | no images, thinking off, direct-answer prompt | 1000/1000 | 4000 | 48.55 | yes |
+| `cvbench_full_runnable_subset_cvbench_q38nt2` | CVBench | Qwen3.8-27B | blind | no images, thinking off, direct-answer prompt, per-call seeds | 1000/1000 | 4000 | 48.1 | yes |
 | `cvbench_full_runnable_subset_o2_cvbench_q38bm` | CVBench | Qwen3.8-27B | blind | no images, native thinking (effort medium), options reversed | 1000/1000 | 4000 | 49.7 | yes |
-| `cvbench_full_runnable_subset_o2_cvbench_q38nt` | CVBench | Qwen3.8-27B | blind | no images, thinking off, direct-answer prompt, options reversed | 1000/1000 | 4000 | 49.2 | yes |
+| `cvbench_full_runnable_subset_o2_cvbench_q38nt2` | CVBench | Qwen3.8-27B | blind | no images, thinking off, direct-answer prompt, per-call seeds, options reversed | 1000/1000 | 4000 | 48.98 | yes |
 
 Legs marked `NO` stopped before every question ran; their rows are real but the accuracy is over the questions that ran. Do not pool them with a complete twin.
 
@@ -227,5 +227,5 @@ The MEVA release ships `.avi` containers whose packets carry no timestamps; rand
 ```
 # in Wavy-Hec/MultiCam
 python3 analysis/export_question_records.py
-python3 analysis/export_shared_results.py --out <multicam-harness checkout> --gzip --exclude crossview_egoexo500_internvl_bdd --exclude crossview_meva1033_subset_internvl_mp4bdd --exclude crossview_meva1033_subset_internvl_mp4sv8d --exclude crossview_nuscenes1497_subset_internvl_nsbd
+python3 analysis/export_shared_results.py --out <multicam-harness checkout> --gzip --exclude crossview_egoexo500_internvl_bdd --exclude crossview_meva1033_subset_internvl_mp4bdd --exclude crossview_meva1033_subset_internvl_mp4sv8d --exclude crossview_nuscenes1497_subset_internvl_nsbd --exclude cvbench_full_runnable_subset_cvbench_q38nt --exclude cvbench_full_runnable_subset_o2_cvbench_q38nt
 ```

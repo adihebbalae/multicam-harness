@@ -1,6 +1,6 @@
 # MultiCam benchmark results
 
-Per-question result rows from the `Wavy-Hec/MultiCam` harness, one merged JSONL per leg file group, exported at commit `8b8a04b3f716216fd0772a158ee35d3457591370`.
+Per-question result rows from the `Wavy-Hec/MultiCam` harness, one merged JSONL per leg file group, exported at commit `f4ba98dfe41b553cd700154fbe6c2ef680a2311d`.
 
 A row is one question x method x backend x sampling pass. **Key on `(dataset, id)`** — `id` restarts at 0 in every subset. The question records live in `data/subsets/<dataset>.json`.
 
@@ -27,15 +27,19 @@ df.groupby(['method', 'backend']).video_tokens.mean()               # the budget
 ## Protocol
 
 - passes: 4 per question (seeds 1-4, temperature 0.7) unless summary.csv says otherwise; reasoning is imposed by the prompt scaffold, `reasoning` in summary.csv says which template.
-- scoring: the letter parsed from `<answer>` (or the bare reply); no letter parsed = abstained = incorrect. Rows were re-scored with the current parser (`shards_source` in registry.json).
+- seeding: an unbatched leg runs pass p of every question under seed p, so each pass shares one noise stream across the leg's questions (and option orders): per-question accuracy is valid, but pass-to-pass spread and per-pass answer shares are not those of independent draws.
+- scoring: the letter parsed from `<answer>` (or the bare reply); no letter parsed = abstained = incorrect. Legs whose `shards_source` in registry.json is `rescored` were re-scored with the current parser; `raw` legs are scored as run.
 - montage arm (`centralized`): every view resized into a fixed square cell; its token count saturates while the sequential arm's grows with views — compare `video_tokens` before reading an arm gap.
+- Qwen3.8-27B: the model thinks natively. `decode.enable_thinking` null = thinking on (effort in `decode.reasoning_effort`), false = off. With thinking on, the answer is parsed from the reply after the last `</think>` (`parsed_from` = `after_think`); with it off, from the whole reply (`parsed_from` null). The prompt template is a separate setting: the CVBench thinking legs used the reasoning template and the no-thinking control the direct-answer one, so the two differ in prompt as well as in thinking.
+- a subset ending `_o2` holds the same questions as its stem with the options reversed and the gold letter moved with them (in CVBench all but `cvb-996`, whose options are one packed string).
+- batched before per-call seeding: `cvbench_full_runnable_subset_cvbench_q38bm`, `cvbench_full_runnable_subset_cvbench_q38nt`, `cvbench_full_runnable_subset_o2_cvbench_q38bm`, `cvbench_full_runnable_subset_o2_cvbench_q38nt`. Each call (`batch_n` sequences) ran under its first pending pass's seed, so each batch slot, rather than each pass, replayed one noise stream across the calls of the same size, whatever the question and in both option orders; the seeding caveat above applies to their slots. Rows that stamp `call_seed` were seeded per call.
 - MEVA rows decode the remuxed `.mp4` siblings of the release `.avi` (`media_remap`); see the exclusion note below.
 
 ## Row schema
 
 | field | meaning |
 |---|---|
-| `id` | question index within its subset; unique only with `dataset` |
+| `id` | question index within its subset (CVBench: the string `cvb-<n>`, the same question in both option orders); unique only with `dataset` |
 | `dataset` | subset stem the row was run against (matches data/subsets/<dataset>.json) |
 | `leg` | which merged file / campaign the row came from |
 | `task_type, source, orig_num_cameras, num_videos` | copied from the question record |
@@ -43,14 +47,18 @@ df.groupby(['method', 'backend']).video_tokens.mean()               # the budget
 | `method` | arm: cvbench_native (sequential), centralized (montage), per_stream, blind, single_viewN, segment_select* |
 | `backend` | model name |
 | `prediction, gold, correct, abstained` | parsed letter, gold letter, 0/1, no letter parsed (scored incorrect) |
-| `pass_idx, seed, temperature` | sampling pass; passes are independent decodes with frames fixed |
-| `latency_s, perception_latency_*_s, aggregate_latency_s` | wall-clock; the per_stream arm splits perception and aggregation |
-| `input_tokens, video_tokens, output_tokens, num_model_calls` | budget actually consumed — compare across arms before reading any accuracy gap |
+| `pass_idx, seed, temperature` | sampling pass, with frames fixed; on a batched leg `seed` is a pass label (see Protocol for how its noise was drawn) |
+| `latency_s, perception_latency_*_s, aggregate_latency_s` | wall-clock; the per_stream arm splits perception and aggregation; on a batched row `latency_s` is the whole call's (divide by `batch_n`) |
+| `input_tokens, video_tokens, output_tokens, num_model_calls` | budget actually consumed — compare across arms before reading any accuracy gap; a batched row counts its shared call once |
 | `response_text, think` | full model output and the <think> block (absent in slim/) |
 | `frame_alloc` | frames per view the arm chose; on segment_select legs also the per-segment scores (absent in slim/) |
 | `media_remap` | 'avi->mp4' on MEVA rows decoded through the remux; the reason older MEVA legs are excluded |
 | `error` | non-null when the call failed; such rows are counted in `errors` |
-| `source_commit` | Wavy-Hec/MultiCam commit this bundle was exported from |
+| `decode` | decoding settings the row ran under (Qwen3.8: top_p, top_k, answer_after_think, enable_thinking, reasoning_effort); a knob at its template default is null |
+| `parsed_from` | `after_think` when the answer was parsed from the reply after the last `</think>` (Qwen3.8 native thinking); null = the whole text |
+| `batch_n, call_seed, batch_slot` | batched sampling: sequences in the row's generate call (null for a one-sequence call); `call_seed` and `batch_slot` only on rows written from MultiCam 6c377c0 on |
+| `reasoning, max_new_tokens` | prompt mode and output-token cap, stamped on rows written from MultiCam 6c377c0 on |
+| `source_commit` | Wavy-Hec/MultiCam commit the row was exported from; a leg file unchanged since an earlier bundle keeps that bundle's commit |
 
 ## Legs
 
@@ -170,6 +178,10 @@ df.groupby(['method', 'backend']).video_tokens.mean()               # the budget
 | `crossview_meva1033_subset_internvl_mp4sv8` | CrossView-MEVA | InternVL3-8B | single_view2 | 8 frames/view, single view | 1033/1033 | 4132 | 35.67 | yes |
 | `crossview_meva1033_subset_internvl_mp4sv8` | CrossView-MEVA | InternVL3-8B | single_view3 | 8 frames/view, single view | 958/958 | 3832 | 31.73 | yes |
 | `crossview_meva1033_subset_internvl_mp4sv8` | CrossView-MEVA | InternVL3-8B | single_view4 | 8 frames/view, single view | 955/955 | 3820 | 29.58 | yes |
+| `cvbench_full_runnable_subset_cvbench_q38bm` | CVBench | Qwen3.8-27B | blind | no images, native thinking (effort medium) | 1000/1000 | 4000 | 49.33 | yes |
+| `cvbench_full_runnable_subset_cvbench_q38nt` | CVBench | Qwen3.8-27B | blind | no images, thinking off, direct-answer prompt | 1000/1000 | 4000 | 48.55 | yes |
+| `cvbench_full_runnable_subset_o2_cvbench_q38bm` | CVBench | Qwen3.8-27B | blind | no images, native thinking (effort medium), options reversed | 1000/1000 | 4000 | 49.7 | yes |
+| `cvbench_full_runnable_subset_o2_cvbench_q38nt` | CVBench | Qwen3.8-27B | blind | no images, thinking off, direct-answer prompt, options reversed | 1000/1000 | 4000 | 49.2 | yes |
 
 Legs marked `NO` stopped before every question ran; their rows are real but the accuracy is over the questions that ran. Do not pool them with a complete twin.
 
@@ -205,6 +217,8 @@ The MEVA release ships `.avi` containers whose packets carry no timestamps; rand
 - `data/subsets/crossview_egoexo500.json`: present, identical
 - `data/subsets/crossview_meva1033_subset.json`: present, identical
 - `data/subsets/crossview_meva_cap13.json`: present, identical
+- `data/subsets/cvbench_full_runnable_subset.json`: present, identical
+- `data/subsets/cvbench_full_runnable_subset_o2.json`: present, identical
 - `data/subsets/mvueval_noview_subset.json`: present, identical
 - `data/subsets/mvueval_qa.json`: present, identical
 
@@ -213,5 +227,5 @@ The MEVA release ships `.avi` containers whose packets carry no timestamps; rand
 ```
 # in Wavy-Hec/MultiCam
 python3 analysis/export_question_records.py
-python3 analysis/export_shared_results.py --out <multicam-harness checkout> --gzip
+python3 analysis/export_shared_results.py --out <multicam-harness checkout> --gzip --exclude crossview_egoexo500_internvl_bdd --exclude crossview_meva1033_subset_internvl_mp4bdd --exclude crossview_meva1033_subset_internvl_mp4sv8d --exclude crossview_nuscenes1497_subset_internvl_nsbd
 ```

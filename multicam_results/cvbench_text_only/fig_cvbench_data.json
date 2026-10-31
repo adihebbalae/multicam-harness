@@ -1,0 +1,1033 @@
+{
+ "bm": {
+  "acc": 49.5125,
+  "acc_O1_O2": [
+   49.325,
+   49.7
+  ],
+  "bias_null_acc": 30.288,
+  "both": {
+   "text-answerable in both orders": 343,
+   "not in either order": 450,
+   "text-answerable in one order": 207
+  },
+  "rows": [
+   4000,
+   4000
+  ],
+  "n_correct": [
+   1973,
+   1988
+  ],
+  "bias_null_correct": [
+   1208.74,
+   1214.3
+  ]
+ },
+ "nt": {
+  "acc": 48.875,
+  "acc_O1_O2": [
+   48.55,
+   49.2
+  ],
+  "bias_null_acc": 31.2885,
+  "both": {
+   "not in either order": 458,
+   "text-answerable in both orders": 316,
+   "text-answerable in one order": 226
+  },
+  "rows": [
+   4000,
+   4000
+  ],
+  "n_correct": [
+   1942,
+   1968
+  ],
+  "bias_null_correct": [
+   1240.84,
+   1262.24
+  ]
+ },
+ "both_null_paired": {
+  "mean": 186.59,
+  "lo": 166,
+  "hi": 207,
+  "p": 1e-05
+ },
+ "delta_all": 0.6375,
+ "delta_all_se": 0.9907921137972198,
+ "delta_all_exact": [
+  51,
+  80
+ ],
+ "delta_all_counts": {
+  "bm": [
+   3961,
+   8000
+  ],
+  "nt": [
+   3910,
+   8000
+  ]
+ },
+ "chance": 28.48,
+ "key_insample": 37.4,
+ "key_loo": 30.9,
+ "longest": 31.7,
+ "choices": {
+  "all": {
+   "2": 139,
+   "4": 861
+  },
+  "longest_option": {
+   "2": 3,
+   "4": 860
+  }
+ },
+ "longest_n": 863,
+ "longest_chance": 25.086906141367322,
+ "stitch_input_tokens": {
+  "fullstitch8": [
+   2307,
+   2422
+  ],
+  "fullstitch": [
+   4380,
+   4495
+  ],
+  "fullstitch32": [
+   8524,
+   8639
+  ],
+  "fullstitch64": [
+   16812,
+   16927
+  ],
+  "fullstitch128": [
+   33389,
+   33504
+  ]
+ },
+ "sighted": {
+  "fulldur": {
+   "acc": 61.825,
+   "std": 0.6609652033201158,
+   "rows": 4000,
+   "n_correct": 2473
+  },
+  "fulleven": {
+   "acc": 60.775,
+   "std": 0.7758060324591455,
+   "rows": 4000,
+   "n_correct": 2431
+  },
+  "fullstitch8": {
+   "acc": 57.75,
+   "std": 0.6224949798994369,
+   "rows": 4000,
+   "n_correct": 2310
+  },
+  "fullstitch": {
+   "acc": 57.425,
+   "std": 1.4060138690638848,
+   "rows": 4000,
+   "n_correct": 2297
+  },
+  "fullstitch32": {
+   "acc": 57.55,
+   "std": 0.7262919523167002,
+   "rows": 4000,
+   "n_correct": 2302
+  },
+  "fullstitch64": {
+   "acc": 55.75,
+   "std": 0.49244289008980197,
+   "rows": 4000,
+   "n_correct": 2230
+  },
+  "fullstitch128": {
+   "acc": 54.875,
+   "std": 0.7529110173187801,
+   "rows": 4000,
+   "n_correct": 2195
+  },
+  "fullperstream": {
+   "acc": 55.7,
+   "std": 1.007472083980491,
+   "rows": 4000,
+   "n_correct": 2228
+  }
+ },
+ "tasks": {
+  "Cross-video Anomaly Detection": {
+   "n": 84,
+   "bm": 36.60714285714286,
+   "nt": 32.88690476190476,
+   "delta": 3.7202380952380953,
+   "delta_se": 2.5736755862799376,
+   "delta_exact": [
+    625,
+    168
+   ],
+   "chance": 25.3,
+   "key_insample": 29.76,
+   "sighted": 52.97619047619048,
+   "both_split": [
+    13,
+    20,
+    51,
+    84
+   ],
+   "both_share": 0.15476190476190477,
+   "chance_both": 0.31,
+   "null_mean_both": 4.8,
+   "null_95_both": [
+    1,
+    9
+   ],
+   "p_both": 0.00014,
+   "null_mean_both_paired": 8.03,
+   "null_95_both_paired": [
+    4,
+    13
+   ],
+   "p_both_paired": 0.0273,
+   "delta_counts": {
+    "bm": [
+     246,
+     672
+    ],
+    "nt": [
+     221,
+     672
+    ]
+   }
+  },
+  "Cross-video Counterfactual Reasoning": {
+   "n": 52,
+   "bm": 69.23076923076923,
+   "nt": 65.86538461538461,
+   "delta": 3.3653846153846154,
+   "delta_se": 3.746469312877555,
+   "delta_exact": [
+    175,
+    52
+   ],
+   "chance": 25.48,
+   "key_insample": 30.77,
+   "sighted": 61.53846153846153,
+   "both_split": [
+    30,
+    10,
+    12,
+    52
+   ],
+   "both_share": 0.5769230769230769,
+   "chance_both": 0.23,
+   "null_mean_both": 2.82,
+   "null_95_both": [
+    0,
+    6
+   ],
+   "p_both": 1e-05,
+   "null_mean_both_paired": 9.1,
+   "null_95_both_paired": [
+    4,
+    14
+   ],
+   "p_both_paired": 1e-05,
+   "delta_counts": {
+    "bm": [
+     288,
+     416
+    ],
+    "nt": [
+     274,
+     416
+    ]
+   }
+  },
+  "Cross-video Entity Matching": {
+   "n": 74,
+   "bm": 47.80405405405405,
+   "nt": 48.479729729729726,
+   "delta": -0.6756756756756757,
+   "delta_se": 3.1164673578170485,
+   "delta_exact": [
+    -25,
+    37
+   ],
+   "chance": 27.7,
+   "key_insample": 43.24,
+   "sighted": 62.83783783783784,
+   "both_split": [
+    24,
+    14,
+    36,
+    74
+   ],
+   "both_share": 0.32432432432432434,
+   "chance_both": 0.95,
+   "null_mean_both": 4.86,
+   "null_95_both": [
+    1,
+    9
+   ],
+   "p_both": 1e-05,
+   "null_mean_both_paired": 12.13,
+   "null_95_both_paired": [
+    7,
+    18
+   ],
+   "p_both_paired": 0.00013,
+   "delta_counts": {
+    "bm": [
+     283,
+     592
+    ],
+    "nt": [
+     287,
+     592
+    ]
+   }
+  },
+  "Cross-video Event Retrieval": {
+   "n": 49,
+   "bm": 35.204081632653065,
+   "nt": 30.102040816326532,
+   "delta": 5.1020408163265305,
+   "delta_se": 4.233912619515569,
+   "delta_exact": [
+    250,
+    49
+   ],
+   "chance": 25.0,
+   "key_insample": 32.65,
+   "sighted": 70.91836734693878,
+   "both_split": [
+    6,
+    17,
+    26,
+    49
+   ],
+   "both_share": 0.12244897959183673,
+   "chance_both": 0.13,
+   "null_mean_both": 4.62,
+   "null_95_both": [
+    2,
+    8
+   ],
+   "p_both": 0.28637,
+   "null_mean_both_paired": 5.98,
+   "null_95_both_paired": [
+    3,
+    9
+   ],
+   "p_both_paired": 0.59798,
+   "delta_counts": {
+    "bm": [
+     138,
+     392
+    ],
+    "nt": [
+     118,
+     392
+    ]
+   }
+  },
+  "Cross-video Object Recognition": {
+   "n": 68,
+   "bm": 43.19852941176471,
+   "nt": 37.13235294117647,
+   "delta": 6.0661764705882355,
+   "delta_se": 3.736005558643448,
+   "delta_exact": [
+    825,
+    136
+   ],
+   "chance": 25.37,
+   "key_insample": 29.41,
+   "sighted": 56.98529411764706,
+   "both_split": [
+    14,
+    20,
+    34,
+    68
+   ],
+   "both_share": 0.20588235294117646,
+   "chance_both": 0.27,
+   "null_mean_both": 2.84,
+   "null_95_both": [
+    0,
+    6
+   ],
+   "p_both": 1e-05,
+   "null_mean_both_paired": 7.05,
+   "null_95_both_paired": [
+    3,
+    12
+   ],
+   "p_both_paired": 0.00344,
+   "delta_counts": {
+    "bm": [
+     235,
+     544
+    ],
+    "nt": [
+     202,
+     544
+    ]
+   }
+  },
+  "Cross-video Procedural Transfer": {
+   "n": 51,
+   "bm": 59.80392156862745,
+   "nt": 59.06862745098039,
+   "delta": 0.7352941176470589,
+   "delta_se": 2.8528401033238158,
+   "delta_exact": [
+    25,
+    34
+   ],
+   "chance": 25.0,
+   "key_insample": 41.18,
+   "sighted": 68.62745098039215,
+   "both_split": [
+    27,
+    4,
+    20,
+    51
+   ],
+   "both_share": 0.5294117647058824,
+   "chance_both": 0.13,
+   "null_mean_both": 3.43,
+   "null_95_both": [
+    0,
+    7
+   ],
+   "p_both": 1e-05,
+   "null_mean_both_paired": 11.02,
+   "null_95_both_paired": [
+    6,
+    17
+   ],
+   "p_both_paired": 1e-05,
+   "delta_counts": {
+    "bm": [
+     244,
+     408
+    ],
+    "nt": [
+     241,
+     408
+    ]
+   }
+  },
+  "Cross-video Scene Recognition": {
+   "n": 149,
+   "bm": 47.56711409395973,
+   "nt": 55.45302013422819,
+   "delta": -7.885906040268456,
+   "delta_se": 4.304243054415068,
+   "delta_exact": [
+    -1175,
+    149
+   ],
+   "chance": 45.47,
+   "key_insample": 52.35,
+   "sighted": 69.1275167785235,
+   "both_split": [
+    54,
+    19,
+    76,
+    149
+   ],
+   "both_share": 0.3624161073825503,
+   "chance_both": 11.98,
+   "null_mean_both": 30.61,
+   "null_95_both": [
+    23,
+    38
+   ],
+   "p_both": 1e-05,
+   "null_mean_both_paired": 48.95,
+   "null_95_both_paired": [
+    40,
+    58
+   ],
+   "p_both_paired": 0.15687,
+   "delta_counts": {
+    "bm": [
+     567,
+     1192
+    ],
+    "nt": [
+     661,
+     1192
+    ]
+   }
+  },
+  "Joint-video Counting": {
+   "n": 60,
+   "bm": 38.75,
+   "nt": 39.375,
+   "delta": -0.625,
+   "delta_se": 3.1221738633151683,
+   "delta_exact": [
+    -5,
+    8
+   ],
+   "chance": 25.0,
+   "key_insample": 31.67,
+   "sighted": 42.5,
+   "both_split": [
+    13,
+    17,
+    30,
+    60
+   ],
+   "both_share": 0.21666666666666667,
+   "chance_both": 0.15,
+   "null_mean_both": 5.7,
+   "null_95_both": [
+    2,
+    10
+   ],
+   "p_both": 0.00079,
+   "null_mean_both_paired": 9.82,
+   "null_95_both_paired": [
+    5,
+    15
+   ],
+   "p_both_paired": 0.13156,
+   "delta_counts": {
+    "bm": [
+     186,
+     480
+    ],
+    "nt": [
+     189,
+     480
+    ]
+   }
+  },
+  "Joint-video Spatial Navigating": {
+   "n": 42,
+   "bm": 51.48809523809524,
+   "nt": 52.08333333333333,
+   "delta": -0.5952380952380952,
+   "delta_se": 4.967087907501466,
+   "delta_exact": [
+    -25,
+    42
+   ],
+   "chance": 26.19,
+   "key_insample": 33.33,
+   "sighted": 48.80952380952381,
+   "both_split": [
+    14,
+    11,
+    17,
+    42
+   ],
+   "both_share": 0.3333333333333333,
+   "chance_both": 0.3,
+   "null_mean_both": 2.81,
+   "null_95_both": [
+    0,
+    6
+   ],
+   "p_both": 1e-05,
+   "null_mean_both_paired": 6.97,
+   "null_95_both_paired": [
+    3,
+    11
+   ],
+   "p_both_paired": 0.00122,
+   "delta_counts": {
+    "bm": [
+     173,
+     336
+    ],
+    "nt": [
+     175,
+     336
+    ]
+   }
+  },
+  "Joint-video Summarization": {
+   "n": 52,
+   "bm": 75.72115384615384,
+   "nt": 76.92307692307692,
+   "delta": -1.2019230769230769,
+   "delta_se": 2.5747592697217767,
+   "delta_exact": [
+    -125,
+    104
+   ],
+   "chance": 25.0,
+   "key_insample": 38.46,
+   "sighted": 74.51923076923077,
+   "both_split": [
+    34,
+    9,
+    9,
+    52
+   ],
+   "both_share": 0.6538461538461539,
+   "chance_both": 0.13,
+   "null_mean_both": 4.93,
+   "null_95_both": [
+    1,
+    9
+   ],
+   "p_both": 1e-05,
+   "null_mean_both_paired": 12.89,
+   "null_95_both_paired": [
+    7,
+    19
+   ],
+   "p_both_paired": 1e-05,
+   "delta_counts": {
+    "bm": [
+     315,
+     416
+    ],
+    "nt": [
+     320,
+     416
+    ]
+   }
+  },
+  "Multi-video Attribute Recognition": {
+   "n": 46,
+   "bm": 52.44565217391305,
+   "nt": 57.065217391304344,
+   "delta": -4.619565217391305,
+   "delta_se": 4.453169765681832,
+   "delta_exact": [
+    -425,
+    92
+   ],
+   "chance": 26.09,
+   "key_insample": 43.48,
+   "sighted": 70.1086956521739,
+   "both_split": [
+    17,
+    11,
+    18,
+    46
+   ],
+   "both_share": 0.3695652173913043,
+   "chance_both": 0.31,
+   "null_mean_both": 3.28,
+   "null_95_both": [
+    0,
+    7
+   ],
+   "p_both": 1e-05,
+   "null_mean_both_paired": 7.85,
+   "null_95_both_paired": [
+    4,
+    12
+   ],
+   "p_both_paired": 9e-05,
+   "delta_counts": {
+    "bm": [
+     193,
+     368
+    ],
+    "nt": [
+     210,
+     368
+    ]
+   }
+  },
+  "Multi-video Key-Action Recognition": {
+   "n": 88,
+   "bm": 47.585227272727266,
+   "nt": 51.13636363636363,
+   "delta": -3.5511363636363638,
+   "delta_se": 2.390059631605136,
+   "delta_exact": [
+    -625,
+    176
+   ],
+   "chance": 25.0,
+   "key_insample": 34.09,
+   "sighted": 65.625,
+   "both_split": [
+    27,
+    22,
+    39,
+    88
+   ],
+   "both_share": 0.3068181818181818,
+   "chance_both": 0.23,
+   "null_mean_both": 6.15,
+   "null_95_both": [
+    2,
+    11
+   ],
+   "p_both": 1e-05,
+   "null_mean_both_paired": 14.55,
+   "null_95_both_paired": [
+    9,
+    21
+   ],
+   "p_both_paired": 0.00014,
+   "delta_counts": {
+    "bm": [
+     335,
+     704
+    ],
+    "nt": [
+     360,
+     704
+    ]
+   }
+  },
+  "Multi-video Temporal Reasoning": {
+   "n": 75,
+   "bm": 37.33333333333333,
+   "nt": 28.333333333333332,
+   "delta": 9.0,
+   "delta_se": 3.258391799203576,
+   "delta_exact": [
+    9,
+    1
+   ],
+   "chance": 25.67,
+   "key_insample": 29.33,
+   "sighted": 45.666666666666664,
+   "both_split": [
+    17,
+    13,
+    45,
+    75
+   ],
+   "both_share": 0.22666666666666666,
+   "chance_both": 0.38,
+   "null_mean_both": 3.31,
+   "null_95_both": [
+    0,
+    7
+   ],
+   "p_both": 1e-05,
+   "null_mean_both_paired": 9.65,
+   "null_95_both_paired": [
+    5,
+    15
+   ],
+   "p_both_paired": 0.00678,
+   "delta_counts": {
+    "bm": [
+     224,
+     600
+    ],
+    "nt": [
+     170,
+     600
+    ]
+   }
+  },
+  "Multi-view Scene Understanding": {
+   "n": 55,
+   "bm": 72.04545454545453,
+   "nt": 70.22727272727272,
+   "delta": 1.8181818181818181,
+   "delta_se": 2.414754159168065,
+   "delta_exact": [
+    20,
+    11
+   ],
+   "chance": 25.0,
+   "key_insample": 36.36,
+   "sighted": 81.36363636363636,
+   "both_split": [
+    34,
+    6,
+    15,
+    55
+   ],
+   "both_share": 0.6181818181818182,
+   "chance_both": 0.14,
+   "null_mean_both": 4.83,
+   "null_95_both": [
+    1,
+    9
+   ],
+   "p_both": 1e-05,
+   "null_mean_both_paired": 13.68,
+   "null_95_both_paired": [
+    8,
+    20
+   ],
+   "p_both_paired": 1e-05,
+   "delta_counts": {
+    "bm": [
+     317,
+     440
+    ],
+    "nt": [
+     309,
+     440
+    ]
+   }
+  },
+  "Video Difference Caption": {
+   "n": 55,
+   "bm": 49.31818181818182,
+   "nt": 39.31818181818181,
+   "delta": 10.0,
+   "delta_se": 2.944492090333012,
+   "delta_exact": [
+    10,
+    1
+   ],
+   "chance": 25.0,
+   "key_insample": 38.18,
+   "sighted": 54.54545454545455,
+   "both_split": [
+    19,
+    14,
+    22,
+    55
+   ],
+   "both_share": 0.34545454545454546,
+   "chance_both": 0.14,
+   "null_mean_both": 3.21,
+   "null_95_both": [
+    0,
+    7
+   ],
+   "p_both": 1e-05,
+   "null_mean_both_paired": 9.0,
+   "null_95_both_paired": [
+    4,
+    14
+   ],
+   "p_both_paired": 8e-05,
+   "delta_counts": {
+    "bm": [
+     217,
+     440
+    ],
+    "nt": [
+     173,
+     440
+    ]
+   }
+  }
+ },
+ "both_overall": [
+  343,
+  207,
+  450,
+  1000
+ ],
+ "hist": {
+  "bm": [
+   364,
+   102,
+   83,
+   99,
+   352
+  ],
+  "nt": [
+   355,
+   114,
+   108,
+   80,
+   343
+  ],
+  "sighted": [
+   221,
+   104,
+   102,
+   127,
+   446
+  ]
+ },
+ "sighted_by_label": {
+  "both": {
+   "n": 343,
+   "acc": 78.71720116618076,
+   "video_ge3_of_4": 258,
+   "n_correct": 1080,
+   "rows": 1372
+  },
+  "one": {
+   "n": 207,
+   "acc": 59.29951690821256,
+   "video_ge3_of_4": 113,
+   "n_correct": 491,
+   "rows": 828
+  },
+  "neither": {
+   "n": 450,
+   "acc": 50.11111111111111,
+   "video_ge3_of_4": 202,
+   "n_correct": 902,
+   "rows": 1800
+  }
+ },
+ "letters": {
+  "n": 864,
+  "O1": {
+   "bm": {
+    "A": 17.01388888888889,
+    "B": 40.19097222222222,
+    "C": 29.51388888888889,
+    "D": 13.28125
+   },
+   "gold": {
+    "A": 26.96759259259259,
+    "B": 29.97685185185185,
+    "C": 26.73611111111111,
+    "D": 16.319444444444443
+   },
+   "nt": {
+    "A": 13.570601851851851,
+    "B": 33.854166666666664,
+    "C": 42.96875,
+    "D": 9.606481481481481
+   }
+  },
+  "O2": {
+   "bm": {
+    "A": 10.185185185185185,
+    "B": 26.15740740740741,
+    "C": 37.38425925925926,
+    "D": 26.27314814814815
+   },
+   "gold": {
+    "A": 16.435185185185187,
+    "B": 26.85185185185185,
+    "C": 29.74537037037037,
+    "D": 26.96759259259259
+   },
+   "nt": {
+    "A": 8.76736111111111,
+    "B": 23.755787037037038,
+    "C": 47.77199074074074,
+    "D": 19.70486111111111
+   }
+  }
+ },
+ "yesno": {
+  "O1": {
+   "gold": 58.08823529411765,
+   "bm": 29.411764705882355,
+   "nt": 72.42647058823529
+  },
+  "n": 136,
+  "O2": {
+   "gold": 58.08823529411765,
+   "bm": 27.75735294117647,
+   "nt": 72.24264705882352
+  }
+ },
+ "tokens": {
+  "bm_n": 8000,
+  "bm_mean": 861.463625,
+  "bm_median": 828,
+  "bm_max": 5904
+ },
+ "tokens_hist": {
+  "bin_edges": [
+   0,
+   100,
+   200,
+   300,
+   400,
+   500,
+   600,
+   700,
+   800,
+   900,
+   1000,
+   1100,
+   1200,
+   1300,
+   1400,
+   1500,
+   1600,
+   1700,
+   1800,
+   1900,
+   2000,
+   2100,
+   2200,
+   2300,
+   2400,
+   2500
+  ],
+  "counts": [
+   0,
+   0,
+   4,
+   17,
+   82,
+   328,
+   1075,
+   1955,
+   1842,
+   1219,
+   646,
+   348,
+   209,
+   103,
+   64,
+   30,
+   29,
+   13,
+   9,
+   1,
+   2,
+   5,
+   5,
+   1,
+   1
+  ],
+  "above_cut": 12
+ },
+ "order_matrix": [
+  [
+   259,
+   49,
+   22,
+   15,
+   19
+  ],
+  [
+   36,
+   19,
+   18,
+   16,
+   13
+  ],
+  [
+   17,
+   18,
+   12,
+   13,
+   23
+  ],
+  [
+   10,
+   18,
+   20,
+   14,
+   37
+  ],
+  [
+   19,
+   19,
+   22,
+   33,
+   259
+  ]
+ ]
+}

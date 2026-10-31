@@ -1,7 +1,7 @@
 {
  "note": "One entry per (dataset, backend, method, budget) leg; `file` is the merged row file, `complete` says whether every question ran. Legs with media_ok=false are not shipped; see `excluded`.",
  "source_repo": "Wavy-Hec/MultiCam",
- "source_commit": "8b8a04b3f716216fd0772a158ee35d3457591370",
+ "source_commit": "f4ba98dfe41b553cd700154fbe6c2ef680a2311d",
  "legs": [
   {
    "dataset": "MVU-Eval",
@@ -3888,6 +3888,138 @@
    "file": "legs/crossview_meva1033_subset_internvl_mp4sv8.jsonl.gz",
    "leg": "crossview_meva1033_subset_internvl_mp4sv8",
    "shards_source": "rescored"
+  },
+  {
+   "dataset": "CVBench",
+   "backend": "Qwen3.8-27B",
+   "method": "blind",
+   "budget": "no images, native thinking (effort medium)",
+   "subset": "cvbench_full_runnable_subset.json",
+   "subset_sha256": "4bde34ea0ef752aa",
+   "subset_questions": 1000,
+   "questions_expected": 1000,
+   "questions_run": 1000,
+   "rows": 4000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 49.33,
+   "errors": 0,
+   "glob": "bench_cvbench_full_runnable_subset_cvbench_q38bm_shard*.jsonl",
+   "rescored": false,
+   "protocol": {
+    "temperature": [
+     0.6
+    ],
+    "reasoning": "on",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/cvbench_full_runnable_subset_cvbench_q38bm.jsonl.gz",
+   "leg": "cvbench_full_runnable_subset_cvbench_q38bm",
+   "shards_source": "raw"
+  },
+  {
+   "dataset": "CVBench",
+   "backend": "Qwen3.8-27B",
+   "method": "blind",
+   "budget": "no images, thinking off, direct-answer prompt",
+   "subset": "cvbench_full_runnable_subset.json",
+   "subset_sha256": "4bde34ea0ef752aa",
+   "subset_questions": 1000,
+   "questions_expected": 1000,
+   "questions_run": 1000,
+   "rows": 4000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 48.55,
+   "errors": 0,
+   "glob": "bench_cvbench_full_runnable_subset_cvbench_q38nt_shard*.jsonl",
+   "rescored": false,
+   "protocol": {
+    "temperature": [
+     0.6
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/cvbench_full_runnable_subset_cvbench_q38nt.jsonl.gz",
+   "leg": "cvbench_full_runnable_subset_cvbench_q38nt",
+   "shards_source": "raw"
+  },
+  {
+   "dataset": "CVBench",
+   "backend": "Qwen3.8-27B",
+   "method": "blind",
+   "budget": "no images, native thinking (effort medium), options reversed",
+   "subset": "cvbench_full_runnable_subset_o2.json",
+   "subset_sha256": "58d29ecd70b70437",
+   "subset_questions": 1000,
+   "questions_expected": 1000,
+   "questions_run": 1000,
+   "rows": 4000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 49.7,
+   "errors": 0,
+   "glob": "bench_cvbench_full_runnable_subset_o2_cvbench_q38bm_shard*.jsonl",
+   "rescored": false,
+   "protocol": {
+    "temperature": [
+     0.6
+    ],
+    "reasoning": "on",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/cvbench_full_runnable_subset_o2_cvbench_q38bm.jsonl.gz",
+   "leg": "cvbench_full_runnable_subset_o2_cvbench_q38bm",
+   "shards_source": "raw"
+  },
+  {
+   "dataset": "CVBench",
+   "backend": "Qwen3.8-27B",
+   "method": "blind",
+   "budget": "no images, thinking off, direct-answer prompt, options reversed",
+   "subset": "cvbench_full_runnable_subset_o2.json",
+   "subset_sha256": "58d29ecd70b70437",
+   "subset_questions": 1000,
+   "questions_expected": 1000,
+   "questions_run": 1000,
+   "rows": 4000,
+   "passes": 4,
+   "complete": true,
+   "accuracy_pct": 49.2,
+   "errors": 0,
+   "glob": "bench_cvbench_full_runnable_subset_o2_cvbench_q38nt_shard*.jsonl",
+   "rescored": false,
+   "protocol": {
+    "temperature": [
+     0.6
+    ],
+    "reasoning": "off",
+    "total_frames": null,
+    "cell_px": null,
+    "max_tiles": null,
+    "media_remap": null
+   },
+   "media_ok": true,
+   "media_mixed": false,
+   "file": "legs/cvbench_full_runnable_subset_o2_cvbench_q38nt.jsonl.gz",
+   "leg": "cvbench_full_runnable_subset_o2_cvbench_q38nt",
+   "shards_source": "raw"
   }
  ],
  "excluded": [
